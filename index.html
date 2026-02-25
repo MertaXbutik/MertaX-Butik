@@ -277,6 +277,7 @@
   <p>📞 Телефон: <b>+389 72 912 601</b> (замени)</p>
   <p>📧 Email: <b>mertax@example.com</b> (замени)</p>
   <p>💬 WhatsApp: <b>+389 72 912 601</b> (замени)</p>
+  <p>💬 Адреса: <b>ТЦ Мавровка</b> (замени)</p>
 </div>
 
 <footer>© 2026 MertaX Butik | Сите права се задржани</footer>
@@ -288,11 +289,11 @@
 const SHOP = {
   currency: "ден.",
   // стави твој WhatsApp број со код на држава, без + и без празни места (пример 38970111222)
-  whatsappNumber: "+38972912601",
+  whatsappNumber: "38972912601",
   // стави твој email
-  emailTo: "eren2004tn@hotmail.com",
+  emailTo: "mertax@example.com",
   // прост admin код (НЕ е 100% сигурно без сервер)
-  adminCode: "260286erentuna"
+  adminCode: "260286"
 };
 
 // Почетни продукти + залиха по величини
@@ -300,22 +301,23 @@ const DEFAULT_PRODUCTS = [
   {
     id: "majca",
     name: "Мајца MertaX",
-    price: 1500,
+    price: 1200,
     img: "https://via.placeholder.com/600x400?text=Majca",
-    sizes: { "S": 1, "M": 1, "L": 1, "XL": 1, "2XL": 1, "3XL": 1}
+    sizes: { "S": 2, "M": 3, "L": 1, "XL": 1, "2XL": 1, "3XL": 1 }
+  },
   {
     id: "dukser",
     name: "Дуксер MertaX",
     price: 2500,
     img: "https://via.placeholder.com/600x400?text=Dukser",
-    sizes: { "S": 1, "M": 1, "L": 1, "XL": 1, "2XL": 1, "3XL": 1}
+    sizes: { "S": 0, "M": 2, "L": 2, "XL": 1, "2XL": 1, "3XL": 1 }
   },
   {
     id: "jakna",
     name: "Јакна MertaX",
     price: 3900,
     img: "https://via.placeholder.com/600x400?text=Jakna",
-    sizes: { "S": 1, "M": 1, "L": 1, "XL": 1, "2XL": 1, "3XL": 1}
+    sizes: { "M": 1, "L": 1, "XL": 1, "2XL": 1, "3XL": 1 }
   }
 ];
 
