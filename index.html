@@ -288,11 +288,9 @@
  *  ========================= */
 const SHOP = {
   currency: "ден.",
-  // стави твој WhatsApp број со код на држава, без + и без празни места (пример 38970111222)
+  // број без + и без празни места (пример 38970111222)
   whatsappNumber: "38972912601",
-  // стави твој email
   emailTo: "mertax@example.com",
-  // прост admin код (НЕ е 100% сигурно без сервер)
   adminCode: "260286"
 };
 
@@ -329,15 +327,33 @@ const LS_CART = "mertax_cart_v1";
 const LS_ORDERS = "mertax_orders_v1";
 const LS_ADMIN = "mertax_admin_ok_v1";
 
+// Safari-safe deep clone
+function clone(obj){
+  return JSON.parse(JSON.stringify(obj));
+}
+
 function loadProducts(){
   const raw = localStorage.getItem(LS_PRODUCTS);
+
+  // ако нема ништо
   if(!raw){
     localStorage.setItem(LS_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
-    return structuredClone(DEFAULT_PRODUCTS);
+    return clone(DEFAULT_PRODUCTS);
   }
-  try{ return JSON.parse(raw); }catch(e){
+
+  try{
+    const parsed = JSON.parse(raw);
+
+    // ако е празно/невалидно → врати default
+    if(!Array.isArray(parsed) || parsed.length === 0){
+      localStorage.setItem(LS_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
+      return clone(DEFAULT_PRODUCTS);
+    }
+
+    return parsed;
+  }catch(e){
     localStorage.setItem(LS_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
-    return structuredClone(DEFAULT_PRODUCTS);
+    return clone(DEFAULT_PRODUCTS);
   }
 }
 function saveProducts(p){ localStorage.setItem(LS_PRODUCTS, JSON.stringify(p)); }
@@ -391,7 +407,6 @@ function sizeListText(p){
   const parts = Object.entries(p.sizes||{}).map(([s,q])=>`${s} – ${q}`);
   return parts.map(x=>`<span>${x}</span>`).join("");
 }
-
 function cartKey(pid, size){ return `${pid}__${size}`; }
 
 /** =========================
@@ -403,8 +418,13 @@ function renderProducts(){
   grid.innerHTML = "";
 
   const list = products.filter(p => !q || p.name.toLowerCase().includes(q));
+
+  if(list.length === 0){
+    grid.innerHTML = `<p class="muted">Нема производи за прикажување.</p>`;
+    return;
+  }
+
   for(const p of list){
-    // sizes available
     const sizeEntries = Object.entries(p.sizes||{});
     const sizeOptions = sizeEntries.map(([s,q])=>{
       const disabled = q<=0 ? "disabled" : "";
@@ -444,7 +464,6 @@ function renderProducts(){
       const st = stockOf(p.id, sz);
       if(st<=0) return alert("Нема залиха за таа величина.");
 
-      // add to cart (max = stock)
       const k = cartKey(p.id, sz);
       const existing = cart.find(x=>x.k===k);
       if(existing){
@@ -569,7 +588,6 @@ function readCustomer(){
 }
 
 function confirmAndDecrementStock(customer){
-  // check stock again
   for(const it of cart){
     const st = stockOf(it.pid, it.size);
     if(it.qty > st){
@@ -577,206 +595,18 @@ function confirmAndDecrementStock(customer){
       return false;
     }
   }
-  // decrement
   for(const it of cart){
     const st = stockOf(it.pid, it.size);
     setStock(it.pid, it.size, st - it.qty);
   }
   saveProducts(products);
 
-  // store order locally
   const orders = loadOrders();
   orders.unshift({
     id: "ORD-" + Math.random().toString(16).slice(2,8).toUpperCase(),
     at: new Date().toISOString(),
     customer,
-    items: structuredClone(cart),
+    items: clone(cart),
     total: totalCart()
   });
   saveOrders(orders);
-
-  // clear cart
-  cart = [];
-  saveCart(cart);
-
-  // re-render
-  renderProducts();
-  updateCartUI();
-  renderAdmin();
-  return true;
-}
-
-/** =========================
- *  ADMIN
- *  ========================= */
-function isAdmin(){ return localStorage.getItem(LS_ADMIN)==="1"; }
-
-function renderAdmin(){
-  const panel = $("adminPanel");
-  const shouldOpen = location.hash === "#admin";
-  panel.classList.toggle("open", shouldOpen);
-
-  if(!shouldOpen) return;
-
-  const ok = isAdmin();
-  $("adminPass").style.display = ok ? "none" : "inline-block";
-  $("adminLogin").style.display = ok ? "none" : "inline-block";
-  $("adminLogout").style.display = ok ? "inline-block" : "none";
-
-  // stock editor
-  const stockBox = $("stockEditor");
-  if(!ok){
-    stockBox.innerHTML = `<div class="mut">Внеси admin код за да гледаш/менуваш залиха.</div>`;
-  }else{
-    stockBox.innerHTML = products.map(p=>{
-      const rows = Object.entries(p.sizes||{}).map(([s,q])=>{
-        return `
-          <div style="display:flex; gap:8px; align-items:center; margin:6px 0;">
-            <span style="min-width:62px;"><b>${s}</b></span>
-            <input type="number" min="0" value="${q}" id="stk_${p.id}_${s}" style="width:110px; padding:8px 10px; border-radius:10px;">
-          </div>
-        `;
-      }).join("");
-      return `
-        <div style="border:1px solid #222; border-radius:14px; padding:10px; margin:10px 0;">
-          <b>${p.name}</b> <span class="mut">(${money(p.price)})</span>
-          <div style="margin-top:8px;">${rows}</div>
-          <button class="btn primary" data-save="${p.id}" style="margin-top:8px;">Зачувај</button>
-        </div>
-      `;
-    }).join("");
-
-    stockBox.querySelectorAll("[data-save]").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        const pid = btn.getAttribute("data-save");
-        const p = products.find(x=>x.id===pid);
-        if(!p) return;
-        for(const s of Object.keys(p.sizes||{})){
-          const v = document.getElementById(`stk_${pid}_${s}`).value;
-          setStock(pid, s, v);
-        }
-        saveProducts(products);
-        renderProducts();
-        alert("Зачувано ✅");
-      });
-    });
-  }
-
-  // orders
-  const orders = loadOrders();
-  const oBox = $("ordersBox");
-  if(!ok){
-    oBox.innerHTML = `<div class="mut">Внеси admin код за да ги гледаш нарачките.</div>`;
-  }else if(orders.length===0){
-    oBox.innerHTML = `<div class="mut">Нема нарачки.</div>`;
-  }else{
-    oBox.innerHTML = `
-      <table>
-        <thead>
-          <tr><th>Време</th><th>Купувач</th><th>Ставки</th><th>Вкупно</th></tr>
-        </thead>
-        <tbody>
-          ${orders.slice(0,20).map(o=>{
-            const when = new Date(o.at).toLocaleString();
-            const items = o.items.map(it=>{
-              const p = products.find(x=>x.id===it.pid);
-              return `${p ? p.name : it.pid} (${it.size}) x${it.qty}`;
-            }).join("<br>");
-            return `
-              <tr>
-                <td>${when}<br><span class="mut">${o.id}</span></td>
-                <td>${o.customer.name}<br><span class="mut">${o.customer.phone}</span></td>
-                <td>${items}</td>
-                <td><b>${money(o.total)}</b></td>
-              </tr>
-            `;
-          }).join("")}
-        </tbody>
-      </table>
-    `;
-  }
-}
-
-/** =========================
- *  EVENTS
- *  ========================= */
-$("q").addEventListener("input", renderProducts);
-
-$("openCart").addEventListener("click", ()=>openCart(true));
-$("closeCart").addEventListener("click", ()=>openCart(false));
-$("clearCart").addEventListener("click", ()=>{
-  if(confirm("Да ја испразнам кошничката?")){
-    cart = [];
-    saveCart(cart);
-    updateCartUI();
-  }
-});
-$("checkoutFromCart").addEventListener("click", ()=>openCheckout(true));
-$("openCheckout").addEventListener("click", ()=>openCheckout(true));
-$("closeCheckout").addEventListener("click", ()=>openCheckout(false));
-
-$("sendEmail").addEventListener("click", ()=>{
-  const c = readCustomer(); if(!c) return;
-  const body = encodeURIComponent(orderSummaryText(c));
-  const subj = encodeURIComponent("Нарачка - MertaX Butik");
-  window.location.href = `mailto:${SHOP.emailTo}?subject=${subj}&body=${body}`;
-});
-
-$("sendWhatsApp").addEventListener("click", ()=>{
-  const c = readCustomer(); if(!c) return;
-  const txt = encodeURIComponent(orderSummaryText(c));
-  // wa.me works with number without +
-  window.open(`https://wa.me/${SHOP.whatsappNumber}?text=${txt}`, "_blank");
-});
-
-$("confirmOrder").addEventListener("click", ()=>{
-  const c = readCustomer(); if(!c) return;
-  if(!confirm("Да ја потврдам нарачката и да ја намалам залихата?")) return;
-  const ok = confirmAndDecrementStock(c);
-  if(ok){
-    openCheckout(false);
-    alert("Нарачката е зачувана ✅ (залихата е намалена).");
-  }
-});
-
-$("adminLogin").addEventListener("click", ()=>{
-  const pass = $("adminPass").value.trim();
-  if(pass === SHOP.adminCode){
-    localStorage.setItem(LS_ADMIN, "1");
-    $("adminPass").value = "";
-    renderAdmin();
-    alert("Admin: најавен ✅");
-  }else{
-    alert("Погрешен код.");
-  }
-});
-$("adminLogout").addEventListener("click", ()=>{
-  localStorage.removeItem(LS_ADMIN);
-  renderAdmin();
-});
-$("resetAll").addEventListener("click", ()=>{
-  if(!isAdmin()) return alert("Прво најави се како admin.");
-  if(confirm("Ова ќе ресетира сè (залиха, кошничка, нарачки). Сигурно?")){
-    localStorage.removeItem(LS_PRODUCTS);
-    localStorage.removeItem(LS_CART);
-    localStorage.removeItem(LS_ORDERS);
-    products = loadProducts();
-    cart = loadCart();
-    renderProducts();
-    updateCartUI();
-    renderAdmin();
-    alert("Ресетирано ✅");
-  }
-});
-
-window.addEventListener("hashchange", renderAdmin);
-
-/** =========================
- *  INIT
- *  ========================= */
-renderProducts();
-updateCartUI();
-renderAdmin();
-</script>
-</body>
-</html>
