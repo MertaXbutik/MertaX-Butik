@@ -299,7 +299,7 @@ const DEFAULT_PRODUCTS = [
   {
     id: "majca",
     name: "Мајца MertaX",
-    price: 1200,
+    price: 1500,
     img: "https://via.placeholder.com/600x400?text=Majca",
     sizes: { "S": 2, "M": 3, "L": 1, "XL": 1, "2XL": 1, "3XL": 1 }
   },
@@ -609,4 +609,4 @@ function confirmAndDecrementStock(customer){
     items: clone(cart),
     total: totalCart()
   });
-  saveOrders(orders);
+  saveOrders(orders); 
