@@ -332,9 +332,31 @@ function clone(obj){
   return JSON.parse(JSON.stringify(obj));
 }
 
+function clone(x){ return JSON.parse(JSON.stringify(x)); }
+
 function loadProducts(){
   const raw = localStorage.getItem(LS_PRODUCTS);
 
+  // ако нема ништо – стави default
+  if(!raw){
+    localStorage.setItem(LS_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
+    return clone(DEFAULT_PRODUCTS);
+  }
+
+  try{
+    const data = JSON.parse(raw);
+
+    // 🔥 ако е празно или не е низа – ресетирај
+    if(!Array.isArray(data) || data.length === 0){
+      throw new Error("Bad products in storage");
+    }
+
+    return data;
+  }catch(e){
+    localStorage.setItem(LS_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
+    return clone(DEFAULT_PRODUCTS);
+  }
+}
   // ако нема ништо
   if(!raw){
     localStorage.setItem(LS_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
