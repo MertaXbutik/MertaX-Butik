@@ -1,116 +1,781 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="mk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MertaX Butik</title>
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-}
-header {
-    background: black;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    font-size: 28px;
-    letter-spacing: 2px;
-}
-nav {
-    background: #111;
-    padding: 10px;
-    text-align: center;
-}
-nav a {
-    color: white;
-    text-decoration: none;
-    margin: 15px;
-    font-size: 18px;
-}
-.hero {
-    padding: 60px;
-    text-align: center;
-    background: linear-gradient(to right, black, #333);
-    color: white;
-}
-.products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 40px;
-}
-.product {
-    background: white;
-    padding: 20px;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-.product img {
-    width: 100%;
-    border-radius: 10px;
-}
-button {
-    background: black;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin-top: 10px;
-    cursor: pointer;
-}
-footer {
-    background: black;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    margin-top: 40px;
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MertaX Butik</title>
+  <style>
+    :root { --bg:#0b0b0b; --card:#121212; --muted:#bdbdbd; --txt:#fff; --accent:#22c55e; --danger:#ef4444; }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family:Arial, sans-serif; background:#f4f4f4; color:#111; }
+    header{ background:#000; color:#fff; padding:18px 14px; text-align:center; font-size:26px; letter-spacing:2px; }
+    nav{ background:#111; padding:10px; text-align:center; position:sticky; top:0; z-index:10; }
+    nav a{ color:#fff; text-decoration:none; margin:0 14px; font-weight:700; }
+    nav a:hover{ text-decoration:underline; }
+    .container{ max-width:1100px; margin:0 auto; padding:18px; }
+    .hero{
+      background:linear-gradient(135deg,#000,#333);
+      color:#fff; border-radius:14px;
+      padding:34px 18px; text-align:center;
+      margin:18px 0;
+    }
+    .hero h1{ margin:0 0 10px; font-size:40px; }
+    .hero p{ margin:0; color:#e5e5e5; font-size:18px; }
+
+    .topbar{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center; justify-content:space-between;
+      margin:14px 0;
+    }
+    .search{ flex:1; min-width:220px; }
+    .search input{
+      width:100%; padding:10px 12px; border-radius:10px;
+      border:1px solid #ddd; outline:none;
+    }
+    .btn{
+      border:0; border-radius:10px; padding:10px 12px;
+      font-weight:800; cursor:pointer;
+    }
+    .btn.primary{ background:var(--accent); color:#052e12; }
+    .btn.dark{ background:#111; color:#fff; }
+    .btn.danger{ background:var(--danger); color:#fff; }
+    .badge{ display:inline-block; padding:4px 8px; border-radius:999px; background:#e5e7eb; font-weight:700; font-size:12px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:14px;
+    }
+    .card{
+      background:#fff; border-radius:14px; overflow:hidden;
+      border:1px solid #eee;
+      box-shadow:0 6px 18px rgba(0,0,0,.06);
+      display:flex; flex-direction:column;
+    }
+    .card img{ width:100%; height:220px; object-fit:cover; background:#fafafa; }
+    .card .p{ padding:12px; display:flex; flex-direction:column; gap:10px; }
+    .title{ font-size:18px; font-weight:900; margin:0; }
+    .price{ font-weight:900; font-size:16px; }
+    .muted{ color:#6b7280; font-size:13px; }
+    .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    select, input[type="number"]{
+      padding:9px 10px; border-radius:10px; border:1px solid #ddd; outline:none;
+      min-width:120px;
+    }
+    .stocklist{ font-size:13px; color:#374151; }
+    .stocklist span{ display:inline-block; margin-right:10px; }
+
+    /* Cart drawer */
+    .drawer{
+      position:fixed; top:0; right:-420px; width:420px; max-width:92vw; height:100vh;
+      background:#fff; border-left:1px solid #eee; box-shadow:-18px 0 40px rgba(0,0,0,.15);
+      z-index:50; transition:.25s ease; display:flex; flex-direction:column;
+    }
+    .drawer.open{ right:0; }
+    .drawer .hd{
+      padding:14px; border-bottom:1px solid #eee; display:flex; align-items:center; justify-content:space-between;
+    }
+    .drawer .hd h3{ margin:0; }
+    .drawer .body{ padding:12px 14px; overflow:auto; flex:1; }
+    .line{ border-top:1px solid #eee; margin:10px 0; }
+    .cart-item{
+      display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid #f1f1f1;
+    }
+    .cart-item img{ width:64px; height:64px; border-radius:10px; object-fit:cover; }
+    .cart-item .meta{ flex:1; }
+    .cart-item .meta b{ display:block; }
+    .cart-item .meta small{ color:#6b7280; }
+    .cart-item .actions{ display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+    .qty{ display:flex; gap:6px; align-items:center; }
+    .qty button{ width:30px; height:30px; border-radius:8px; border:1px solid #ddd; background:#fff; cursor:pointer; font-weight:900; }
+    .drawer .ft{
+      padding:14px; border-top:1px solid #eee; background:#fafafa;
+    }
+    .total{ font-weight:900; font-size:18px; display:flex; justify-content:space-between; }
+
+    /* Checkout modal */
+    .modal{
+      position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:80;
+      display:none; align-items:center; justify-content:center; padding:16px;
+    }
+    .modal.open{ display:flex; }
+    .modal .box{
+      background:#fff; width:720px; max-width:96vw; border-radius:14px; overflow:hidden;
+      box-shadow:0 30px 80px rgba(0,0,0,.25);
+    }
+    .modal .box .hd{ padding:14px; background:#111; color:#fff; display:flex; justify-content:space-between; align-items:center; }
+    .modal .box .bd{ padding:14px; }
+    .form{
+      display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    }
+    .form .full{ grid-column:1 / -1; }
+    .form label{ font-size:12px; color:#374151; font-weight:800; display:block; margin:0 0 6px; }
+    .form input, .form textarea, .form select{
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid #ddd; outline:none;
+    }
+    textarea{ min-height:90px; resize:vertical; }
+
+    /* Admin */
+    .admin{
+      display:none;
+      background:#0b0b0b; color:#fff; border-radius:14px; padding:14px; margin:18px 0;
+    }
+    .admin.open{ display:block; }
+    .admin h3{ margin:0 0 10px; }
+    .admin .panel{
+      display:grid; grid-template-columns:1fr 1fr; gap:14px;
+    }
+    .admin .cardA{
+      background:#121212; border:1px solid #222; border-radius:14px; padding:12px;
+    }
+    .admin table{ width:100%; border-collapse:collapse; font-size:13px; }
+    .admin th,.admin td{ border-bottom:1px solid #222; padding:8px; text-align:left; vertical-align:top; }
+    .admin input{ background:#0b0b0b; border:1px solid #333; color:#fff; }
+    .admin .mut{ color:#bdbdbd; font-size:12px; }
+
+    footer{ text-align:center; padding:18px; color:#fff; background:#111; margin-top:18px; }
+  </style>
 </head>
 <body>
-
 <header>MertaX Butik</header>
 
 <nav>
-<a href="#">Почетна</a>
-<a href="#">Производи</a>
-<a href="#">Контакт</a>
+  <a href="#pocetna">Почетна</a>
+  <a href="#proizvodi">Производи</a>
+  <a href="#kontakt">Контакт</a>
+  <a href="#admin" id="adminLink" style="opacity:.85;">Admin</a>
 </nav>
 
-<section class="hero">
-<h1>Добредојдовте во MertaX</h1>
-<p>Модерен стил. Врвен квалитет.</p>
-</section>
+<div class="container" id="pocetna">
+  <div class="hero">
+    <h1>Добредојдовте во MertaX</h1>
+    <p>Модерен стил. Врвен квалитет.</p>
+  </div>
 
-<section class="products">
-<div class="product">
-<img src="https://via.placeholder.com/300" alt="Производ 1">
-<h3>Мајца MertaX</h3>
-<p>1200 ден.</p>
-<button>Купи</button>
+  <div class="topbar" id="proizvodi">
+    <div class="search">
+      <input id="q" placeholder="Пребарај производ..." />
+    </div>
+    <button class="btn dark" id="openCart">🛒 Кошничка <span class="badge" id="cartCount">0</span></button>
+    <button class="btn primary" id="openCheckout">✅ Нарачка</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <!-- Admin panel -->
+  <div class="admin" id="adminPanel">
+    <h3>Admin панел</h3>
+    <div class="mut">Напомена: ова е “лесен” admin за GitHub Pages (без сервер). Не е 100% безбедно.</div>
+    <div class="line"></div>
+
+    <div class="admin-controls" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+      <input id="adminPass" placeholder="Admin код" />
+      <button class="btn primary" id="adminLogin">Влези</button>
+      <button class="btn dark" id="adminLogout">Излези</button>
+      <button class="btn danger" id="resetAll">Ресет (залиха+кошничка+нарачки)</button>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="panel">
+      <div class="cardA">
+        <b>Залиха по величини</b>
+        <div class="mut">Смени број и кликни “Зачувај”.</div>
+        <div class="line"></div>
+        <div id="stockEditor"></div>
+      </div>
+
+      <div class="cardA">
+        <b>Нарачки (локално)</b>
+        <div class="mut">Се чуваат во прелистувачот (localStorage).</div>
+        <div class="line"></div>
+        <div id="ordersBox"></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<div class="product">
-<img src="https://via.placeholder.com/300" alt="Производ 2">
-<h3>Дуксер MertaX</h3>
-<p>2500 ден.</p>
-<button>Купи</button>
+<!-- Cart drawer -->
+<div class="drawer" id="drawer">
+  <div class="hd">
+    <h3>Кошничка</h3>
+    <button class="btn dark" id="closeCart">✖</button>
+  </div>
+  <div class="body" id="cartBody"></div>
+  <div class="ft">
+    <div class="total"><span>Вкупно:</span><span id="cartTotal">0 ден.</span></div>
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button class="btn dark" id="clearCart" style="flex:1;">Испразни</button>
+      <button class="btn primary" id="checkoutFromCart" style="flex:1;">Нарачај</button>
+    </div>
+  </div>
 </div>
 
-<div class="product">
-<img src="https://via.placeholder.com/300" alt="Производ 3">
-<h3>Јакна MertaX</h3>
-<p>3900 ден.</p>
-<button>Купи</button>
+<!-- Checkout modal -->
+<div class="modal" id="checkoutModal">
+  <div class="box">
+    <div class="hd">
+      <b>Нарачка</b>
+      <button class="btn dark" id="closeCheckout">✖</button>
+    </div>
+    <div class="bd">
+      <div class="muted">Нарачката можеш да ја пратиш преку WhatsApp или Email (без сервер).</div>
+      <div class="line"></div>
+
+      <div class="form">
+        <div>
+          <label>Име и презиме</label>
+          <input id="cName" placeholder="Пример: Алек" />
+        </div>
+        <div>
+          <label>Телефон</label>
+          <input id="cPhone" placeholder="+389..." />
+        </div>
+        <div class="full">
+          <label>Адреса</label>
+          <input id="cAddr" placeholder="Улица, број, град" />
+        </div>
+        <div>
+          <label>Начин на испорака</label>
+          <select id="cShip">
+            <option value="Курир">Курир</option>
+            <option value="Подигнување">Подигнување</option>
+          </select>
+        </div>
+        <div>
+          <label>Плаќање</label>
+          <select id="cPay">
+            <option value="По достава">По достава</option>
+            <option value="Трансакциска">Трансакциска</option>
+            <option value="При подигнување">При подигнување</option>
+          </select>
+        </div>
+        <div class="full">
+          <label>Забелешка</label>
+          <textarea id="cNote" placeholder="Боја, време за достава..."></textarea>
+        </div>
+      </div>
+
+      <div class="line"></div>
+
+      <div class="row">
+        <button class="btn dark" id="sendEmail">📧 Прати Email</button>
+        <button class="btn primary" id="sendWhatsApp">💬 Прати WhatsApp</button>
+        <button class="btn dark" id="confirmOrder">✅ Потврди (намали залиха)</button>
+      </div>
+
+      <div class="muted" style="margin-top:10px;">
+        * „Потврди“ ја снима нарачката локално и ја намалува залихата.
+      </div>
+    </div>
+  </div>
 </div>
-</section>
 
-<footer>
-© 2026 MertaX Butik | Сите права се задржани
-</footer>
+<div class="container" id="kontakt">
+  <h2>Контакт</h2>
+  <p>📞 Телефон: <b>+389 XX XXX XXX</b> (замени)</p>
+  <p>📧 Email: <b>mertax@example.com</b> (замени)</p>
+  <p>💬 WhatsApp: <b>+389 XX XXX XXX</b> (замени)</p>
+</div>
 
+<footer>© 2026 MertaX Butik | Сите права се задржани</footer>
+
+<script>
+/** =========================
+ *  CONFIG (сменуваш тука)
+ *  ========================= */
+const SHOP = {
+  currency: "ден.",
+  // стави твој WhatsApp број со код на држава, без + и без празни места (пример 38970111222)
+  whatsappNumber: "38970000000",
+  // стави твој email
+  emailTo: "mertax@example.com",
+  // прост admin код (НЕ е 100% сигурно без сервер)
+  adminCode: "1234"
+};
+
+// Почетни продукти + залиха по величини
+const DEFAULT_PRODUCTS = [
+  {
+    id: "majca",
+    name: "Мајца MertaX",
+    price: 1200,
+    img: "https://via.placeholder.com/600x400?text=Majca",
+    sizes: { "S": 2, "M": 3, "L": 1, "XL": 0 }
+  },
+  {
+    id: "dukser",
+    name: "Дуксер MertaX",
+    price: 2500,
+    img: "https://via.placeholder.com/600x400?text=Dukser",
+    sizes: { "S": 0, "M": 2, "L": 2, "XL": 1 }
+  },
+  {
+    id: "jakna",
+    name: "Јакна MertaX",
+    price: 3900,
+    img: "https://via.placeholder.com/600x400?text=Jakna",
+    sizes: { "M": 1, "L": 1, "XL": 1 }
+  }
+];
+
+/** =========================
+ *  STORAGE
+ *  ========================= */
+const LS_PRODUCTS = "mertax_products_v1";
+const LS_CART = "mertax_cart_v1";
+const LS_ORDERS = "mertax_orders_v1";
+const LS_ADMIN = "mertax_admin_ok_v1";
+
+function loadProducts(){
+  const raw = localStorage.getItem(LS_PRODUCTS);
+  if(!raw){
+    localStorage.setItem(LS_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
+    return structuredClone(DEFAULT_PRODUCTS);
+  }
+  try{ return JSON.parse(raw); }catch(e){
+    localStorage.setItem(LS_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
+    return structuredClone(DEFAULT_PRODUCTS);
+  }
+}
+function saveProducts(p){ localStorage.setItem(LS_PRODUCTS, JSON.stringify(p)); }
+
+function loadCart(){
+  const raw = localStorage.getItem(LS_CART);
+  if(!raw) return [];
+  try{ return JSON.parse(raw); }catch(e){ return []; }
+}
+function saveCart(c){ localStorage.setItem(LS_CART, JSON.stringify(c)); }
+
+function loadOrders(){
+  const raw = localStorage.getItem(LS_ORDERS);
+  if(!raw) return [];
+  try{ return JSON.parse(raw); }catch(e){ return []; }
+}
+function saveOrders(o){ localStorage.setItem(LS_ORDERS, JSON.stringify(o)); }
+
+let products = loadProducts();
+let cart = loadCart();
+
+/** =========================
+ *  HELPERS
+ *  ========================= */
+const $ = (id)=>document.getElementById(id);
+function money(n){ return `${n} ${SHOP.currency}`; }
+
+function totalCart(){
+  let t=0;
+  for(const it of cart){
+    const p = products.find(x=>x.id===it.pid);
+    if(!p) continue;
+    t += p.price * it.qty;
+  }
+  return t;
+}
+function countCart(){
+  return cart.reduce((a,b)=>a+b.qty,0);
+}
+function stockOf(pid, size){
+  const p = products.find(x=>x.id===pid);
+  if(!p) return 0;
+  return Number(p.sizes?.[size] ?? 0);
+}
+function setStock(pid, size, val){
+  const p = products.find(x=>x.id===pid);
+  if(!p) return;
+  p.sizes[size] = Math.max(0, Number(val||0));
+}
+function sizeListText(p){
+  const parts = Object.entries(p.sizes||{}).map(([s,q])=>`${s} – ${q}`);
+  return parts.map(x=>`<span>${x}</span>`).join("");
+}
+
+function cartKey(pid, size){ return `${pid}__${size}`; }
+
+/** =========================
+ *  RENDER PRODUCTS
+ *  ========================= */
+function renderProducts(){
+  const q = ($("q").value||"").toLowerCase().trim();
+  const grid = $("grid");
+  grid.innerHTML = "";
+
+  const list = products.filter(p => !q || p.name.toLowerCase().includes(q));
+  for(const p of list){
+    // sizes available
+    const sizeEntries = Object.entries(p.sizes||{});
+    const sizeOptions = sizeEntries.map(([s,q])=>{
+      const disabled = q<=0 ? "disabled" : "";
+      const label = q<=0 ? `${s} (0)` : `${s} (${q})`;
+      return `<option value="${s}" ${disabled}>${label}</option>`;
+    }).join("");
+
+    const anyInStock = sizeEntries.some(([_,q])=>q>0);
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <img src="${p.img}" alt="${p.name}" />
+      <div class="p">
+        <div class="row">
+          <p class="title">${p.name}</p>
+          <span class="price">${money(p.price)}</span>
+        </div>
+        <div class="stocklist">${sizeListText(p)}</div>
+        <div class="row">
+          <select id="sz_${p.id}" ${anyInStock ? "" : "disabled"}>
+            ${sizeOptions}
+          </select>
+          <button class="btn primary" id="add_${p.id}" ${anyInStock ? "" : "disabled"}>
+            Додај
+          </button>
+        </div>
+        <div class="muted">* Прикажано: “Величина – количина” (преостанато)</div>
+      </div>
+    `;
+    grid.appendChild(card);
+
+    const addBtn = card.querySelector(`#add_${p.id}`);
+    addBtn.addEventListener("click", ()=>{
+      const sz = card.querySelector(`#sz_${p.id}`).value;
+      if(!sz) return alert("Избери величина.");
+      const st = stockOf(p.id, sz);
+      if(st<=0) return alert("Нема залиха за таа величина.");
+
+      // add to cart (max = stock)
+      const k = cartKey(p.id, sz);
+      const existing = cart.find(x=>x.k===k);
+      if(existing){
+        if(existing.qty + 1 > st) return alert("Нема доволно залиха.");
+        existing.qty += 1;
+      }else{
+        cart.push({ k, pid:p.id, size:sz, qty:1 });
+      }
+      saveCart(cart);
+      updateCartUI();
+      alert("Додадено во кошничка ✅");
+    });
+  }
+}
+
+/** =========================
+ *  CART UI
+ *  ========================= */
+function updateCartUI(){
+  $("cartCount").textContent = countCart();
+  $("cartTotal").textContent = money(totalCart());
+
+  const box = $("cartBody");
+  if(cart.length===0){
+    box.innerHTML = `<p class="muted">Кошничката е празна.</p>`;
+    return;
+  }
+  box.innerHTML = "";
+
+  for(const it of cart){
+    const p = products.find(x=>x.id===it.pid);
+    if(!p) continue;
+
+    const st = stockOf(it.pid, it.size);
+    const row = document.createElement("div");
+    row.className = "cart-item";
+    row.innerHTML = `
+      <img src="${p.img}" alt="">
+      <div class="meta">
+        <b>${p.name}</b>
+        <small>Величина: <b>${it.size}</b> • Цена: ${money(p.price)}</small><br/>
+        <small>Залиха: ${st}</small>
+      </div>
+      <div class="actions">
+        <div class="qty">
+          <button data-a="dec">-</button>
+          <b>${it.qty}</b>
+          <button data-a="inc">+</button>
+        </div>
+        <button class="btn danger" data-a="rm" style="padding:7px 10px; border-radius:10px;">Избриши</button>
+      </div>
+    `;
+    box.appendChild(row);
+
+    row.querySelector('[data-a="dec"]').addEventListener("click", ()=>{
+      it.qty = Math.max(1, it.qty-1);
+      saveCart(cart);
+      updateCartUI();
+    });
+    row.querySelector('[data-a="inc"]').addEventListener("click", ()=>{
+      if(it.qty + 1 > st) return alert("Нема доволно залиха.");
+      it.qty += 1;
+      saveCart(cart);
+      updateCartUI();
+    });
+    row.querySelector('[data-a="rm"]').addEventListener("click", ()=>{
+      cart = cart.filter(x=>x.k!==it.k);
+      saveCart(cart);
+      updateCartUI();
+    });
+  }
+}
+
+function openCart(open=true){
+  $("drawer").classList.toggle("open", open);
+}
+
+/** =========================
+ *  CHECKOUT
+ *  ========================= */
+function openCheckout(open=true){
+  if(open && cart.length===0) return alert("Кошничката е празна.");
+  $("checkoutModal").classList.toggle("open", open);
+}
+
+function orderSummaryText(customer){
+  const lines = [];
+  lines.push(`Нарачка - MertaX Butik`);
+  lines.push(`------------------------`);
+  lines.push(`Име: ${customer.name}`);
+  lines.push(`Телефон: ${customer.phone}`);
+  lines.push(`Адреса: ${customer.addr}`);
+  lines.push(`Испорака: ${customer.ship}`);
+  lines.push(`Плаќање: ${customer.pay}`);
+  if(customer.note) lines.push(`Забелешка: ${customer.note}`);
+  lines.push(`------------------------`);
+  lines.push(`Ставки:`);
+  for(const it of cart){
+    const p = products.find(x=>x.id===it.pid);
+    if(!p) continue;
+    lines.push(`- ${p.name} | ${it.size} | x${it.qty} | ${money(p.price*it.qty)}`);
+  }
+  lines.push(`------------------------`);
+  lines.push(`Вкупно: ${money(totalCart())}`);
+  return lines.join("\n");
+}
+
+function readCustomer(){
+  const customer = {
+    name: $("cName").value.trim(),
+    phone: $("cPhone").value.trim(),
+    addr: $("cAddr").value.trim(),
+    ship: $("cShip").value,
+    pay: $("cPay").value,
+    note: $("cNote").value.trim()
+  };
+  if(!customer.name || !customer.phone || !customer.addr){
+    alert("Пополнете: име, телефон и адреса.");
+    return null;
+  }
+  return customer;
+}
+
+function confirmAndDecrementStock(customer){
+  // check stock again
+  for(const it of cart){
+    const st = stockOf(it.pid, it.size);
+    if(it.qty > st){
+      alert(`Нема доволно залиха за: ${it.pid} (${it.size}). Освежи кошничка.`);
+      return false;
+    }
+  }
+  // decrement
+  for(const it of cart){
+    const st = stockOf(it.pid, it.size);
+    setStock(it.pid, it.size, st - it.qty);
+  }
+  saveProducts(products);
+
+  // store order locally
+  const orders = loadOrders();
+  orders.unshift({
+    id: "ORD-" + Math.random().toString(16).slice(2,8).toUpperCase(),
+    at: new Date().toISOString(),
+    customer,
+    items: structuredClone(cart),
+    total: totalCart()
+  });
+  saveOrders(orders);
+
+  // clear cart
+  cart = [];
+  saveCart(cart);
+
+  // re-render
+  renderProducts();
+  updateCartUI();
+  renderAdmin();
+  return true;
+}
+
+/** =========================
+ *  ADMIN
+ *  ========================= */
+function isAdmin(){ return localStorage.getItem(LS_ADMIN)==="1"; }
+
+function renderAdmin(){
+  const panel = $("adminPanel");
+  const shouldOpen = location.hash === "#admin";
+  panel.classList.toggle("open", shouldOpen);
+
+  if(!shouldOpen) return;
+
+  const ok = isAdmin();
+  $("adminPass").style.display = ok ? "none" : "inline-block";
+  $("adminLogin").style.display = ok ? "none" : "inline-block";
+  $("adminLogout").style.display = ok ? "inline-block" : "none";
+
+  // stock editor
+  const stockBox = $("stockEditor");
+  if(!ok){
+    stockBox.innerHTML = `<div class="mut">Внеси admin код за да гледаш/менуваш залиха.</div>`;
+  }else{
+    stockBox.innerHTML = products.map(p=>{
+      const rows = Object.entries(p.sizes||{}).map(([s,q])=>{
+        return `
+          <div style="display:flex; gap:8px; align-items:center; margin:6px 0;">
+            <span style="min-width:62px;"><b>${s}</b></span>
+            <input type="number" min="0" value="${q}" id="stk_${p.id}_${s}" style="width:110px; padding:8px 10px; border-radius:10px;">
+          </div>
+        `;
+      }).join("");
+      return `
+        <div style="border:1px solid #222; border-radius:14px; padding:10px; margin:10px 0;">
+          <b>${p.name}</b> <span class="mut">(${money(p.price)})</span>
+          <div style="margin-top:8px;">${rows}</div>
+          <button class="btn primary" data-save="${p.id}" style="margin-top:8px;">Зачувај</button>
+        </div>
+      `;
+    }).join("");
+
+    stockBox.querySelectorAll("[data-save]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const pid = btn.getAttribute("data-save");
+        const p = products.find(x=>x.id===pid);
+        if(!p) return;
+        for(const s of Object.keys(p.sizes||{})){
+          const v = document.getElementById(`stk_${pid}_${s}`).value;
+          setStock(pid, s, v);
+        }
+        saveProducts(products);
+        renderProducts();
+        alert("Зачувано ✅");
+      });
+    });
+  }
+
+  // orders
+  const orders = loadOrders();
+  const oBox = $("ordersBox");
+  if(!ok){
+    oBox.innerHTML = `<div class="mut">Внеси admin код за да ги гледаш нарачките.</div>`;
+  }else if(orders.length===0){
+    oBox.innerHTML = `<div class="mut">Нема нарачки.</div>`;
+  }else{
+    oBox.innerHTML = `
+      <table>
+        <thead>
+          <tr><th>Време</th><th>Купувач</th><th>Ставки</th><th>Вкупно</th></tr>
+        </thead>
+        <tbody>
+          ${orders.slice(0,20).map(o=>{
+            const when = new Date(o.at).toLocaleString();
+            const items = o.items.map(it=>{
+              const p = products.find(x=>x.id===it.pid);
+              return `${p ? p.name : it.pid} (${it.size}) x${it.qty}`;
+            }).join("<br>");
+            return `
+              <tr>
+                <td>${when}<br><span class="mut">${o.id}</span></td>
+                <td>${o.customer.name}<br><span class="mut">${o.customer.phone}</span></td>
+                <td>${items}</td>
+                <td><b>${money(o.total)}</b></td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    `;
+  }
+}
+
+/** =========================
+ *  EVENTS
+ *  ========================= */
+$("q").addEventListener("input", renderProducts);
+
+$("openCart").addEventListener("click", ()=>openCart(true));
+$("closeCart").addEventListener("click", ()=>openCart(false));
+$("clearCart").addEventListener("click", ()=>{
+  if(confirm("Да ја испразнам кошничката?")){
+    cart = [];
+    saveCart(cart);
+    updateCartUI();
+  }
+});
+$("checkoutFromCart").addEventListener("click", ()=>openCheckout(true));
+$("openCheckout").addEventListener("click", ()=>openCheckout(true));
+$("closeCheckout").addEventListener("click", ()=>openCheckout(false));
+
+$("sendEmail").addEventListener("click", ()=>{
+  const c = readCustomer(); if(!c) return;
+  const body = encodeURIComponent(orderSummaryText(c));
+  const subj = encodeURIComponent("Нарачка - MertaX Butik");
+  window.location.href = `mailto:${SHOP.emailTo}?subject=${subj}&body=${body}`;
+});
+
+$("sendWhatsApp").addEventListener("click", ()=>{
+  const c = readCustomer(); if(!c) return;
+  const txt = encodeURIComponent(orderSummaryText(c));
+  // wa.me works with number without +
+  window.open(`https://wa.me/${SHOP.whatsappNumber}?text=${txt}`, "_blank");
+});
+
+$("confirmOrder").addEventListener("click", ()=>{
+  const c = readCustomer(); if(!c) return;
+  if(!confirm("Да ја потврдам нарачката и да ја намалам залихата?")) return;
+  const ok = confirmAndDecrementStock(c);
+  if(ok){
+    openCheckout(false);
+    alert("Нарачката е зачувана ✅ (залихата е намалена).");
+  }
+});
+
+$("adminLogin").addEventListener("click", ()=>{
+  const pass = $("adminPass").value.trim();
+  if(pass === SHOP.adminCode){
+    localStorage.setItem(LS_ADMIN, "1");
+    $("adminPass").value = "";
+    renderAdmin();
+    alert("Admin: најавен ✅");
+  }else{
+    alert("Погрешен код.");
+  }
+});
+$("adminLogout").addEventListener("click", ()=>{
+  localStorage.removeItem(LS_ADMIN);
+  renderAdmin();
+});
+$("resetAll").addEventListener("click", ()=>{
+  if(!isAdmin()) return alert("Прво најави се како admin.");
+  if(confirm("Ова ќе ресетира сè (залиха, кошничка, нарачки). Сигурно?")){
+    localStorage.removeItem(LS_PRODUCTS);
+    localStorage.removeItem(LS_CART);
+    localStorage.removeItem(LS_ORDERS);
+    products = loadProducts();
+    cart = loadCart();
+    renderProducts();
+    updateCartUI();
+    renderAdmin();
+    alert("Ресетирано ✅");
+  }
+});
+
+window.addEventListener("hashchange", renderAdmin);
+
+/** =========================
+ *  INIT
+ *  ========================= */
+renderProducts();
+updateCartUI();
+renderAdmin();
+</script>
 </body>
 </html>
-
