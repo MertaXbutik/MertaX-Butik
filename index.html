@@ -1,58 +1,12 @@
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-
-const products = [
-  { id:"p1", name:"MertaX Паричник", price:790, img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=60" },
-  { id:"p2", name:"MertaX Маичка", price:990, img:"https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=900&q=60" },
-  { id:"p3", name:"MertaX Капче", price:590, img:"https://images.unsplash.com/photo-1520975958225-6a97d5a0f98f?auto=format&fit=crop&w=900&q=60" },
-  { id:"p4", name:"MertaX Патики", price:2990, img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=60" }
-];
-
-const CART_KEY = "mertax_cart_v1";
-const loadCart = () => JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-const saveCart = (cart) => localStorage.setItem(CART_KEY, JSON.stringify(cart));
-
-const grid = document.getElementById("productGrid");
-
-function renderProducts(){
-  grid.innerHTML = products.map(p => `
-    <div class="card">
-      <img class="img" src="${p.img}">
-      <div class="p">
-        <p class="name">${p.name}</p>
-        <p class="price">${p.price} ден.</p>
-        <button class="btn btn-accent" onclick="addToCart('${p.id}')">Додај</button>
-      </div>
-    </div>
-  `).join("");
-}
-
-window.addToCart = function(id){
-  const cart = loadCart();
-  const item = cart.find(x => x.id === id);
-  if(item) item.qty += 1;
-  else cart.push({ id, qty:1 });
-  saveCart(cart);
-  updateCartUI();
-}
-
-function updateCartUI(){
-  const cart = loadCart();
-  let items = 0;
-  let total = 0;
-  cart.forEach(c=>{
-    const p = products.find(x=>x.id===c.id);
-    if(p){
-      items += c.qty;
-      total += p.price*c.qty;
-    }
-  });
-  document.getElementById("cartCount").textContent = items;
-  document.getElementById("cartTotal").textContent = total;
-}
-
-renderProducts();
-updateCartUI();
-
-});
-</script>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MertaX TEST</title>
+</head>
+<body style="font-family:Arial; padding:20px;">
+  <h1>MertaX работи ✅</h1>
+  <p>Ако го гледаш ова, GitHub Pages е во ред.</p>
+</body>
+</html> 
