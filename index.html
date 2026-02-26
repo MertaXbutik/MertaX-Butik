@@ -1,12 +1,185 @@
 <!doctype html>
-<html>
+<html lang="mk">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>MertaX TEST</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MertaX Butik</title>
+  <style>
+    :root { --card:#121212; --muted:#bdbdbd; --txt:#fff; --accent:#22c55e; --danger:#ef4444; --bg:#0f0f10; }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family:Arial, sans-serif; background:var(--bg); color:var(--txt); }
+    header{ background:#000; color:#fff; padding:16px; text-align:center; font-size:22px; }
+
+    .wrap{ max-width:1100px; margin:0 auto; padding:14px; }
+    .topbar{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+    .badge{ background:#1f1f1f; padding:10px 12px; border-radius:14px; }
+    .btn{ border:0; cursor:pointer; padding:12px 14px; border-radius:14px; font-weight:700; }
+    .btn-accent{ background:var(--accent); color:#041a0b; }
+    .btn-danger{ background:var(--danger); color:#fff; }
+    .btn-dark{ background:#1f1f1f; color:#fff; }
+
+    .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    @media (min-width:820px){ .grid{ grid-template-columns:repeat(4,1fr); } }
+
+    .card{ background:var(--card); border-radius:18px; overflow:hidden; }
+    .img{ width:100%; aspect-ratio:1/1; object-fit:cover; }
+    .p{ padding:12px; }
+    .name{ font-weight:800; margin-bottom:6px; }
+    .price{ color:var(--muted); margin-bottom:10px; }
+
+    .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; z-index:9; }
+    .overlay.show{ display:block; }
+
+    .drawer{ position:fixed; right:0; top:0; height:100%; width:90%; max-width:420px; background:#111;
+      transform:translateX(110%); transition:.3s; z-index:10; display:flex; flex-direction:column; }
+    .drawer.open{ transform:translateX(0); }
+
+    .cartlist{ padding:12px; flex:1; overflow:auto; }
+    .item{ border-bottom:1px solid #222; padding:10px 0; }
+    .foot{ padding:12px; border-top:1px solid #222; }
+
+    .modal{
+      position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
+      width:92%; max-width:500px; background:#111; border-radius:18px;
+      display:none; z-index:11; padding:16px;
+    }
+    .modal.show{ display:block; }
+
+    input, textarea{
+      width:100%; padding:12px; margin-bottom:10px;
+      border-radius:12px; border:1px solid #333;
+      background:#0b0b0c; color:#fff;
+    }
+  </style>
 </head>
-<body style="font-family:Arial; padding:20px;">
-  <h1>MertaX работи ✅</h1>
-  <p>Ако го гледаш ова, GitHub Pages е во ред.</p>
+
+<body>
+<header>MertaX Butik</header>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="badge">
+      🛒 Кошничка: <b id="cartCount">0</b> |
+      Вкупно: <b id="cartTotal">0</b> ден.
+    </div>
+    <div>
+      <button class="btn btn-dark" id="openCartBtn">Отвори</button>
+      <button class="btn btn-danger" id="clearCartBtn">Испразни</button>
+    </div>
+  </div>
+
+  <div class="grid" id="productGrid"></div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="drawer" id="drawer">
+  <div class="cartlist" id="cartList"></div>
+  <div class="foot">
+    <div>Вкупно: <b id="sumTotal">0</b> ден.</div>
+    <button class="btn btn-accent" id="checkoutBtn" style="width:100%;margin-top:10px;">
+      Продолжи
+    </button>
+  </div>
+</aside>
+
+<div class="modal" id="checkoutModal">
+  <h3>Нарачка</h3>
+  <input id="custName" placeholder="Име и презиме">
+  <input id="custPhone" placeholder="Телефон">
+  <textarea id="custNote" placeholder="Напомена (опционално)"></textarea>
+  <button class="btn btn-accent" id="sendBtn" style="width:100%;">
+    Испрати на WhatsApp
+  </button>
+</div>
+
+<script>
+const WHATSAPP_NUMBER = "38972912601";
+
+const products = [
+  { id:"p1", name:"MertaX Паричник", price:790, img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=60" },
+  { id:"p2", name:"MertaX Маичка", price:990, img:"https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=900&q=60" },
+  { id:"p3", name:"MertaX Капче", price:590, img:"https://images.unsplash.com/photo-1520975958225-6a97d5a0f98f?auto=format&fit=crop&w=900&q=60" },
+  { id:"p4", name:"MertaX Патики", price:2990, img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=60" },
+];
+
+const CART_KEY = "mertax_cart";
+const loadCart = () => JSON.parse(localStorage.getItem(CART_KEY)||"[]");
+const saveCart = c => localStorage.setItem(CART_KEY, JSON.stringify(c));
+
+function renderProducts(){
+  document.getElementById("productGrid").innerHTML =
+    products.map(p=>`
+      <div class="card">
+        <img class="img" src="${p.img}">
+        <div class="p">
+          <div class="name">${p.name}</div>
+          <div class="price">${p.price} ден.</div>
+          <button class="btn btn-accent" onclick="addToCart('${p.id}')">Додај</button>
+        </div>
+      </div>
+    `).join("");
+}
+
+function addToCart(id){
+  let cart = loadCart();
+  let item = cart.find(x=>x.id===id);
+  if(item) item.qty++;
+  else cart.push({id,qty:1});
+  saveCart(cart);
+  updateCart();
+}
+
+function updateCart(){
+  let cart = loadCart();
+  let total=0,count=0;
+  cart.forEach(c=>{
+    let p=products.find(x=>x.id===c.id);
+    if(p){ total+=p.price*c.qty; count+=c.qty; }
+  });
+  document.getElementById("cartTotal").textContent=total;
+  document.getElementById("sumTotal").textContent=total;
+  document.getElementById("cartCount").textContent=count;
+}
+
+function buildText(){
+  let name=document.getElementById("custName").value;
+  let phone=document.getElementById("custPhone").value;
+  let note=document.getElementById("custNote").value;
+  let cart=loadCart();
+  let total=0;
+  let lines=["🛍️ Нарачка - MertaX",
+             "📍 Локација на продавница: ТЦ Мавровка",
+             "",
+             "👤 Име: "+name,
+             "📞 Телефон: "+phone,
+             "",
+             "📦 Производи:"];
+  cart.forEach(c=>{
+    let p=products.find(x=>x.id===c.id);
+    if(p){
+      total+=p.price*c.qty;
+      lines.push("- "+p.name+" x"+c.qty+" = "+(p.price*c.qty)+" ден.");
+    }
+  });
+  lines.push("");
+  lines.push("💰 Вкупно: "+total+" ден.");
+  if(note) lines.push("📝 Напомена: "+note);
+  return lines.join("\n");
+}
+
+document.getElementById("sendBtn").onclick=function(){
+  let url="https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(buildText());
+  window.open(url,"_blank");
+};
+
+document.getElementById("openCartBtn").onclick=()=>document.getElementById("drawer").classList.add("open");
+document.getElementById("clearCartBtn").onclick=()=>{saveCart([]);updateCart();}
+document.getElementById("checkoutBtn").onclick=()=>document.getElementById("checkoutModal").classList.add("show");
+
+renderProducts();
+updateCart();
+</script>
+
 </body>
-</html> 
+</html>
