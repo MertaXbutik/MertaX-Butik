@@ -7,156 +7,259 @@
 
   <style>
     :root{
-      --bg:#f6f7fb; --card:#ffffff; --muted:#6b7280; --txt:#111827;
-      --accent:#16a34a; --danger:#dc2626; --chip:#f3f4f6; --border:#e5e7eb;
-      --shadow:0 10px 26px rgba(0,0,0,.08); --radius:18px;
+      --bg:#ffffff;
+      --txt:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --chip:#f3f4f6;
+      --card:#ffffff;
+      --shadow:0 10px 26px rgba(0,0,0,.08);
+      --radius:18px;
+      --accent:#111827;    /* Zara-like: dark text accent */
+      --accent2:#ef4444;   /* red */
+      --good:#16a34a;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--txt)}
-    header{background:#fff;padding:14px;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border)}
-    .headRow{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    a{color:inherit}
+    header{
+      position:sticky; top:0; z-index:50;
+      background:#fff; border-bottom:1px solid var(--border);
+    }
+    .head{
+      max-width:1100px; margin:0 auto; padding:14px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    }
     .brand{font-size:22px;font-weight:900;letter-spacing:.6px}
-    .headBtns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .btn{border:1px solid var(--border);cursor:pointer;padding:11px 13px;border-radius:14px;font-weight:800;background:#fff;color:var(--txt);transition:.18s}
-    .btn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
-    .btn-accent{background:var(--accent);color:#fff;border-color:transparent}
-    .btn-danger{background:var(--danger);color:#fff;border-color:transparent}
+    .headBtns{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+
+    .btn{
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--txt);
+      padding:11px 14px;
+      border-radius:999px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s;
+    }
+    .btn:hover{transform:translateY(-1px); box-shadow:var(--shadow)}
+    .btn-dark{background:var(--accent); color:#fff; border-color:transparent}
+    .btn-red{background:var(--accent2); color:#fff; border-color:transparent}
     .btn-ghost{background:transparent}
+
     .wrap{max-width:1100px;margin:0 auto;padding:14px}
 
-    .topbar{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin:12px 0 12px}
-    .badge{background:#fff;border:1px solid var(--border);padding:10px 12px;border-radius:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    /* Zara-like category tabs */
+    .tabs{
+      display:flex; gap:10px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+      padding:8px 2px 12px; margin:0;
+    }
+    .tabs::-webkit-scrollbar{height:6px}
+    .tab{
+      flex:0 0 auto;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-weight:900;
+      letter-spacing:.2px;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .tab.active{
+      background:var(--accent);
+      color:#fff;
+      border-color:transparent;
+    }
+
+    /* Search row */
+    .toolbar{
+      display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+      padding:6px 0 12px;
+    }
+    .searchBox{
+      flex:1;
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      min-width:260px;
+    }
+    .inp{
+      width: min(520px, 100%);
+      padding:12px 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      outline:none;
+      background:#fff;
+      color:var(--txt);
+    }
+    .metaLine{font-size:12px;color:var(--muted);margin:10px 0 10px}
+    .badge{
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:999px;
+      padding:10px 12px;
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
     .small{font-size:12px;color:var(--muted)}
-    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start;justify-content:flex-end;flex:1}
-    .inp,.sel,.ta{width:100%;padding:12px;border-radius:14px;border:1px solid var(--border);background:#fff;color:var(--txt);outline:none}
-    .ta{min-height:90px;resize:vertical}
-    .filters .block{display:flex;flex-direction:column;gap:6px}
-    .lbl{font-size:12px;color:var(--muted);font-weight:700;margin-left:4px}
 
-    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    /* Products grid */
+    .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px}
     @media(min-width:820px){.grid{grid-template-columns:repeat(4,1fr)}}
-
-    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:.18s;position:relative}
-    .card:hover{transform:translateY(-4px)}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      transition:.15s;
+      position:relative;
+    }
+    .card:hover{transform:translateY(-3px)}
     .imgWrap{position:relative}
-    .img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#eee}
-    .tagRow{position:absolute;left:10px;top:10px;display:flex;gap:8px;flex-wrap:wrap}
-    .tag{font-size:11px;font-weight:900;letter-spacing:.4px;padding:6px 10px;border-radius:999px;background:#f3f4f6;border:1px solid var(--border)}
-    .tag-new{background:#dcfce7;color:#166534;border-color:transparent}
-    .tag-sale{background:#fee2e2;color:#991b1b;border-color:transparent}
+    .img{width:100%; aspect-ratio:1/1; object-fit:cover; display:block; background:#eee}
+    .tagRow{position:absolute; left:10px; top:10px; display:flex; gap:8px; flex-wrap:wrap}
+    .tag{
+      font-size:11px; font-weight:900;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.85);
+      border:1px solid var(--border);
+      backdrop-filter: blur(6px);
+    }
+    .tag-new{background:#dcfce7;border-color:transparent;color:#166534}
+    .tag-sale{background:#fee2e2;border-color:transparent;color:#991b1b}
 
     .p{padding:12px}
-    .name{margin:0 0 8px;font-weight:900;font-size:14px}
-    .priceLine{display:flex;align-items:baseline;gap:8px;margin:0 0 10px;flex-wrap:wrap}
-    .priceNow{font-weight:900;font-size:16px}
-    .priceOld{color:var(--muted);text-decoration:line-through;font-size:13px}
-    .miniRow{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-    .miniSel{min-width:150px}
+    .name{margin:0 0 6px;font-weight:900;font-size:14px}
+    .sub{margin:0 0 10px; font-size:12px; color:var(--muted)}
+    .priceLine{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin:0 0 10px}
+    .priceNow{font-weight:900; font-size:16px}
+    .priceOld{color:var(--muted); text-decoration:line-through; font-size:13px}
+    .miniRow{display:flex; gap:8px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+    .sel{
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:10px 12px;
+      background:#fff;
+      font-weight:800;
+      color:var(--txt);
+      outline:none;
+      min-width:150px;
+    }
 
-    .center{display:flex;justify-content:center;margin:14px 0}
-    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:90}
+    .center{display:flex; justify-content:center; margin:14px 0}
+    .overlay{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; z-index:90}
     .overlay.show{display:block}
 
+    /* Cart drawer */
     .drawer{
-      position:fixed;right:0;top:0;height:100%;width:min(420px,92vw);
-      background:#fff;border-left:1px solid var(--border);
-      transform:translateX(110%);transition:.25s;z-index:95;display:flex;flex-direction:column
+      position:fixed; right:0; top:0; height:100%;
+      width:min(420px,92vw);
+      background:#fff;
+      border-left:1px solid var(--border);
+      transform:translateX(110%);
+      transition:.22s;
+      z-index:95;
+      display:flex; flex-direction:column;
     }
     .drawer.open{transform:translateX(0)}
-    .drawerHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;border-bottom:1px solid var(--border)}
+    .drawerHead{
+      padding:14px; border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
     .drawerHead h2{margin:0;font-size:18px}
-    .xbtn{background:var(--chip);border:1px solid var(--border);color:var(--txt);width:38px;height:38px;border-radius:12px;cursor:pointer;font-size:18px}
-    .cartlist{padding:10px 14px;overflow:auto;flex:1}
-    .item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+    .xbtn{
+      width:40px; height:40px; border-radius:999px;
+      background:var(--chip); border:1px solid var(--border);
+      cursor:pointer; font-size:18px;
+    }
+    .cartlist{padding:10px 14px; overflow:auto; flex:1}
+    .item{display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--border)}
     .thumb{width:56px;height:56px;border-radius:14px;object-fit:cover;background:#eee}
     .itxt{flex:1}
     .itxt b{display:block;font-size:13px;margin-bottom:4px}
-    .qty{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-    .qty button{width:34px;height:34px;border-radius:12px;border:1px solid var(--border);background:#fff;color:var(--txt);font-size:18px;cursor:pointer}
+    .qty{display:flex; gap:6px; align-items:center; flex-wrap:wrap}
+    .qty button{width:34px;height:34px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:18px;cursor:pointer}
     .foot{padding:12px 14px;border-top:1px solid var(--border)}
-    .foot .line{display:flex;justify-content:space-between;margin:8px 0;color:#111}
-    .foot .line b{color:#111}
+    .foot .line{display:flex;justify-content:space-between;margin:8px 0}
 
+    /* FILTER drawer (Zara-like) */
+    .filterDrawer{
+      position:fixed; right:0; top:0; height:100%;
+      width:min(420px,92vw);
+      background:#fff;
+      border-left:1px solid var(--border);
+      transform:translateX(110%);
+      transition:.22s;
+      z-index:96;
+      display:flex; flex-direction:column;
+    }
+    .filterDrawer.open{transform:translateX(0)}
+    .section{padding:14px; border-bottom:1px solid var(--border)}
+    .secTitle{font-weight:900; margin:0 0 10px}
+    .row{display:grid; gap:10px}
+    .two{display:grid; gap:10px; grid-template-columns:1fr 1fr}
+    @media(max-width:520px){.two{grid-template-columns:1fr}}
+
+    /* Modal (Admin + Checkout) */
     .modal{
-      position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+      position:fixed; left:50%; top:50%;
+      transform:translate(-50%,-50%);
       width:min(860px,92vw);
-      background:#fff;border:1px solid var(--border);
-      border-radius:var(--radius);z-index:100;display:none;box-shadow:var(--shadow)
+      background:#fff; border:1px solid var(--border);
+      border-radius:22px; z-index:100;
+      display:none; box-shadow:var(--shadow);
     }
     .modal.show{display:block}
-    .modalHead{padding:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .modalHead{
+      padding:14px; border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between; gap:10px
+    }
     .modalHead h3{margin:0;font-size:18px}
-    .modalBody{padding:14px; max-height:72vh; overflow:auto;}
-    .form{display:grid;gap:10px}
-    .two{display:grid;gap:10px;grid-template-columns:1fr 1fr}
-    .three{display:grid;gap:10px;grid-template-columns:1fr 1fr 1fr}
-    @media(max-width:700px){.three{grid-template-columns:1fr}}
-    @media(max-width:520px){.two{grid-template-columns:1fr}}
-    .hr{height:1px;background:var(--border);margin:8px 0}
-    .listRow{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
-    .pill{font-size:11px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:var(--chip);color:var(--txt)}
+    .modalBody{padding:14px; max-height:72vh; overflow:auto}
+    .ta{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:#fff;outline:none;min-height:90px;resize:vertical}
+    .hr{height:1px;background:var(--border);margin:10px 0}
+    .pill{font-size:11px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:var(--chip)}
   </style>
 </head>
 
 <body>
 <header>
-  <div class="headRow">
+  <div class="head">
     <div class="brand">MertaX Butik</div>
     <div class="headBtns">
       <button class="btn btn-ghost" id="adminBtn">Admin</button>
       <button class="btn" id="openCartBtn">Кошничка</button>
-      <button class="btn btn-danger" id="clearCartBtn">Испразни</button>
+      <button class="btn btn-red" id="clearCartBtn">Испразни</button>
     </div>
   </div>
 </header>
 
 <div class="wrap">
-  <div class="topbar">
+  <div class="tabs" id="tabs"></div>
+
+  <div class="toolbar">
+    <div class="searchBox">
+      <input class="inp" id="searchInp" placeholder="Search (име, бренд, боја)..." />
+      <button class="btn btn-dark" id="openFilterBtn">FILTER</button>
+      <select class="btn" id="sortSel" style="padding:11px 14px;">
+        <option value="default">Стандардно</option>
+        <option value="price_asc">Цена ↑</option>
+        <option value="price_desc">Цена ↓</option>
+        <option value="new_first">НОВО прво</option>
+        <option value="sale_first">АКЦИЈА прво</option>
+        <option value="name_asc">Име A→Z</option>
+      </select>
+    </div>
+
     <div class="badge">
       🛒 <span>Кошничка:</span> <b id="cartCount">0</b>
       <span class="small">| Вкупно: <b id="cartTotal">0</b> ден.</span>
     </div>
+  </div>
 
-    <div class="filters">
-      <div class="block" style="max-width:320px;">
-        <div class="lbl">Пребарај</div>
-        <input class="inp" id="searchInp" placeholder="Пребарај по име..." />
-      </div>
-
-      <div class="block" style="max-width:260px;">
-        <div class="lbl">Категорија</div>
-        <select class="sel" id="catSel"></select>
-      </div>
-
-      <div class="block" style="max-width:220px;">
-        <div class="lbl">Големина</div>
-        <select class="sel" id="sizeFilterSel"></select>
-      </div>
-
-      <div class="block" style="max-width:160px;">
-        <div class="lbl">Цена од</div>
-        <input class="inp" id="minPriceInp" inputmode="numeric" placeholder="0" />
-      </div>
-
-      <div class="block" style="max-width:160px;">
-        <div class="lbl">Цена до</div>
-        <input class="inp" id="maxPriceInp" inputmode="numeric" placeholder="99999" />
-      </div>
-
-      <div class="block" style="max-width:220px;">
-        <div class="lbl">Сортирање</div>
-        <select class="sel" id="sortSel">
-          <option value="default">Стандардно</option>
-          <option value="price_asc">Цена ↑</option>
-          <option value="price_desc">Цена ↓</option>
-          <option value="new_first">НОВО прво</option>
-          <option value="sale_first">АКЦИЈА прво</option>
-          <option value="name_asc">Име A→Z</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="small">WhatsApp: <b>+38972912601</b> • Локација: <b>ТЦ Мавровка</b></div>
+  <div class="metaLine">
+    WhatsApp: <b>+38972912601</b> • Локација: <b>ТЦ Мавровка</b>
   </div>
 
   <div class="small" id="infoLine"></div>
@@ -172,7 +275,7 @@
 <!-- Cart drawer -->
 <aside class="drawer" id="drawer">
   <div class="drawerHead">
-    <h2>Твоја кошничка</h2>
+    <h2>Кошничка</h2>
     <button class="xbtn" id="closeCartBtn">✕</button>
   </div>
   <div class="cartlist" id="cartList"></div>
@@ -180,7 +283,57 @@
     <div class="line"><span>Производи</span> <b id="sumItems">0</b></div>
     <div class="line"><span>Достава</span> <b id="shipLine">0 ден.</b></div>
     <div class="line"><span>Вкупно</span> <b><span id="sumTotal">0</span> ден.</b></div>
-    <button class="btn btn-accent" id="goCheckoutBtn" style="width:100%;">Продолжи на нарачка</button>
+    <button class="btn btn-dark" id="goCheckoutBtn" style="width:100%;">Нарачај</button>
+  </div>
+</aside>
+
+<!-- FILTER drawer -->
+<aside class="filterDrawer" id="filterDrawer">
+  <div class="drawerHead">
+    <h2>FILTER</h2>
+    <button class="xbtn" id="closeFilterBtn">✕</button>
+  </div>
+
+  <div class="section">
+    <p class="secTitle">Величина</p>
+    <select class="sel" id="sizeFilterSel"></select>
+  </div>
+
+  <div class="section">
+    <p class="secTitle">Бренд / Марка</p>
+    <input class="inp" id="brandFilterInp" placeholder="пример: Zara, Nike..." />
+  </div>
+
+  <div class="section">
+    <p class="secTitle">Боја</p>
+    <input class="inp" id="colorFilterInp" placeholder="пример: black, white, blue..." />
+  </div>
+
+  <div class="section">
+    <p class="secTitle">Цена</p>
+    <div class="two">
+      <input class="inp" id="minPriceInp" inputmode="numeric" placeholder="од" />
+      <input class="inp" id="maxPriceInp" inputmode="numeric" placeholder="до" />
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="secTitle">Ознаки</p>
+    <select class="sel" id="badgeFilterSel">
+      <option value="ALL">Сите</option>
+      <option value="НОВО">НОВО</option>
+      <option value="АКЦИЈА">АКЦИЈА</option>
+      <option value="NONE">Без ознака</option>
+    </select>
+  </div>
+
+  <div class="section" style="display:flex; gap:10px;">
+    <button class="btn btn-ghost" id="clearFiltersBtn" style="flex:1;">Clear</button>
+    <button class="btn btn-dark" id="applyFiltersBtn" style="flex:1;">Apply</button>
+  </div>
+
+  <div class="section small">
+    Tip: Search горе пребарува и по име и по бренд и по боја.
   </div>
 </aside>
 
@@ -194,7 +347,7 @@
     <div class="small">Број на нарачка: <b id="orderIdText">-</b></div>
     <div class="hr"></div>
 
-    <div class="form">
+    <div class="row">
       <input class="inp" id="custName" placeholder="Име и презиме" />
       <input class="inp" id="custPhone" placeholder="Телефон (пример: 07X XXX XXX)" />
 
@@ -217,9 +370,8 @@
       </div>
 
       <textarea class="ta" id="custNote" placeholder="Напомена (опционално)"></textarea>
-
       <div class="small">Ако е без достава, подигање: <b>ТЦ Мавровка</b>. Ќе се отвори WhatsApp со готова порака.</div>
-      <button class="btn btn-accent" id="sendWhatsappBtn">Испрати на WhatsApp</button>
+      <button class="btn btn-dark" id="sendWhatsappBtn">Испрати на WhatsApp</button>
     </div>
   </div>
 </div>
@@ -235,57 +387,62 @@
       <div class="small">Внеси PIN за Admin (default: 1234)</div>
       <div class="two" style="margin-top:10px;">
         <input class="inp" id="adminPinInp" placeholder="PIN" type="password" />
-        <button class="btn btn-accent" id="adminLoginBtn">Влези</button>
+        <button class="btn btn-dark" id="adminLoginBtn">Влези</button>
       </div>
     </div>
 
     <div id="adminPanelBox" style="display:none;">
-      <div class="three">
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn btn-ghost" id="clearOverridesBtn">Reset demo overrides</button>
-        <button class="btn btn-ghost" id="clearCustomBtn">Избриши СИТЕ custom производи</button>
+        <button class="btn btn-ghost" id="clearCustomBtn">Избриши СИТЕ custom</button>
         <button class="btn btn-ghost" id="changePinBtn">Промени PIN</button>
       </div>
 
       <div class="hr"></div>
 
       <div class="small"><b>Додај / Измени производ</b></div>
-      <div class="form" style="margin-top:10px;">
+      <div class="row" style="margin-top:10px;">
         <div class="two">
           <input class="inp" id="pId" placeholder="ID (остави празно за нов)" />
           <input class="inp" id="pName" placeholder="Име на производ" />
         </div>
 
-        <div class="three">
+        <div class="two">
           <select class="sel" id="pCat"></select>
           <input class="inp" id="pPrice" placeholder="Цена (ден)" inputmode="numeric" />
-          <input class="inp" id="pOldPrice" placeholder="Стара цена (опц.)" inputmode="numeric" />
         </div>
 
-        <div class="three">
+        <div class="two">
+          <input class="inp" id="pOldPrice" placeholder="Стара цена (опц.)" inputmode="numeric" />
           <select class="sel" id="pBadge">
             <option value="">Без ознака</option>
             <option value="НОВО">НОВО</option>
             <option value="АКЦИЈА">АКЦИЈА</option>
           </select>
-
-          <input class="inp" id="pImg" placeholder="Слика URL (опц.) или ќе се пополни од Upload" />
-          <input class="inp" id="pSizes" placeholder="Големини (запирка) пример: S,M,L,XL,2XL,3XL или 30,31..42" />
         </div>
 
-        <div class="three">
+        <!-- NEW: Brand + Color -->
+        <div class="two">
+          <input class="inp" id="pBrand" placeholder="Бренд/Марка (пример: Zara)" />
+          <input class="inp" id="pColor" placeholder="Боја (пример: black)" />
+        </div>
+
+        <div class="two">
+          <input class="inp" id="pImg" placeholder="Слика URL (опц.) или ќе се пополни од Upload" />
+          <input class="inp" id="pSizes" placeholder="Големини (запирка) пример: S,M,L или 30,31..42" />
+        </div>
+
+        <div class="two">
           <input class="inp" id="pImgFile" type="file" accept="image/*" />
           <input class="inp" id="pImgCam" type="file" accept="image/*" capture="environment" />
-          <div class="small" style="align-self:center;">
-            1) Upload од Gallery<br>
-            2) <b>Качи слика од камера</b>
-          </div>
         </div>
+        <div class="small">2) <b>Качи слика од камера</b> (вториот upload)</div>
 
         <img id="imgPreview" style="width:100%; max-width:240px; margin-top:8px; border-radius:14px; display:none; border:1px solid var(--border);" />
 
         <div class="two">
-          <button class="btn btn-accent" id="saveProductBtn">Сними</button>
-          <button class="btn btn-danger" id="deleteProductBtn">Избриши (ID)</button>
+          <button class="btn btn-dark" id="saveProductBtn">Сними</button>
+          <button class="btn btn-red" id="deleteProductBtn">Избриши (ID)</button>
         </div>
         <div class="small" id="adminMsg"></div>
       </div>
@@ -297,17 +454,17 @@
         <input class="inp" id="adminSearch" placeholder="Пребарај (custom + demo)..." />
       </div>
 
-      <div class="small" style="margin-top:10px;"><b>Листа (први 200 резултати)</b></div>
+      <div class="small" style="margin-top:10px;"><b>Листа (први 200)</b></div>
       <div id="adminList"></div>
 
       <div class="hr"></div>
 
       <div class="small"><b>Export / Import</b></div>
       <div class="two" style="margin-top:10px;">
-        <button class="btn btn-ghost" id="exportBtn">Копирај JSON (Export)</button>
-        <button class="btn btn-ghost" id="importBtn">Внеси JSON (Import)</button>
+        <button class="btn btn-ghost" id="exportBtn">Копирај JSON</button>
+        <button class="btn btn-ghost" id="importBtn">Import JSON</button>
       </div>
-      <textarea class="ta" id="jsonBox" placeholder="Тука ќе се појави JSON (Export) или залепи JSON за Import..."></textarea>
+      <textarea class="ta" id="jsonBox" placeholder="Export ќе се појави тука / или залепи JSON за Import..."></textarea>
     </div>
   </div>
 </div>
@@ -324,15 +481,18 @@
   const DEFAULT_SIZES = ["S","M","L","XL","2XL","3XL"];
   const JEANS_SIZES = Array.from({length: 13}, (_,i)=> String(30+i)); // 30..42
 
+  const BRANDS = ["MertaX","Zara","Nike","Adidas","H&M","Pull&Bear","Bershka"];
+  const COLORS = ["black","white","blue","green","beige","gray","red"];
+
   const CATEGORIES = [
     "Џемпери","Блузони","Маици","Кошули",
     "Фармерки/Панталони","Тренерки","Јакни","Одела"
   ];
 
   // Storage keys
-  const CART_KEY = "mertax_cart_v200";
+  const CART_KEY = "mertax_cart_v300";
   const ADMIN_PIN_KEY = "mertax_admin_pin_v1";
-  const CUSTOM_KEY = "mertax_custom_products_v1";
+  const CUSTOM_KEY = "mertax_custom_products_v2";
   const DELETED_KEY = "mertax_deleted_ids_v1";
 
   const round10 = (n)=> Math.round(n/10)*10;
@@ -369,7 +529,6 @@
       default: return 1490;
     }
   }
-
   function sizesByCategory(cat){
     return (cat === "Фармерки/Панталони") ? JEANS_SIZES.slice() : DEFAULT_SIZES.slice();
   }
@@ -380,7 +539,7 @@
     return `mx_${t}_${rnd}`;
   }
 
-  // ===== LAZY DEMO =====
+  // ===== DEMO PRODUCT =====
   function demoProduct(cat, idx1){
     const basePrice = priceByCategory(cat);
     const price = round10(basePrice + (idx1 % 7) * 40);
@@ -390,9 +549,13 @@
     const badge = isSale ? "АКЦИЈА" : (isNew ? "НОВО" : "");
     const id = `auto_${catKey(cat)}_${idx1}`;
 
+    const brand = BRANDS[idx1 % BRANDS.length];
+    const color = COLORS[idx1 % COLORS.length];
+
     return {
       id, name: `MertaX ${cat} #${idx1}`, cat,
       price, oldPrice, badge,
+      brand, color,
       sizes: sizesByCategory(cat),
       img: demoImg(`${catKey(cat)}-${idx1}`)
     };
@@ -422,7 +585,6 @@
     const cMap = customMap();
     const list = [];
 
-    // demo products
     for(let i=1;i<=MAX_PER_CATEGORY;i++){
       const dp = demoProduct(cat, i);
       if(del.has(dp.id)) continue;
@@ -430,7 +592,6 @@
       list.push(ov ? ov : dp);
     }
 
-    // custom non-demo (put first)
     for(const p of cMap.values()){
       if(p.cat !== cat) continue;
       if((p.id || "").startsWith("auto_")) continue;
@@ -465,30 +626,68 @@
 
   // ===== UI REFS =====
   const grid = document.getElementById("productGrid");
+  const tabs = document.getElementById("tabs");
+  const infoLine = document.getElementById("infoLine");
   const searchInp = document.getElementById("searchInp");
-  const catSel = document.getElementById("catSel");
-  const sizeFilterSel = document.getElementById("sizeFilterSel");
-  const minPriceInp = document.getElementById("minPriceInp");
-  const maxPriceInp = document.getElementById("maxPriceInp");
   const sortSel = document.getElementById("sortSel");
   const loadMoreBtn = document.getElementById("loadMoreBtn");
-  const infoLine = document.getElementById("infoLine");
 
+  // filter drawer inputs
+  const sizeFilterSel = document.getElementById("sizeFilterSel");
+  const brandFilterInp = document.getElementById("brandFilterInp");
+  const colorFilterInp = document.getElementById("colorFilterInp");
+  const minPriceInp = document.getElementById("minPriceInp");
+  const maxPriceInp = document.getElementById("maxPriceInp");
+  const badgeFilterSel = document.getElementById("badgeFilterSel");
+
+  const overlay = document.getElementById("overlay");
+  const drawer = document.getElementById("drawer");
+  const cartList = document.getElementById("cartList");
+  const cartCount = document.getElementById("cartCount");
+  const cartTotal = document.getElementById("cartTotal");
+  const sumItems = document.getElementById("sumItems");
+  const sumTotal = document.getElementById("sumTotal");
+  const shipLine = document.getElementById("shipLine");
+
+  const filterDrawer = document.getElementById("filterDrawer");
+
+  const deliverySel = document.getElementById("deliverySel");
+
+  let activeCat = CATEGORIES[0];
   let visibleCount = PAGE_SIZE;
 
-  function currentCategory(){ return (catSel && catSel.value) ? catSel.value : CATEGORIES[0]; }
+  // Filter state (Zara-like drawer -> apply)
+  const filterState = {
+    size: "ALL",
+    brand: "",
+    color: "",
+    minPrice: "",
+    maxPrice: "",
+    badge: "ALL"
+  };
 
-  function renderCats(){
-    if(!catSel) return;
-    catSel.innerHTML = CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join("");
+  function renderTabs(){
+    tabs.innerHTML = CATEGORIES.map(c =>
+      `<button class="tab ${c===activeCat?"active":""}" data-cat="${c}">${c}</button>`
+    ).join("");
+    tabs.querySelectorAll(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        activeCat = btn.getAttribute("data-cat");
+        visibleCount = PAGE_SIZE;
+        renderTabs();
+        renderSizeFilter();
+        renderProducts();
+      });
+    });
   }
 
   function renderSizeFilter(){
-    if(!sizeFilterSel) return;
-    const cat = currentCategory();
-    const sizes = sizesByCategory(cat);
-    sizeFilterSel.innerHTML = [`<option value="ALL">Сите</option>`]
-      .concat(sizes.map(s=>`<option value="${s}">${s}</option>`)).join("");
+    const sizes = sizesByCategory(activeCat);
+    sizeFilterSel.innerHTML =
+      [`<option value="ALL">Сите</option>`]
+      .concat(sizes.map(s=>`<option value="${s}">${s}</option>`))
+      .join("");
+    sizeFilterSel.value = filterState.size || "ALL";
   }
 
   function numOrNull(v){
@@ -499,645 +698,42 @@
   }
 
   function filteredAll(){
-    const cat = currentCategory();
-    const q = (searchInp?.value || "").trim().toLowerCase();
-    const size = (sizeFilterSel?.value || "ALL");
-    const minP = numOrNull(minPriceInp?.value);
-    const maxP = numOrNull(maxPriceInp?.value);
+    let list = getCategoryList(activeCat);
 
-    let list = getCategoryList(cat);
+    // search (name + brand + color)
+    const q = (searchInp.value || "").trim().toLowerCase();
+    if(q){
+      list = list.filter(p => {
+        const a = (p.name||"").toLowerCase();
+        const b = (p.brand||"").toLowerCase();
+        const c = (p.color||"").toLowerCase();
+        return a.includes(q) || b.includes(q) || c.includes(q);
+      });
+    }
 
-    if(q) list = list.filter(p => (p.name || "").toLowerCase().includes(q));
+    // drawer filters (applied from state)
+    const size = filterState.size || "ALL";
+    const brand = (filterState.brand || "").trim().toLowerCase();
+    const color = (filterState.color || "").trim().toLowerCase();
+    const minP = numOrNull(filterState.minPrice);
+    const maxP = numOrNull(filterState.maxPrice);
+    const badge = filterState.badge || "ALL";
 
     if(size !== "ALL"){
       list = list.filter(p => Array.isArray(p.sizes) && p.sizes.includes(size));
     }
-
+    if(brand){
+      list = list.filter(p => (p.brand||"").toLowerCase().includes(brand));
+    }
+    if(color){
+      list = list.filter(p => (p.color||"").toLowerCase().includes(color));
+    }
     if(minP !== null) list = list.filter(p => Number(p.price) >= minP);
     if(maxP !== null) list = list.filter(p => Number(p.price) <= maxP);
 
+    if(badge === "NONE") list = list.filter(p => !(p.badge||"").trim());
+    else if(badge !== "ALL") list = list.filter(p => (p.badge||"").trim() === badge);
+
     // sorting
-    const mode = sortSel?.value || "default";
-    const scoreBadge = (p, wanted)=> (String(p.badge||"").trim() === wanted) ? 1 : 0;
-
-    if(mode === "price_asc") list.sort((a,b)=>a.price-b.price);
-    else if(mode === "price_desc") list.sort((a,b)=>b.price-a.price);
-    else if(mode === "new_first") list.sort((a,b)=> scoreBadge(b,"НОВО")-scoreBadge(a,"НОВО") || a.price-b.price);
-    else if(mode === "sale_first") list.sort((a,b)=> scoreBadge(b,"АКЦИЈА")-scoreBadge(a,"АКЦИЈА") || a.price-b.price);
-    else if(mode === "name_asc") list.sort((a,b)=> (a.name||"").localeCompare(b.name||""));
-
-    return list;
-  }
-
-  function renderProducts(){
-    if(!grid) return;
-
-    const list = filteredAll();
-    const show = list.slice(0, visibleCount);
-
-    if(infoLine){
-      const size = (sizeFilterSel?.value || "ALL");
-      const minP = (minPriceInp?.value || "").trim();
-      const maxP = (maxPriceInp?.value || "").trim();
-      infoLine.textContent =
-        `Категорија: ${currentCategory()} • Прикажани: ${show.length} / ${list.length} (макс ${MAX_PER_CATEGORY})` +
-        ` • Големина: ${size==="ALL"?"Сите":size}` +
-        ` • Цена: ${minP||"0"} - ${maxP||"∞"}`;
-    }
-
-    grid.innerHTML = show.map(p => {
-      const old = (p.oldPrice !== null && p.oldPrice !== "" && !isNaN(Number(p.oldPrice))) ? Number(p.oldPrice) : null;
-      const badge = (p.badge || "").trim();
-      const pct = (old && old > p.price) ? Math.round(((old - p.price)/old)*100) : null;
-      const sizes = Array.isArray(p.sizes) && p.sizes.length ? p.sizes : ["UNI"];
-      const safeId = (p.id || "").replaceAll('"','');
-      const sizeSelId = `size_${safeId}`;
-
-      return `
-        <div class="card">
-          <div class="imgWrap">
-            <img class="img" loading="lazy" src="${p.img}" alt="${p.name}">
-            <div class="tagRow">
-              ${badge ? `<span class="tag ${badge==="НОВО" ? "tag-new" : "tag-sale"}">${badge}</span>` : ""}
-              ${pct ? `<span class="tag tag-sale">-${pct}%</span>` : ""}
-              ${p.cat ? `<span class="tag">${p.cat}</span>` : ""}
-            </div>
-          </div>
-          <div class="p">
-            <p class="name">${p.name}</p>
-            <div class="priceLine">
-              <span class="priceNow">${p.price} ден.</span>
-              ${old && old > p.price ? `<span class="priceOld">${old} ден.</span>` : ""}
-            </div>
-
-            <div class="miniRow">
-              <select class="sel miniSel" id="${sizeSelId}">
-                ${sizes.map(s => `<option value="${s}">${s}</option>`).join("")}
-              </select>
-              <button class="btn btn-accent"
-                onclick="addToCart('${p.id}', document.getElementById('${sizeSelId}').value)">Додај</button>
-            </div>
-
-            <div class="small" style="margin-top:8px;">ID: ${p.id}</div>
-          </div>
-        </div>
-      `;
-    }).join("");
-
-    if(loadMoreBtn){
-      if(visibleCount < list.length){
-        loadMoreBtn.style.display = "inline-block";
-        const next = Math.min(visibleCount + PAGE_SIZE, list.length);
-        loadMoreBtn.textContent = `Вчитај уште (${visibleCount} → ${next})`;
-      } else {
-        loadMoreBtn.style.display = "none";
-      }
-    }
-  }
-
-  function resetPaging(){ visibleCount = PAGE_SIZE; }
-
-  // ===== CART UI =====
-  const cartCount = document.getElementById("cartCount");
-  const cartTotal = document.getElementById("cartTotal");
-  const cartList = document.getElementById("cartList");
-  const sumItems = document.getElementById("sumItems");
-  const sumTotal = document.getElementById("sumTotal");
-  const shipLine = document.getElementById("shipLine");
-  const overlay = document.getElementById("overlay");
-  const drawer = document.getElementById("drawer");
-
-  const deliverySel = document.getElementById("deliverySel");
-  function shippingOn(){ return (deliverySel?.value || "Да") === "Да"; }
-
-  function cartTotals(cart, shippingEnabled){
-    let items = 0, subtotal = 0;
-    for(const c of cart){
-      items += c.qty;
-      const p = findProductById(c.id);
-      if(p) subtotal += p.price * c.qty;
-    }
-    const ship = (shippingEnabled && items > 0) ? SHIPPING_FEE : 0;
-    return { items, subtotal, ship, total: subtotal + ship };
-  }
-
-  function addToCart(id, size){
-    const p = findProductById(id);
-    const chosenSize = size || (p && p.sizes && p.sizes[0]) || "UNI";
-    const key = id + "|" + chosenSize;
-
-    const cart = loadCart();
-    const item = cart.find(x => (x.id + "|" + (x.size||"")) === key);
-    if(item) item.qty += 1;
-    else cart.push({ id, size: chosenSize, qty:1 });
-    saveCart(cart);
-    renderCartUI();
-  }
-
-  function setQty(id, size, qty){
-    const cart = loadCart()
-      .map(x => (x.id===id && (x.size||"")===size) ? ({...x, qty}) : x)
-      .filter(x => x.qty > 0);
-    saveCart(cart);
-    renderCartUI();
-  }
-
-  function clearCart(){ saveCart([]); renderCartUI(); }
-
-  function openCart(){ overlay?.classList.add("show"); drawer?.classList.add("open"); }
-  function closeCart(){
-    drawer?.classList.remove("open");
-    if(!checkoutModal?.classList.contains("show") && !adminModal?.classList.contains("show")) overlay?.classList.remove("show");
-  }
-
-  function renderCartUI(){
-    const cart = loadCart();
-    const { items, ship, total } = cartTotals(cart, shippingOn());
-
-    if(cartCount) cartCount.textContent = items;
-    if(cartTotal) cartTotal.textContent = total;
-    if(sumItems) sumItems.textContent = items;
-    if(sumTotal) sumTotal.textContent = total;
-    if(shipLine) shipLine.textContent = ship + " ден.";
-
-    if(!cartList) return;
-    if(cart.length === 0){
-      cartList.innerHTML = `<p class="small">Кошничката е празна.</p>`;
-      return;
-    }
-
-    cartList.innerHTML = cart.map(c => {
-      const p = findProductById(c.id);
-      if(!p) return "";
-      const s = c.size || "UNI";
-      return `
-        <div class="item">
-          <img class="thumb" loading="lazy" src="${p.img}" alt="${p.name}">
-          <div class="itxt">
-            <b>${p.name} <span class="small">(${s})</span></b>
-            <div class="small">${p.price} ден. × ${c.qty} = <b>${p.price*c.qty}</b> ден.</div>
-            <div class="qty" style="margin-top:8px;">
-              <button onclick="setQty('${c.id}','${s}', ${c.qty-1})">−</button>
-              <span style="min-width:22px; text-align:center;">${c.qty}</span>
-              <button onclick="setQty('${c.id}','${s}', ${c.qty+1})">+</button>
-              <button class="btn btn-danger" style="margin-left:auto; padding:8px 10px; border-radius:12px;"
-                onclick="setQty('${c.id}','${s}', 0)">Отстрани</button>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join("");
-  }
-
-  // ===== CHECKOUT =====
-  const checkoutModal = document.getElementById("checkoutModal");
-  const orderIdText = document.getElementById("orderIdText");
-  let currentOrderId = null;
-
-  function makeOrderId(){
-    const d = new Date();
-    const pad = (n)=> String(n).padStart(2,"0");
-    const base = `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
-    const rnd = Math.random().toString(16).slice(2,6).toUpperCase();
-    return `MX-${base}-${rnd}`;
-  }
-
-  function openCheckout(){
-    const cart = loadCart();
-    if(cart.length === 0){ alert("Кошничката е празна."); return; }
-    currentOrderId = makeOrderId();
-    if(orderIdText) orderIdText.textContent = currentOrderId;
-    checkoutModal?.classList.add("show");
-    overlay?.classList.add("show");
-    renderCartUI();
-  }
-
-  function closeCheckout(){
-    checkoutModal?.classList.remove("show");
-    if(!drawer?.classList.contains("open") && !adminModal?.classList.contains("show")) overlay?.classList.remove("show");
-  }
-
-  function buildOrderText(){
-    const name = (document.getElementById("custName")?.value || "").trim();
-    const phone = (document.getElementById("custPhone")?.value || "").trim();
-    const note = (document.getElementById("custNote")?.value || "").trim();
-    const payment = (document.getElementById("paymentSel")?.value || "Готово при прием").trim();
-    const exchange = (document.getElementById("exchangeSel")?.value || "Да").trim();
-
-    const deliveryYes = shippingOn();
-    const deliveryAddress = (document.getElementById("deliveryAddress")?.value || "").trim();
-
-    const cart = loadCart();
-    const { items, subtotal, ship, total } = cartTotals(cart, deliveryYes);
-
-    let lines = [];
-    lines.push("🛍️ Нарачка - MertaX");
-    lines.push("🧾 Број: " + (currentOrderId || "-"));
-    lines.push("");
-    lines.push("👤 Име: " + (name || "-"));
-    lines.push("📞 Телефон: " + (phone || "-"));
-    lines.push("💳 Плаќање: " + payment);
-    lines.push("🔁 Замена: " + exchange);
-    lines.push("");
-
-    if(deliveryYes && items>0){
-      lines.push("🚚 Достава: Да (+150 ден)");
-      lines.push("🏠 Адреса: " + (deliveryAddress || "-"));
-    } else {
-      lines.push("🚚 Достава: Не");
-      lines.push("📍 Подигање: " + STORE_LOCATION);
-    }
-
-    if(note){ lines.push(""); lines.push("📝 Напомена: " + note); }
-
-    lines.push("");
-    lines.push("📦 Производи:");
-    cart.forEach(c=>{
-      const p = findProductById(c.id);
-      if(p){
-        const s = c.size || "UNI";
-        lines.push(`- ${p.name} (${s}) x${c.qty} = ${p.price*c.qty} ден.`);
-      }
-    });
-
-    lines.push("");
-    lines.push(`🧺 Подсума: ${subtotal} ден.`);
-    lines.push(`🚚 Достава: ${ship} ден.`);
-    lines.push(`✅ Вкупно производи: ${items}`);
-    lines.push(`💰 Вкупно: ${total} ден.`);
-    return lines.join("\n");
-  }
-
-  function sendToWhatsApp(){
-    const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(buildOrderText());
-    window.open(url, "_blank");
-  }
-
-  // ===== ADMIN =====
-  const adminModal = document.getElementById("adminModal");
-  const adminLoginBox = document.getElementById("adminLoginBox");
-  const adminPanelBox = document.getElementById("adminPanelBox");
-  const adminMsg = document.getElementById("adminMsg");
-
-  const pId = document.getElementById("pId");
-  const pName = document.getElementById("pName");
-  const pCat = document.getElementById("pCat");
-  const pPrice = document.getElementById("pPrice");
-  const pOldPrice = document.getElementById("pOldPrice");
-  const pBadge = document.getElementById("pBadge");
-  const pImg = document.getElementById("pImg");
-  const pSizes = document.getElementById("pSizes");
-  const pImgFile = document.getElementById("pImgFile");
-  const pImgCam = document.getElementById("pImgCam");
-  const imgPreview = document.getElementById("imgPreview");
-
-  const adminFilterCat = document.getElementById("adminFilterCat");
-  const adminSearch = document.getElementById("adminSearch");
-  const adminList = document.getElementById("adminList");
-  const jsonBox = document.getElementById("jsonBox");
-
-  function getPin(){ return localStorage.getItem(ADMIN_PIN_KEY) || "1234"; }
-  function setPin(pin){ localStorage.setItem(ADMIN_PIN_KEY, pin); }
-
-  function toast(msg){
-    if(!adminMsg) return;
-    adminMsg.textContent = msg;
-    setTimeout(()=>{ if(adminMsg.textContent===msg) adminMsg.textContent=""; }, 2500);
-  }
-
-  function openAdmin(){
-    adminModal?.classList.add("show");
-    overlay?.classList.add("show");
-    if(adminLoginBox) adminLoginBox.style.display = "block";
-    if(adminPanelBox) adminPanelBox.style.display = "none";
-    if(adminMsg) adminMsg.textContent = "";
-    const pinInp = document.getElementById("adminPinInp");
-    if(pinInp) pinInp.value = "";
-  }
-  function closeAdmin(){
-    adminModal?.classList.remove("show");
-    if(!drawer?.classList.contains("open") && !checkoutModal?.classList.contains("show")) overlay?.classList.remove("show");
-  }
-
-  function fillCatSelects(){
-    if(pCat) pCat.innerHTML = CATEGORIES.map(c=>`<option value="${c}">${c}</option>`).join("");
-    if(adminFilterCat) adminFilterCat.innerHTML =
-      [`<option value="ALL">Сите категории</option>`].concat(CATEGORIES.map(c=>`<option value="${c}">${c}</option>`)).join("");
-  }
-
-  function parseSizes(str, cat){
-    const raw = (str || "").trim();
-    if(!raw) return sizesByCategory(cat);
-    return raw.split(",").map(x=>x.trim()).filter(Boolean);
-  }
-
-  function clearForm(){
-    if(pId) pId.value = "";
-    if(pName) pName.value = "";
-    if(pCat) pCat.value = CATEGORIES[0];
-    if(pPrice) pPrice.value = "";
-    if(pOldPrice) pOldPrice.value = "";
-    if(pBadge) pBadge.value = "";
-    if(pImg) pImg.value = "";
-    if(pSizes) pSizes.value = sizesByCategory(CATEGORIES[0]).join(",");
-    if(imgPreview) imgPreview.style.display = "none";
-    if(pImgFile) pImgFile.value = "";
-    if(pImgCam) pImgCam.value = "";
-  }
-
-  async function fileToCompressedDataURL(file, maxSize=900, quality=0.82){
-    const dataURL = await new Promise((resolve, reject) => {
-      const r = new FileReader();
-      r.onload = () => resolve(r.result);
-      r.onerror = reject;
-      r.readAsDataURL(file);
-    });
-
-    const img = await new Promise((resolve, reject) => {
-      const im = new Image();
-      im.onload = () => resolve(im);
-      im.onerror = reject;
-      im.src = dataURL;
-    });
-
-    let w = img.width, h = img.height;
-    const scale = Math.min(1, maxSize / Math.max(w, h));
-    w = Math.round(w * scale);
-    h = Math.round(h * scale);
-
-    const canvas = document.createElement("canvas");
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, w, h);
-
-    return canvas.toDataURL("image/jpeg", quality);
-  }
-
-  async function handleFilePick(file){
-    if(!file) return;
-    try{
-      const compressed = await fileToCompressedDataURL(file, 900, 0.82);
-      if(pImg) pImg.value = compressed;
-      if(imgPreview){ imgPreview.src = compressed; imgPreview.style.display = "block"; }
-      toast("Сликата е додадена ✅");
-    }catch(e){
-      alert("Не успеа upload. Пробај друга слика.");
-    }
-  }
-
-  pImgFile?.addEventListener("change", () => handleFilePick(pImgFile.files && pImgFile.files[0]));
-  pImgCam?.addEventListener("change",  () => handleFilePick(pImgCam.files && pImgCam.files[0]));
-
-  function saveProductCustom(){
-    const id = (pId?.value || "").trim() || makeId();
-    const name = (pName?.value || "").trim();
-    const cat = pCat?.value || CATEGORIES[0];
-    const price = Number((pPrice?.value || "").trim());
-    const oldPriceRaw = (pOldPrice?.value || "").trim();
-    const oldPrice = oldPriceRaw ? Number(oldPriceRaw) : null;
-    const badge = (pBadge?.value || "").trim();
-    const img = (pImg?.value || "").trim() || demoImg(id);
-    const sizes = parseSizes(pSizes?.value || "", cat);
-
-    if(!name){ toast("Внеси име."); return; }
-    if(!Number.isFinite(price) || price<=0){ toast("Внеси валидна цена."); return; }
-
-    const item = { id, name, cat, price, oldPrice: Number.isFinite(oldPrice)?oldPrice:null, badge, img, sizes };
-
-    // if was deleted, remove from deleted
-    const del = loadDeleted().filter(x => x !== id);
-    saveDeleted(del);
-
-    const arr = loadCustom();
-    const idx = arr.findIndex(x => x.id === id);
-    if(idx >= 0) arr[idx] = item;
-    else arr.unshift(item);
-    saveCustom(arr);
-
-    if(pId) pId.value = id;
-    if(imgPreview){ imgPreview.src = img; imgPreview.style.display = "block"; }
-
-    toast(idx>=0 ? "Ажурирано ✅" : "Додадено ✅");
-    resetPaging(); renderSizeFilter(); renderProducts(); renderCartUI(); renderAdminList();
-  }
-
-  function deleteById(){
-    const id = (pId?.value || "").trim();
-    if(!id){ toast("Внеси ID за бришење."); return; }
-    if(!confirm("Сигурно да се избрише/скрие овој ID?")) return;
-
-    saveCustom(loadCustom().filter(x => x.id !== id));
-    const del = new Set(loadDeleted());
-    del.add(id);
-    saveDeleted([...del]);
-
-    toast("Избришано/скриено ✅");
-    clearForm();
-    resetPaging(); renderSizeFilter(); renderProducts(); renderCartUI(); renderAdminList();
-  }
-
-  function clearOverrides(){
-    if(!confirm("Reset demo overrides?")) return;
-    saveDeleted([]);
-    toast("Deleted листа исчистена ✅");
-    resetPaging(); renderSizeFilter(); renderProducts(); renderCartUI(); renderAdminList();
-  }
-
-  function clearAllCustom(){
-    if(!confirm("Избриши СИТЕ custom производи?")) return;
-    saveCustom([]);
-    toast("Custom избришани ✅");
-    resetPaging(); renderSizeFilter(); renderProducts(); renderCartUI(); renderAdminList();
-  }
-
-  function loadToForm(id){
-    const p = findProductById(id);
-    if(!p){ toast("Нема таков ID."); return; }
-
-    if(pId) pId.value = p.id;
-    if(pName) pName.value = p.name || "";
-    if(pCat) pCat.value = p.cat || CATEGORIES[0];
-    if(pPrice) pPrice.value = p.price || "";
-    if(pOldPrice) pOldPrice.value = (p.oldPrice ?? "") === null ? "" : (p.oldPrice ?? "");
-    if(pBadge) pBadge.value = p.badge || "";
-    if(pImg) pImg.value = p.img || "";
-    if(pSizes) pSizes.value = (p.sizes && p.sizes.length) ? p.sizes.join(",") : sizesByCategory(p.cat || CATEGORIES[0]).join(",");
-
-    if(imgPreview && p.img){
-      imgPreview.src = p.img;
-      imgPreview.style.display = "block";
-    } else if(imgPreview){
-      imgPreview.style.display = "none";
-    }
-    toast("Вчитано ✅");
-  }
-
-  function renderAdminList(){
-    if(!adminList) return;
-    const q = (adminSearch?.value || "").trim().toLowerCase();
-    const f = adminFilterCat?.value || "ALL";
-    let list = [];
-
-    for(const cat of CATEGORIES){
-      if(f !== "ALL" && cat !== f) continue;
-      list = list.concat(getCategoryList(cat));
-    }
-    if(q){
-      list = list.filter(p =>
-        (p.name||"").toLowerCase().includes(q) ||
-        (p.id||"").toLowerCase().includes(q)
-      );
-    }
-    list = list.slice(0, 200);
-
-    adminList.innerHTML = list.map(p=>{
-      return `
-        <div class="listRow">
-          <div style="min-width:220px;">
-            <b>${p.name}</b>
-            <div class="small">ID: ${p.id}</div>
-          </div>
-          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-            <span class="pill">${p.cat}</span>
-            <span class="pill">${p.price} ден.</span>
-            ${p.badge ? `<span class="pill">${p.badge}</span>` : ""}
-          </div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-ghost" onclick="adminEdit('${p.id}')">Edit</button>
-          </div>
-        </div>
-      `;
-    }).join("") || `<div class="small">Нема резултати.</div>`;
-  }
-
-  async function exportJson(){
-    const payload = { custom: loadCustom(), deleted: loadDeleted(), maxPerCategory: MAX_PER_CATEGORY };
-    const txt = JSON.stringify(payload, null, 2);
-    if(jsonBox) jsonBox.value = txt;
-    try{
-      await navigator.clipboard.writeText(txt);
-      toast("JSON копиран ✅");
-    }catch(e){
-      toast("Export спремен (копирај рачно).");
-    }
-  }
-
-  function importJson(){
-    try{
-      const txt = (jsonBox?.value || "").trim();
-      if(!txt){ toast("Залепи JSON во полето."); return; }
-      const obj = JSON.parse(txt);
-      if(!obj || typeof obj !== "object"){ toast("Грешен JSON."); return; }
-
-      const custom = Array.isArray(obj.custom) ? obj.custom : [];
-      const deleted = Array.isArray(obj.deleted) ? obj.deleted : [];
-
-      const cleaned = custom.map(p=>({
-        id: String(p.id || makeId()),
-        name: String(p.name || "Без име"),
-        cat: CATEGORIES.includes(p.cat) ? p.cat : CATEGORIES[0],
-        price: Number(p.price || 0),
-        oldPrice: (p.oldPrice===null || p.oldPrice===undefined || p.oldPrice==="") ? null : Number(p.oldPrice),
-        badge: (p.badge==="НОВО" || p.badge==="АКЦИЈА") ? p.badge : "",
-        img: String(p.img || demoImg(p.id||"img")),
-        sizes: Array.isArray(p.sizes) && p.sizes.length ? p.sizes : sizesByCategory(CATEGORIES.includes(p.cat)?p.cat:CATEGORIES[0])
-      })).filter(p=>p.price>0);
-
-      saveCustom(cleaned);
-      saveDeleted(deleted.map(String));
-
-      toast("Import успешен ✅");
-      resetPaging(); renderSizeFilter(); renderProducts(); renderCartUI(); renderAdminList();
-    }catch(e){
-      toast("Грешка во JSON.");
-    }
-  }
-
-  window.adminEdit = loadToForm;
-
-  // ===== EVENTS =====
-  const $ = (id)=> document.getElementById(id);
-
-  $("openCartBtn")?.addEventListener("click", openCart);
-  $("closeCartBtn")?.addEventListener("click", closeCart);
-  $("clearCartBtn")?.addEventListener("click", clearCart);
-
-  $("goCheckoutBtn")?.addEventListener("click", openCheckout);
-  $("closeCheckoutBtn")?.addEventListener("click", closeCheckout);
-  $("sendWhatsappBtn")?.addEventListener("click", sendToWhatsApp);
-
-  $("adminBtn")?.addEventListener("click", openAdmin);
-  $("closeAdminBtn")?.addEventListener("click", closeAdmin);
-
-  overlay?.addEventListener("click", () => { closeCheckout(); closeCart(); closeAdmin(); });
-
-  loadMoreBtn?.addEventListener("click", () => { visibleCount += PAGE_SIZE; renderProducts(); });
-
-  function onFilterChange(){
-    resetPaging();
-    renderProducts();
-    renderCartUI();
-  }
-
-  catSel?.addEventListener("change", () => { renderSizeFilter(); onFilterChange(); });
-  searchInp?.addEventListener("input", onFilterChange);
-  sizeFilterSel?.addEventListener("change", onFilterChange);
-  minPriceInp?.addEventListener("input", onFilterChange);
-  maxPriceInp?.addEventListener("input", onFilterChange);
-  sortSel?.addEventListener("change", onFilterChange);
-  deliverySel?.addEventListener("change", renderCartUI);
-
-  // Admin events
-  $("adminLoginBtn")?.addEventListener("click", () => {
-    const pin = ($("adminPinInp")?.value || "").trim();
-    if(pin === getPin()){
-      if(adminLoginBox) adminLoginBox.style.display = "block";
-      if(adminPanelBox) adminPanelBox.style.display = "block";
-      // hide login box
-      if(adminLoginBox) adminLoginBox.style.display = "none";
-      fillCatSelects();
-      clearForm();
-      renderAdminList();
-      toast("Добредојде ✅");
-    }else{
-      alert("Погрешен PIN.");
-    }
-  });
-
-  $("saveProductBtn")?.addEventListener("click", saveProductCustom);
-  $("deleteProductBtn")?.addEventListener("click", deleteById);
-  $("clearOverridesBtn")?.addEventListener("click", clearOverrides);
-  $("clearCustomBtn")?.addEventListener("click", clearAllCustom);
-
-  $("exportBtn")?.addEventListener("click", exportJson);
-  $("importBtn")?.addEventListener("click", importJson);
-
-  adminFilterCat?.addEventListener("change", renderAdminList);
-  adminSearch?.addEventListener("input", renderAdminList);
-
-  $("changePinBtn")?.addEventListener("click", () => {
-    const cur = prompt("Внеси тековен PIN:");
-    if(cur === null) return;
-    if(cur.trim() !== getPin()){ alert("Погрешен PIN."); return; }
-    const next = prompt("Внеси нов PIN (4+ знаци):");
-    if(next === null) return;
-    if(next.trim().length < 4){ alert("PIN мора да има барем 4 знаци."); return; }
-    setPin(next.trim());
-    alert("PIN е сменет ✅");
-  });
-
-  // expose cart functions
-  window.addToCart = addToCart;
-  window.setQty = setQty;
-
-  // ===== SAFE INIT =====
-  window.addEventListener("DOMContentLoaded", () => {
-    renderCats();
-    if(catSel) catSel.value = CATEGORIES[0];
-    renderSizeFilter();
-    renderProducts();
-    renderCartUI();
-  });
-</script>
-</body>
-</html>
+    const mode = sortSel.value || "default";
+    const scoreBadge = (p, wanted
