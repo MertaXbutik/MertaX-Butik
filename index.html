@@ -4,724 +4,791 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MertaX Butik</title>
-
   <style>
     :root{
-      --bg:#ffffff;
-      --txt:#0b1220;
-      --muted:#6b7280;
-      --border:#e5e7eb;
-      --chip:#f3f4f6;
-      --shadow:0 12px 28px rgba(15,23,42,.10);
+      --bg: #f3f4f6;              /* light grey */
+      --bg2:#f7f1e7;              /* creamy */
+      --card:#ffffffcc;           /* glass */
+      --txt:#0f172a;
+      --muted:#64748b;
+      --line:#e5e7eb;
+      --shadow: 0 10px 30px rgba(2,6,23,.08);
+      --accent:#111827;           /* zara-ish black */
+      --gold:#b08a2e;             /* subtle gold */
+      --danger:#dc2626;
+      --ok:#16a34a;
       --radius:18px;
-      --dark:#111827;
-      --red:#ef4444;
-      --green:#16a34a;
-      --zara:#0f172a;
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--txt)}
-    a{color:inherit}
-    img{max-width:100%}
-    button,input,select,textarea{font-family:inherit}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--txt);
+      background: radial-gradient(1000px 500px at 20% 0%, var(--bg2), transparent 60%),
+                  radial-gradient(900px 500px at 80% 10%, #ffffff, transparent 55%),
+                  linear-gradient(180deg, var(--bg), #fff);
+    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:18px 14px 60px; }
 
-    header{
-      position:sticky; top:0; z-index:50;
-      background:#fff; border-bottom:1px solid var(--border);
+    /* Top bar */
+    .top{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px 14px;
+      border:1px solid var(--line);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      animation: fadeIn .35s ease both;
     }
-    .head{
-      max-width:1200px; margin:0 auto; padding:14px 14px 10px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      min-width:0;
     }
-    .brand{font-size:24px; font-weight:950; letter-spacing:.6px}
-    .headBtns{display:flex; gap:10px; flex-wrap:wrap}
+    .logoMark{
+      width:44px; height:44px; border-radius:14px;
+      border:1px solid var(--line);
+      background: linear-gradient(145deg,#fff, #f3f4f6);
+      display:grid; place-items:center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.5);
+    }
+    .logoMark svg{ width:24px; height:24px; opacity:.9; }
+    .brandText{ min-width:0; }
+    .brandText .t1{
+      font-weight:900; letter-spacing:1px;
+      font-size:22px; line-height:1.1;
+    }
+    .brandText .t2{
+      font-size:12px; color:var(--muted);
+      letter-spacing:.6px; margin-top:2px;
+    }
+
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
     .btn{
-      border:1px solid var(--border);
+      border:1px solid var(--line);
       background:#fff;
       color:var(--txt);
-      padding:11px 16px;
-      border-radius:999px;
-      font-weight:900;
-      cursor:pointer;
-      transition:.15s;
-      user-select:none;
-    }
-    .btn:hover{transform:translateY(-1px); box-shadow:var(--shadow)}
-    .btn-dark{background:var(--dark); color:#fff; border-color:transparent}
-    .btn-red{background:var(--red); color:#fff; border-color:transparent}
-    .btn-ghost{background:transparent}
-    .wrap{max-width:1200px;margin:0 auto;padding:14px}
-
-    /* Category tabs */
-    .tabs{
-      display:flex; gap:10px;
-      overflow-x:auto; -webkit-overflow-scrolling:touch;
-      padding:8px 2px 12px;
-    }
-    .tabs::-webkit-scrollbar{height:6px}
-    .tab{
-      flex:0 0 auto;
       padding:10px 14px;
       border-radius:999px;
-      border:1px solid var(--border);
-      background:#fff;
-      font-weight:950;
       cursor:pointer;
-      white-space:nowrap;
+      font-weight:700;
+      box-shadow: 0 8px 18px rgba(2,6,23,.06);
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
     }
-    .tab.active{background:var(--dark); color:#fff; border-color:transparent}
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 12px 24px rgba(2,6,23,.08); border-color:#d1d5db; }
+    .btn.primary{
+      background: var(--accent);
+      color:#fff; border-color: transparent;
+    }
+    .btn.danger{ background: #fff; color: var(--danger); border-color: #fecaca; }
+    .btn.gold{ background: linear-gradient(180deg,#f5e7c7,#e9d7a9); border-color:#e5d1a6; color:#111827; }
 
-    /* Toolbar */
-    .toolbar{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; flex-wrap:wrap;
-      padding:6px 0 10px;
+    /* Hero card */
+    .hero{
+      margin-top:14px;
+      border:1px solid var(--line);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding:16px 16px;
+      animation: fadeIn .45s ease both;
     }
-    .searchRow{
-      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-      flex:1; min-width:260px;
+    .hero h1{
+      margin:0 0 8px; font-size:26px; letter-spacing:.2px;
     }
-    .inp{
-      width:min(620px,100%);
-      padding:12px 14px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      outline:none;
+    .metaLine{ color:var(--muted); font-weight:600; }
+    .metaLine a{ color:#2563eb; text-decoration:none; }
+    .metaLine a:hover{ text-decoration:underline; }
+
+    /* Controls */
+    .controls{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr auto auto;
+      gap:10px;
+      align-items:center;
+    }
+    @media (max-width:700px){
+      .controls{ grid-template-columns: 1fr; }
+    }
+    .search{
+      border:1px solid var(--line);
       background:#fff;
-      color:var(--txt);
+      border-radius:999px;
+      padding:14px 16px;
+      font-size:16px;
+      outline:none;
+      box-shadow: 0 10px 20px rgba(2,6,23,.05);
     }
     .sel{
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:11px 14px;
+      border:1px solid var(--line);
       background:#fff;
-      font-weight:900;
-      color:var(--txt);
+      border-radius:999px;
+      padding:12px 14px;
+      font-size:16px;
       outline:none;
-      min-width:160px;
+      box-shadow: 0 10px 20px rgba(2,6,23,.05);
+    }
+
+    /* Info */
+    .info{
+      margin-top:10px;
+      color:var(--muted);
+      font-weight:700;
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      border:1px solid var(--line);
+      padding:8px 12px; border-radius:999px;
+      background:#fff;
+    }
+    .pill b{ color:var(--txt); }
+
+    /* Grid products */
+    .grid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:14px;
+    }
+    @media (max-width:980px){ .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width:520px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card{
+      border:1px solid var(--line);
+      background: var(--card);
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      animation: fadeUp .35s ease both;
+    }
+    .imgWrap{
+      position:relative;
+      aspect-ratio: 4/5;
+      background: #f1f5f9;
+      overflow:hidden;
+    }
+    .imgWrap img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+      transition: opacity .25s ease, transform .35s ease;
+    }
+    .imgWrap:hover img{ transform: scale(1.02); }
+    .badges{
+      position:absolute; left:10px; top:10px;
+      display:flex; gap:8px; flex-wrap:wrap;
     }
     .badge{
-      border:1px solid var(--border);
-      background:#fff;
+      padding:7px 10px;
       border-radius:999px;
-      padding:10px 12px;
-      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      font-weight:900;
+      font-size:12px;
+      letter-spacing:.6px;
+      border:1px solid rgba(255,255,255,.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      background: rgba(255,255,255,.65);
     }
-    .small{font-size:12px;color:var(--muted)}
-    .meta{margin:10px 0 10px; font-size:12px; color:var(--muted); line-height:1.5}
-    .err{color:#b91c1c;font-weight:900; margin-left:10px}
+    .badge.gold{ background: rgba(245,231,199,.8); border-color:#e5d1a6; }
+    .badge.red{ background: rgba(254,202,202,.85); border-color:#fecaca; color:#7f1d1d; }
+    .badge.dark{ background: rgba(17,24,39,.75); border-color: rgba(255,255,255,.22); color:#fff; }
 
-    /* Grid */
-    .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px}
-    @media(min-width:900px){.grid{grid-template-columns:repeat(4,1fr)}}
-    .card{
-      background:#fff;
-      border:1px solid var(--border);
-      border-radius:22px;
-      overflow:hidden;
-      box-shadow:var(--shadow);
-      transition:.15s;
-      position:relative;
-    }
-    .card:hover{transform:translateY(-3px)}
-    .imgWrap{position:relative}
-    .img{width:100%; aspect-ratio:1/1; object-fit:cover; display:block; background:#eee}
-    .tagRow{position:absolute; left:10px; top:10px; display:flex; gap:8px; flex-wrap:wrap}
-    .tag{
-      font-size:11px; font-weight:950;
-      padding:6px 10px; border-radius:999px;
-      background:rgba(255,255,255,.90);
-      border:1px solid var(--border);
-      backdrop-filter: blur(6px);
-    }
-    .tag-new{background:#dcfce7;border-color:transparent;color:#166534}
-    .tag-sale{background:#fee2e2;border-color:transparent;color:#991b1b}
-
-    .p{padding:12px}
-    .name{margin:0 0 6px;font-weight:950;font-size:14px}
-    .sub{margin:0 0 10px; font-size:12px; color:var(--muted)}
-    .priceLine{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin:0 0 10px}
-    .priceNow{font-weight:950; font-size:16px}
-    .priceOld{color:var(--muted); text-decoration:line-through; font-size:13px}
-    .miniRow{display:flex; gap:8px; align-items:center; justify-content:space-between; flex-wrap:wrap}
-    .sizeSel{min-width:150px}
-
-    .center{display:flex; justify-content:center; margin:14px 0}
-
-    /* Overlay + drawers */
-    .overlay{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; z-index:90}
-    .overlay.show{display:block}
-
-    .drawer, .filterDrawer{
-      position:fixed; right:0; top:0; height:100%;
-      width:min(430px,92vw);
-      background:#fff;
-      border-left:1px solid var(--border);
-      transform:translateX(110%);
-      transition:.22s;
-      z-index:95;
-      display:flex; flex-direction:column;
-    }
-    .filterDrawer{z-index:96}
-    .drawer.open, .filterDrawer.open{transform:translateX(0)}
-    .drawerHead{
-      padding:14px; border-bottom:1px solid var(--border);
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .drawerHead h2{margin:0;font-size:18px}
-    .xbtn{
-      width:40px; height:40px; border-radius:999px;
-      background:var(--chip); border:1px solid var(--border);
-      cursor:pointer; font-size:18px;
-    }
-
-    .cartlist{padding:10px 14px; overflow:auto; flex:1}
-    .item{display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--border)}
-    .thumb{width:56px;height:56px;border-radius:14px;object-fit:cover;background:#eee}
-    .itxt{flex:1}
-    .itxt b{display:block;font-size:13px;margin-bottom:4px}
-    .qty{display:flex; gap:6px; align-items:center; flex-wrap:wrap}
-    .qty button{width:34px;height:34px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:18px;cursor:pointer}
-    .foot{padding:12px 14px;border-top:1px solid var(--border)}
-    .foot .line{display:flex;justify-content:space-between;margin:8px 0}
-
-    /* Filter drawer */
-    .section{padding:14px; border-bottom:1px solid var(--border)}
-    .secTitle{font-weight:950; margin:0 0 10px}
-    .two{display:grid; gap:10px; grid-template-columns:1fr 1fr}
-    @media(max-width:520px){.two{grid-template-columns:1fr}}
-    .chipRow{display:flex; gap:8px; flex-wrap:wrap}
-    .chipBtn{
-      border:1px solid var(--border);
-      background:var(--chip);
-      border-radius:999px;
-      padding:8px 12px;
+    .cardBody{ padding:12px 12px 14px; }
+    .name{ font-weight:900; font-size:18px; margin:0 0 6px; }
+    .sub{ color:var(--muted); font-weight:700; font-size:13px; display:flex; flex-wrap:wrap; gap:8px; }
+    .priceRow{ margin-top:10px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+    .price{ font-weight:900; font-size:20px; }
+    .old{ color:#94a3b8; text-decoration:line-through; font-weight:800; }
+    .miniRow{ margin-top:10px; display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .addBtn{
+      border:none;
+      background: var(--accent);
+      color:#fff;
+      padding:10px 14px;
+      border-radius: 12px;
       font-weight:900;
       cursor:pointer;
+      box-shadow: 0 10px 22px rgba(17,24,39,.22);
+    }
+    .addBtn:hover{ filter: brightness(1.03); }
+    .ghostBtn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--txt);
+      padding:10px 12px;
+      border-radius: 12px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .ghostBtn:hover{ border-color:#d1d5db; }
+
+    /* Drawer / modal */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(2,6,23,.45);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:14px;
+      z-index:50;
+      animation: fadeIn .2s ease both;
+    }
+    .overlay.show{ display:flex; }
+    .sheet{
+      width:min(980px, 100%);
+      max-height: 86vh;
+      overflow:auto;
+      border-radius: 22px;
+      background: rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      box-shadow: 0 22px 60px rgba(2,6,23,.22);
+      animation: slideUp .22s ease both;
+    }
+    .sheetHeader{
+      position:sticky; top:0;
+      background: rgba(255,255,255,.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+      padding:14px 14px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      z-index:2;
+    }
+    .sheetHeader h2{ margin:0; font-size:18px; }
+    .sheetBody{ padding:14px; }
+
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    @media (max-width:700px){ .row{ grid-template-columns:1fr; } }
+    .field label{ display:block; font-weight:900; font-size:12px; color:#334155; margin:2px 2px 6px; }
+    .inp, .ta{
+      width:100%;
+      border:1px solid var(--line);
+      background:#fff;
+      padding:12px 12px;
+      border-radius:12px;
+      font-size:15px;
+      outline:none;
+    }
+    .ta{ min-height:90px; resize:vertical; }
+    .small{ font-size:12px; color:#64748b; font-weight:700; }
+
+    .hr{ height:1px; background:var(--line); margin:12px 0; }
+    .two{ display:flex; gap:10px; flex-wrap:wrap; }
+    .right{ margin-left:auto; }
+
+    /* Lightbox */
+    .lightbox{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.88);
+      display:none;
+      align-items:center; justify-content:center;
+      z-index:80;
+      animation: fadeIn .2s ease both;
+    }
+    .lightbox.show{ display:flex; }
+    .lbInner{ width:min(980px, 92vw); }
+    .lbTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; }
+    .lbTop .title{ color:#fff; font-weight:900; letter-spacing:.2px; }
+    .lbTop .x{
+      border:1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.08);
+      color:#fff;
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .lbImg{
+      width:100%;
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.18);
+      background:#000;
+    }
+    .lbImg img{ width:100%; height:auto; display:block; }
+
+    @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+    @keyframes slideUp{ from{transform: translateY(16px); opacity:.6} to{transform: translateY(0); opacity:1} }
+    @keyframes fadeUp{ from{transform: translateY(10px); opacity:.2} to{transform: translateY(0); opacity:1} }
+
+    /* Footer note */
+    .footerNote{
+      margin-top:18px;
+      color:var(--muted);
       font-size:12px;
+      font-weight:700;
+      text-align:center;
     }
-    .chipBtn.active{background:var(--dark); color:#fff; border-color:transparent}
-
-    /* Modals */
-    .modal{
-      position:fixed; left:50%; top:50%;
-      transform:translate(-50%,-50%);
-      width:min(920px,92vw);
-      background:#fff; border:1px solid var(--border);
-      border-radius:22px; z-index:100;
-      display:none; box-shadow:var(--shadow);
-    }
-    .modal.show{display:block}
-    .modalHead{
-      padding:14px; border-bottom:1px solid var(--border);
-      display:flex; align-items:center; justify-content:space-between; gap:10px
-    }
-    .modalHead h3{margin:0;font-size:18px}
-    .modalBody{padding:14px; max-height:72vh; overflow:auto}
-    .ta{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:#fff;outline:none;min-height:80px;resize:vertical}
-    .hr{height:1px;background:var(--border);margin:12px 0}
-    .pill{font-size:11px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:var(--chip)}
-    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .col{flex:1; min-width:220px}
-    .label{font-weight:950; font-size:12px; margin:0 0 6px}
-    .help{font-size:12px; color:var(--muted); margin-top:6px}
-    .warn{color:#b91c1c; font-weight:900}
-
-    .adminList{display:grid; gap:10px}
-    .adminItem{
-      border:1px solid var(--border); border-radius:18px;
-      padding:10px; display:flex; gap:10px; align-items:center;
-    }
-    .adminItem img{width:54px;height:54px;border-radius:14px;object-fit:cover;background:#eee}
-    .adminItem b{display:block}
-    .adminItem .mini{font-size:12px;color:var(--muted)}
   </style>
 </head>
-
 <body>
-<header>
-  <div class="head">
-    <div class="brand">MertaX Butik</div>
-    <div class="headBtns">
-      <button class="btn btn-ghost" id="adminBtn">Admin</button>
-      <button class="btn" id="openCartBtn">Кошничка</button>
-      <button class="btn btn-red" id="clearCartBtn">Испразни</button>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logoMark" title="MertaX Butik">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 8c0-3 2.4-5 5-5s5 2 5 5v1h-2V8c0-1.7-1.4-3-3-3s-3 1.3-3 3v1H7V8Z" fill="#111827"/>
+            <path d="M6.5 10.5h11l-1 10h-9l-1-10Z" stroke="#111827" stroke-width="1.4" />
+            <path d="M9 13h6" stroke="#b08a2e" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="brandText">
+          <div class="t1">MertaX Butik</div>
+          <div class="t2">Minimal Luxury • Cream / Grey</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="adminBtn">Admin</button>
+        <button class="btn primary" id="cartBtn">Кошничка</button>
+        <button class="btn danger" id="clearBtn">Испразни</button>
+      </div>
     </div>
-  </div>
-</header>
 
-<div class="wrap">
-  <div class="tabs" id="tabs"></div>
+    <div class="hero">
+      <h1>Нова колекција – Zara стил ✨</h1>
+      <div class="metaLine">
+        WhatsApp: <a id="waLink" href="#" target="_blank" rel="noopener">+38972912601</a> ·
+        Локација: <b>ТЦ Мавровка</b>
+      </div>
+      <div class="info" style="margin-top:10px;">
+        <span class="pill">Категорија: <b id="curCatTxt">—</b></span>
+        <span class="pill">Прикажани: <b id="shownTxt">0</b> / <b id="totalTxt">0</b> (макс <b id="maxTxt">150</b>)</span>
+        <span class="pill">Кошничка: <b id="cartCount">0</b> · Вкупно: <b id="cartTotal">0</b> ден.</span>
+      </div>
+    </div>
 
-  <div class="toolbar">
-    <div class="searchRow">
-      <input class="inp" id="searchInp" placeholder="Search (име, бренд, боја)..." />
-      <button class="btn btn-dark" id="openFilterBtn">FILTER</button>
-
+    <div class="controls">
+      <input class="search" id="search" placeholder="Search (име, бренд, боја)..." />
+      <button class="btn gold" id="filterBtn">FILTER</button>
       <select class="sel" id="sortSel">
         <option value="default">Стандардно</option>
-        <option value="price_asc">Цена ↑</option>
-        <option value="price_desc">Цена ↓</option>
-        <option value="new_first">НОВО прво</option>
-        <option value="sale_first">АКЦИЈА прво</option>
-        <option value="name_asc">Име A→Z</option>
+        <option value="priceAsc">Цена: ниско → високо</option>
+        <option value="priceDesc">Цена: високо → ниско</option>
+        <option value="newFirst">НОВО прво</option>
+        <option value="saleFirst">АКЦИЈА прво</option>
       </select>
     </div>
 
-    <div class="badge">
-      🛒 <span>Кошничка:</span> <b id="cartCount">0</b>
-      <span class="small">| Вкупно: <b id="cartTotal">0</b> ден.</span>
+    <div class="grid" id="grid"></div>
+
+    <div class="footerNote">
+      Плаќање: готово при прием · Достава: +150 ден · Можност за замена: да
     </div>
   </div>
 
-  <div class="meta">
-    WhatsApp: <a href="https://wa.me/38972912601" target="_blank"><b>+38972912601</b></a>
-    • Локација: <b>ТЦ Мавровка</b>
-    <span id="errLine" class="err"></span>
-    <div id="infoLine" class="small"></div>
-  </div>
-
-  <div class="grid" id="productGrid"></div>
-
-  <div class="center">
-    <button class="btn btn-ghost" id="loadMoreBtn" style="display:none;">Вчитај уште</button>
-  </div>
-</div>
-
-<div class="overlay" id="overlay"></div>
-
-<!-- CART drawer -->
-<aside class="drawer" id="drawer">
-  <div class="drawerHead">
-    <h2>Кошничка</h2>
-    <button class="xbtn" id="closeCartBtn">✕</button>
-  </div>
-  <div class="cartlist" id="cartList"></div>
-  <div class="foot">
-    <div class="line"><span>Производи</span> <b id="sumItems">0 ден.</b></div>
-    <div class="line"><span>Достава</span> <b id="shipLine">150 ден.</b></div>
-    <div class="line"><span>Вкупно</span> <b><span id="sumTotal">0</span> ден.</b></div>
-    <button class="btn btn-dark" id="goCheckoutBtn" style="width:100%;">Нарачај</button>
-    <div class="small" style="margin-top:8px;">Плаќање: готово при прием • Можност за замена: да</div>
-  </div>
-</aside>
-
-<!-- FILTER drawer -->
-<aside class="filterDrawer" id="filterDrawer">
-  <div class="drawerHead">
-    <h2>Филтер</h2>
-    <button class="xbtn" id="closeFilterBtn">✕</button>
-  </div>
-
-  <div style="overflow:auto; flex:1;">
-    <div class="section">
-      <div class="secTitle">Категорија</div>
-      <select class="sel" id="filterCatSel" style="width:100%; min-width:unset"></select>
-    </div>
-
-    <div class="section">
-      <div class="secTitle">Ознака</div>
-      <div class="chipRow" id="badgeChips"></div>
-    </div>
-
-    <div class="section">
-      <div class="secTitle">Големина</div>
-      <select class="sel" id="filterSizeSel" style="width:100%; min-width:unset"></select>
-      <div class="help">* Кај Фармерки/Панталони има 30–42.</div>
-    </div>
-
-    <div class="section">
-      <div class="secTitle">Бренд / Марка</div>
-      <input class="inp" id="filterBrandInp" placeholder="пример: Zara / Nike..." style="width:100%" />
-    </div>
-
-    <div class="section">
-      <div class="secTitle">Боја</div>
-      <input class="inp" id="filterColorInp" placeholder="пример: црна / бела..." style="width:100%" />
-    </div>
-
-    <div class="section">
-      <div class="secTitle">Цена</div>
-      <div class="two">
-        <input class="inp" id="minPriceInp" type="number" placeholder="Цена од" />
-        <input class="inp" id="maxPriceInp" type="number" placeholder="Цена до" />
+  <!-- FILTER DRAWER -->
+  <div class="overlay" id="filterOverlay" aria-hidden="true">
+    <div class="sheet">
+      <div class="sheetHeader">
+        <h2>Филтер</h2>
+        <button class="btn" id="closeFilter">Затвори</button>
       </div>
-    </div>
-  </div>
-
-  <div class="foot">
-    <button class="btn btn-dark" id="applyFilterBtn" style="width:100%;">Примени</button>
-    <button class="btn" id="resetFilterBtn" style="width:100%; margin-top:10px;">Ресет</button>
-  </div>
-</aside>
-
-<!-- ADMIN modal -->
-<div class="modal" id="adminModal">
-  <div class="modalHead">
-    <h3>Admin</h3>
-    <button class="xbtn" id="closeAdminBtn">✕</button>
-  </div>
-  <div class="modalBody">
-    <div class="row">
-      <div class="col">
-        <div class="label">PIN (стандардно: 1234)</div>
-        <input class="inp" id="pinInp" placeholder="Внеси PIN..." />
-        <div class="help">Ако сакаш да смениш PIN, ќе има копче долу.</div>
-      </div>
-      <div class="col">
-        <button class="btn btn-dark" id="unlockBtn" style="width:100%;">Отклучи</button>
-        <button class="btn" id="changePinBtn" style="width:100%; margin-top:10px;">Смени PIN</button>
-      </div>
-    </div>
-
-    <div class="hr"></div>
-
-    <div id="adminLockedNote" class="warn">Admin е заклучен. Внеси PIN.</div>
-
-    <div id="adminArea" style="display:none;">
-      <div class="row">
-        <div class="col">
-          <div class="label">Категорија</div>
-          <select class="sel" id="pCat" style="width:100%; min-width:unset"></select>
+      <div class="sheetBody">
+        <div class="row">
+          <div class="field">
+            <label>Категорија</label>
+            <select class="inp" id="catSel"></select>
+          </div>
+          <div class="field">
+            <label>Ознака</label>
+            <select class="inp" id="badgeSel">
+              <option value="ALL">Сите</option>
+              <option value="NEW">НОВО</option>
+              <option value="SALE">АКЦИЈА</option>
+              <option value="NONE">Без ознака</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Величина</label>
+            <select class="inp" id="sizeSel"></select>
+          </div>
+          <div class="field">
+            <label>Бренд/Марка (текст)</label>
+            <input class="inp" id="brandInp" placeholder="пример: Zara, Nike..." />
+          </div>
+          <div class="field">
+            <label>Боја (текст)</label>
+            <input class="inp" id="colorInp" placeholder="пример: црна, бела..." />
+          </div>
+          <div class="field">
+            <label>Цена од</label>
+            <input class="inp" id="minPrice" type="number" min="0" step="10" value="0" />
+          </div>
+          <div class="field">
+            <label>Цена до</label>
+            <input class="inp" id="maxPrice" type="number" min="0" step="10" value="99999" />
+          </div>
+          <div class="field">
+            <label>Прикажи максимум</label>
+            <select class="inp" id="limitSel">
+              <option value="30">30</option>
+              <option value="60">60</option>
+              <option value="100">100</option>
+              <option value="150" selected>150</option>
+            </select>
+          </div>
         </div>
-        <div class="col">
-          <div class="label">Ознака</div>
-          <select class="sel" id="pBadge" style="width:100%; min-width:unset">
-            <option value="">Без</option>
-            <option value="NEW">НОВО</option>
-            <option value="SALE">АКЦИЈА</option>
-          </select>
+
+        <div class="hr"></div>
+
+        <div class="two">
+          <button class="btn primary" id="applyFilter">Примени</button>
+          <button class="btn" id="resetFilter">Ресет</button>
+        </div>
+        <div class="small" style="margin-top:10px;">
+          Tip: пребарување работи по име/бренд/боја, филтерот дополнително стеснува по величина/цена/ознака.
         </div>
       </div>
-
-      <div class="row" style="margin-top:10px;">
-        <div class="col">
-          <div class="label">Име</div>
-          <input class="inp" id="pName" placeholder="пример: Блузон Oversize" />
-        </div>
-        <div class="col">
-          <div class="label">Бренд/Марка</div>
-          <input class="inp" id="pBrand" placeholder="пример: Zara" />
-        </div>
-      </div>
-
-      <div class="row" style="margin-top:10px;">
-        <div class="col">
-          <div class="label">Боја</div>
-          <input class="inp" id="pColor" placeholder="пример: црна" />
-        </div>
-        <div class="col">
-          <div class="label">Цена (нова)</div>
-          <input class="inp" id="pPrice" type="number" placeholder="пример: 1990" />
-        </div>
-      </div>
-
-      <div class="row" style="margin-top:10px;">
-        <div class="col">
-          <div class="label">Стара цена (ако е попуст)</div>
-          <input class="inp" id="pOldPrice" type="number" placeholder="пример: 2490" />
-          <div class="help">Ако внесеш стара цена, ќе се прикаже прецртана.</div>
-        </div>
-        <div class="col">
-          <div class="label">Големини</div>
-          <select class="sel" id="pSizePreset" style="width:100%; min-width:unset">
-            <option value="SML">S/M/L/XL/2XL/3XL</option>
-            <option value="JEANS">Фармерки 30-42</option>
-            <option value="CUSTOM">Рачно (со запирки)</option>
-          </select>
-          <input class="inp" id="pSizes" placeholder="пример: S,M,L" style="margin-top:10px;" />
-        </div>
-      </div>
-
-      <div class="hr"></div>
-
-      <div class="row">
-        <div class="col">
-          <div class="label">Слика од Gallery</div>
-          <input class="inp" id="imgGallery" type="file" accept="image/*" />
-          <div class="help">Избери слика од телефон.</div>
-        </div>
-        <div class="col">
-          <div class="label">Качи слика од камера</div>
-          <input class="inp" id="imgCamera" type="file" accept="image/*" capture="environment" />
-          <div class="help">Ќе отвори камера.</div>
-        </div>
-      </div>
-
-      <div class="row" style="margin-top:10px;">
-        <div class="col">
-          <img id="imgPreview" alt="" style="width:100%; max-height:240px; object-fit:cover; border-radius:18px; border:1px solid var(--border); background:#f3f4f6;">
-        </div>
-      </div>
-
-      <div class="row" style="margin-top:10px;">
-        <button class="btn btn-dark" id="addProductBtn">Додај производ</button>
-        <button class="btn" id="exportBtn">Export (JSON)</button>
-        <button class="btn" id="importBtn">Import (JSON)</button>
-      </div>
-      <textarea class="ta" id="jsonBox" placeholder="Export/Import JSON тука..."></textarea>
-
-      <div class="hr"></div>
-
-      <div class="secTitle">Листа на производи (бришење)</div>
-      <div class="row" style="margin-bottom:10px;">
-        <select class="sel" id="adminFilterCat" style="min-width:220px"></select>
-        <input class="inp" id="adminSearch" placeholder="Пребарај (име/бренд/боја)..." style="width:min(520px,100%)" />
-      </div>
-      <div class="adminList" id="adminList"></div>
     </div>
   </div>
-</div>
 
-<!-- CHECKOUT modal -->
-<div class="modal" id="checkoutModal">
-  <div class="modalHead">
-    <h3>Нарачка</h3>
-    <button class="xbtn" id="closeCheckoutBtn">✕</button>
-  </div>
-  <div class="modalBody">
-    <div class="row">
-      <div class="col">
-        <div class="label">Име и презиме</div>
-        <input class="inp" id="cName" placeholder="пример: Ерен Туна" />
+  <!-- CART DRAWER -->
+  <div class="overlay" id="cartOverlay" aria-hidden="true">
+    <div class="sheet">
+      <div class="sheetHeader">
+        <h2>Кошничка</h2>
+        <button class="btn" id="closeCart">Затвори</button>
       </div>
-      <div class="col">
-        <div class="label">Телефон</div>
-        <input class="inp" id="cPhone" placeholder="пример: 07x xxx xxx" />
+      <div class="sheetBody">
+        <div id="cartList"></div>
+        <div class="hr"></div>
+
+        <div class="row">
+          <div class="field">
+            <label>Име и презиме</label>
+            <input class="inp" id="cName" placeholder="пример: Ерен" />
+          </div>
+          <div class="field">
+            <label>Телефон</label>
+            <input class="inp" id="cPhone" placeholder="07x..." />
+          </div>
+          <div class="field" style="grid-column:1/-1;">
+            <label>Адреса за достава</label>
+            <input class="inp" id="cAddr" placeholder="улица, број, град..." />
+          </div>
+          <div class="field">
+            <label>Плаќање</label>
+            <input class="inp" value="Готово при прием" disabled />
+          </div>
+          <div class="field">
+            <label>Можност за замена</label>
+            <select class="inp" id="cExchange">
+              <option value="ДА" selected>ДА</option>
+              <option value="НЕ">НЕ</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="two">
+          <button class="btn primary" id="orderBtn">Нарачај на WhatsApp</button>
+          <div class="right pill">
+            <span>Достава: <b id="shipTxt">150</b> ден.</span>&nbsp;·&nbsp;
+            <span>Вкупно: <b id="grandTxt">0</b> ден.</span>
+          </div>
+        </div>
+        <div class="small" style="margin-top:10px;">
+          Автоматски број на нарачка: <b id="orderNoTxt">—</b>
+        </div>
       </div>
-    </div>
-
-    <div class="row" style="margin-top:10px;">
-      <div class="col">
-        <div class="label">Адреса</div>
-        <input class="inp" id="cAddr" placeholder="пример: Скопје..." />
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:10px;">
-      <div class="col">
-        <div class="label">Порака/Забелешка</div>
-        <textarea class="ta" id="cNote" placeholder="Опционално..."></textarea>
-      </div>
-    </div>
-
-    <div class="hr"></div>
-
-    <div class="row">
-      <span class="pill">Плаќање: готово при прием</span>
-      <span class="pill">Достава: +150 ден.</span>
-      <span class="pill">Можност за замена: да</span>
-    </div>
-
-    <div class="row" style="margin-top:12px;">
-      <label style="display:flex;gap:10px;align-items:center;font-weight:900;">
-        <input type="checkbox" id="cExchange" checked />
-        Сакам опција за замена (ако треба)
-      </label>
-    </div>
-
-    <div class="hr"></div>
-
-    <div class="secTitle">Преглед</div>
-    <div class="small" id="orderPreview"></div>
-
-    <div class="row" style="margin-top:12px;">
-      <button class="btn btn-dark" id="sendOrderBtn">Испрати на WhatsApp</button>
-    </div>
-    <div class="small" style="margin-top:8px;">
-      Ќе се креира автоматски број на нарачка и ќе се отвори WhatsApp порака.
     </div>
   </div>
-</div>
+
+  <!-- ADMIN DRAWER -->
+  <div class="overlay" id="adminOverlay" aria-hidden="true">
+    <div class="sheet">
+      <div class="sheetHeader">
+        <h2>Admin</h2>
+        <button class="btn" id="closeAdmin">Затвори</button>
+      </div>
+      <div class="sheetBody">
+        <div class="small" id="adminMsg"></div>
+
+        <div class="row">
+          <div class="field">
+            <label>PIN (за пристап)</label>
+            <input class="inp" id="pinInp" type="password" placeholder="внеси PIN" />
+          </div>
+          <div class="field">
+            <label>Промени PIN</label>
+            <button class="btn" id="changePinBtn">Промени PIN</button>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="row">
+          <div class="field">
+            <label>Име</label>
+            <input class="inp" id="pName" placeholder="пример: Маица Premium" />
+          </div>
+          <div class="field">
+            <label>Категорија</label>
+            <select class="inp" id="pCat"></select>
+          </div>
+
+          <div class="field">
+            <label>Цена (ден.)</label>
+            <input class="inp" id="pPrice" type="number" min="0" step="10" value="990" />
+          </div>
+          <div class="field">
+            <label>Стара цена (опц.)</label>
+            <input class="inp" id="pOld" type="number" min="0" step="10" placeholder="ако има попуст" />
+          </div>
+
+          <div class="field">
+            <label>Ознака</label>
+            <select class="inp" id="pBadge">
+              <option value="">Нема</option>
+              <option value="NEW">НОВО</option>
+              <option value="SALE">АКЦИЈА</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Попуст % (опц.)</label>
+            <input class="inp" id="pDisc" type="number" min="0" max="90" step="1" placeholder="пример: 20" />
+          </div>
+
+          <div class="field">
+            <label>Бренд/Марка</label>
+            <input class="inp" id="pBrand" placeholder="пример: Zara" />
+          </div>
+          <div class="field">
+            <label>Боја</label>
+            <input class="inp" id="pColor" placeholder="пример: црна" />
+          </div>
+
+          <div class="field" style="grid-column:1/-1;">
+            <label>Величини (раздели со запирка)</label>
+            <input class="inp" id="pSizes" placeholder="пример: S,M,L,XL или 30,31,32..." />
+            <div class="small">Фармерки/Панталони: 30–42. Облека: S/M/L/XL/2XL/3XL.</div>
+          </div>
+
+          <div class="field" style="grid-column:1/-1;">
+            <label>Слики (до 3) — Gallery + Camera</label>
+            <div class="two">
+              <input class="inp" id="imgGallery" type="file" accept="image/*" multiple />
+              <input class="inp" id="imgCamera" type="file" accept="image/*" capture="environment" multiple />
+            </div>
+            <div class="small">Избери до 3 слики (ќе се чуваат во прелистувачот).</div>
+          </div>
+        </div>
+
+        <div class="two" style="margin-top:12px;">
+          <button class="btn primary" id="addProductBtn">Додај производ</button>
+          <button class="btn" id="seedBtn">Додај пример производи</button>
+          <button class="btn danger right" id="wipeProductsBtn">Избриши СИТЕ производи</button>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="row">
+          <div class="field">
+            <label>Пребарај (во admin)</label>
+            <input class="inp" id="adminSearch" placeholder="име/бренд/боја..." />
+          </div>
+          <div class="field">
+            <label>Филтер категорија</label>
+            <select class="inp" id="adminCatFilter"></select>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;" id="adminList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <div class="lbInner">
+      <div class="lbTop">
+        <div class="title" id="lbTitle">—</div>
+        <button class="x" id="lbClose">Затвори ✕</button>
+      </div>
+      <div class="lbImg"><img id="lbImg" alt=""></div>
+    </div>
+  </div>
 
 <script>
-/* =========================
-   MertaX Butik - Single file
-   ========================= */
+(() => {
+  // ===== CONFIG =====
+  const WHATSAPP_NUMBER = "+38972912601";
+  const LOCATION_TEXT = "ТЦ Мавровка";
+  const SHIPPING_FEE = 150;
 
-const WHATSAPP_NUMBER = "38972912601";
-const LOCATION_TEXT = "ТЦ Мавровка";
-const SHIPPING_FEE = 150;
-const MAX_PER_CATEGORY = 150;
+  const CATEGORIES = [
+    "Џемпери",
+    "Блузони",
+    "Маици",
+    "Кошули",
+    "Фармерки/Панталони",
+    "Тренерки",
+    "Јакни",
+    "Одела"
+  ];
 
-const CATEGORIES = [
-  "Џемпери",
-  "Блузони",
-  "Маици",
-  "Кошули",
-  "Фармерки/Панталони",
-  "Тренерки",
-  "Јакни",
-  "Одела"
-];
+  const CLOTH_SIZES = ["ALL","S","M","L","XL","2XL","3XL"];
+  const JEANS_SIZES = (() => {
+    const arr=["ALL"];
+    for(let i=30;i<=42;i++) arr.push(String(i));
+    return arr;
+  })();
 
-const SIZE_PRESET_SML = ["S","M","L","XL","2XL","3XL"];
-const SIZE_PRESET_JEANS = Array.from({length:13}, (_,i)=> String(30+i)); // 30..42
+  // ===== STORAGE KEYS =====
+  const K_PRODUCTS = "mertax_products_v3";
+  const K_CART = "mertax_cart_v3";
+  const K_PIN = "mertax_pin_v3";
+  const K_ORDERNO = "mertax_orderno_v3";
+  const K_FILTER = "mertax_filter_v3";
 
-// --- DOM ---
-const tabsEl = document.getElementById("tabs");
-const gridEl = document.getElementById("productGrid");
-const infoLine = document.getElementById("infoLine");
-const errLine = document.getElementById("errLine");
+  // ===== HELPERS =====
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const nowId = () => "p_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
 
-const searchInp = document.getElementById("searchInp");
-const sortSel = document.getElementById("sortSel");
-const loadMoreBtn = document.getElementById("loadMoreBtn");
+  function load(key, fallback){
+    try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; }
+  }
+  function save(key, value){
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+  function numOrNull(v){
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
 
-const overlay = document.getElementById("overlay");
-const drawer = document.getElementById("drawer");
-const cartList = document.getElementById("cartList");
-const cartCount = document.getElementById("cartCount");
-const cartTotal = document.getElementById("cartTotal");
-const sumItems = document.getElementById("sumItems");
-const shipLine = document.getElementById("shipLine");
-const sumTotal = document.getElementById("sumTotal");
+  function ensurePin(){
+    let pin = localStorage.getItem(K_PIN);
+    if(!pin){ localStorage.setItem(K_PIN, "1234"); } // default
+  }
+  function getPin(){ return localStorage.getItem(K_PIN) || "1234"; }
+  function setPin(p){ localStorage.setItem(K_PIN, p); }
 
-const openCartBtn = document.getElementById("openCartBtn");
-const closeCartBtn = document.getElementById("closeCartBtn");
-const clearCartBtn = document.getElementById("clearCartBtn");
-const goCheckoutBtn = document.getElementById("goCheckoutBtn");
+  // ===== STATE =====
+  let products = load(K_PRODUCTS, []);
+  let cart = load(K_CART, []);
+  let filterState = load(K_FILTER, {
+    cat: CATEGORIES[0],
+    badge: "ALL",
+    size: "ALL",
+    brand: "",
+    color: "",
+    minP: 0,
+    maxP: 99999,
+    limit: 150
+  });
 
-const filterDrawer = document.getElementById("filterDrawer");
-const openFilterBtn = document.getElementById("openFilterBtn");
-const closeFilterBtn = document.getElementById("closeFilterBtn");
-const filterCatSel = document.getElementById("filterCatSel");
-const badgeChips = document.getElementById("badgeChips");
-const filterSizeSel = document.getElementById("filterSizeSel");
-const filterBrandInp = document.getElementById("filterBrandInp");
-const filterColorInp = document.getElementById("filterColorInp");
-const minPriceInp = document.getElementById("minPriceInp");
-const maxPriceInp = document.getElementById("maxPriceInp");
-const applyFilterBtn = document.getElementById("applyFilterBtn");
-const resetFilterBtn = document.getElementById("resetFilterBtn");
+  // ===== UI SETUP =====
+  ensurePin();
+  $("waLink").textContent = WHATSAPP_NUMBER;
+  $("waLink").href = "https://wa.me/" + WHATSAPP_NUMBER.replace(/\D/g,'') + "?text=" + encodeURIComponent("Здраво! 👋");
+  document.querySelector(".metaLine b").textContent = LOCATION_TEXT;
+  $("shipTxt").textContent = SHIPPING_FEE;
 
-// Admin
-const adminBtn = document.getElementById("adminBtn");
-const adminModal = document.getElementById("adminModal");
-const closeAdminBtn = document.getElementById("closeAdminBtn");
-const pinInp = document.getElementById("pinInp");
-const unlockBtn = document.getElementById("unlockBtn");
-const changePinBtn = document.getElementById("changePinBtn");
-const adminLockedNote = document.getElementById("adminLockedNote");
-const adminArea = document.getElementById("adminArea");
+  function fillSelect(sel, options){
+    sel.innerHTML = "";
+    for(const opt of options){
+      const o=document.createElement("option");
+      o.value = opt;
+      o.textContent = opt;
+      sel.appendChild(o);
+    }
+  }
 
-const pCat = document.getElementById("pCat");
-const pBadge = document.getElementById("pBadge");
-const pName = document.getElementById("pName");
-const pBrand = document.getElementById("pBrand");
-const pColor = document.getElementById("pColor");
-const pPrice = document.getElementById("pPrice");
-const pOldPrice = document.getElementById("pOldPrice");
-const pSizePreset = document.getElementById("pSizePreset");
-const pSizes = document.getElementById("pSizes");
-const imgGallery = document.getElementById("imgGallery");
-const imgCamera = document.getElementById("imgCamera");
-const imgPreview = document.getElementById("imgPreview");
-const addProductBtn = document.getElementById("addProductBtn");
+  // Category selects
+  fillSelect($("catSel"), CATEGORIES);
+  fillSelect($("pCat"), CATEGORIES);
+  fillSelect($("adminCatFilter"), ["Сите", ...CATEGORIES]);
 
-const exportBtn = document.getElementById("exportBtn");
-const importBtn = document.getElementById("importBtn");
-const jsonBox = document.getElementById("jsonBox");
+  $("catSel").value = filterState.cat;
 
-const adminFilterCat = document.getElementById("adminFilterCat");
-const adminSearch = document.getElementById("adminSearch");
-const adminList = document.getElementById("adminList");
+  // Size select (dynamic by category)
+  function renderSizeFilter(){
+    const cat = filterState.cat || CATEGORIES[0];
+    const sizes = (cat === "Фармерки/Панталони") ? JEANS_SIZES : CLOTH_SIZES;
+    fillSelect($("sizeSel"), sizes.map(s => s==="ALL" ? "ALL" : s));
+    $("sizeSel").value = filterState.size || "ALL";
+  }
 
-// Checkout
-const checkoutModal = document.getElementById("checkoutModal");
-const closeCheckoutBtn = document.getElementById("closeCheckoutBtn");
-const cName = document.getElementById("cName");
-const cPhone = document.getElementById("cPhone");
-const cAddr = document.getElementById("cAddr");
-const cNote = document.getElementById("cNote");
-const cExchange = document.getElementById("cExchange");
-const orderPreview = document.getElementById("orderPreview");
-const sendOrderBtn = document.getElementById("sendOrderBtn");
+  // ===== FILTER / SORT / SEARCH =====
+  function applyFilterFromUI(){
+    filterState.cat = $("catSel").value;
+    filterState.badge = $("badgeSel").value;
+    filterState.size = $("sizeSel").value;
+    filterState.brand = ($("brandInp").value || "").trim();
+    filterState.color = ($("colorInp").value || "").trim();
+    filterState.minP = numOrNull($("minPrice").value) ?? 0;
+    filterState.maxP = numOrNull($("maxPrice").value) ?? 99999;
+    filterState.limit = Number($("limitSel").value) || 150;
+    save(K_FILTER, filterState);
+  }
 
-// --- State ---
-let activeCat = CATEGORIES[0];
-let visibleLimit = 30; // load more increments
-let filterState = {
-  cat: activeCat,
-  badge: "ALL", // ALL | NEW | SALE | NONE
-  size: "ALL",
-  brand: "",
-  color: "",
-  minPrice: null,
-  maxPrice: null
-};
+  function resetFilter(){
+    filterState = { cat:CATEGORIES[0], badge:"ALL", size:"ALL", brand:"", color:"", minP:0, maxP:99999, limit:150 };
+    save(K_FILTER, filterState);
+    $("catSel").value = filterState.cat;
+    $("badgeSel").value = filterState.badge;
+    $("brandInp").value = "";
+    $("colorInp").value = "";
+    $("minPrice").value = 0;
+    $("maxPrice").value = 99999;
+    $("limitSel").value = 150;
+    renderSizeFilter();
+    renderProducts();
+  }
 
-let selectedBadgeChip = "ALL";
+  // ===== PRODUCT LIST =====
+  function scoreBadge(p, wanted){
+    if(wanted==="NEW") return p.badge==="NEW" ? 1 : 0;
+    if(wanted==="SALE") return p.badge==="SALE" ? 1 : 0;
+    return 0;
+  }
 
-// --- Storage keys ---
-const K_PRODUCTS = "mertax_products_v1";
-const K_CART = "mertax_cart_v1";
-const K_PIN = "mertax_admin_pin_v1";
+  function getFilteredProducts(){
+    const q = ($("search").value || "").trim().toLowerCase();
+    let list = products.slice();
 
-// --- Helpers ---
-function $(id){ return document.getElementById(id); }
-function safeJsonParse(str, fallback){
-  try{ return JSON.parse(str); }catch{ return fallback; }
-}
-function numOrNull(v){
-  if(v === "" || v === null || v === undefined) return null;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
-}
-function escapeHtml(s){
-  return String(s||"")
-    .replaceAll("&","&amp;").replaceAll("<","&lt;")
-    .replaceAll(">","&gt;").replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-function uid(){
-  return "p_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
-}
-function nowId(){
-  // order number: MTX-YYYYMMDD-HHMMSS-XXXX
-  const d = new Date();
-  const pad = (x)=> String(x).padStart(2,"0");
-  const y = d.getFullYear();
-  const m = pad(d.getMonth()+1);
-  const da = pad(d.getDate());
-  const h = pad(d.getHours());
-  const mi = pad(d.getMinutes());
-  const s = pad(d.getSeconds());
-  const rnd = Math.random().toString(16).slice(2,6).toUpperCase();
-  return `MTX-${y}${m}${da}-${h}${mi}${s}-${rnd}`;
-}
-function isJeansCat(cat){ return cat === "Фармерки/Панталони"; }
-function defaultSizesForCat(cat){
-  return isJeansCat(cat) ? SIZE_PRESET_JEANS : SIZE_PRESET_SML;
-}
-function formatDen(n){
-  const x = Number(n)||0;
-  return String(x);
-}
-function makePlaceholderSVG(title){
-  const t = encodeURIComponent(title);
-  return `data:image/svg+xml;charset=utf-8,` +
-    `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'>`+
-    `<rect width='100%25' height='100%25' fill='%23f3f4f6'/>`+
-    `<text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='40' fill='%239ca3af'>${t}</text>`+
-    `</svg>`;
-}
+    // category
+    list = list.filter(p => p.category === filterState.cat);
 
-// --- Products ---
-function getProducts(){
-  const p = safeJsonParse(localStorage.getItem(K_PRODUCTS), null);
-  if(Array.isArray(p)) return p;
-  const seed = seedProducts();
-  localStorage.setItem(K_PRODUCTS, JSON.stringify(seed));
-  return seed;
-}
-function setProducts(list){
-  localStorage.setItem(K_PRODUCTS, JSON.stringify(list));
-}
-function seedProducts(){
-  // само неколку пример — ти додадеш од Admin
-  return [
-    {
-      id: uid(),
-      cat: "Џемпери",
-      name: "Џемпер
+    // search
+    if(q){
+      list = list.filter(p => {
+        const a=(p.name||"").toLowerCase();
+        const b=(p.brand||"").toLowerCase();
+        const c=(p.color||"").toLowerCase();
+        return a.includes(q) || b.includes(q) || c.includes(q);
+      });
+    }
+
+    // drawer filters
+    const size = filterState.size || "ALL";
+    const brand = (filterState.brand||"").toLowerCase();
+    const color = (filterState.color||"").toLowerCase();
+    const minP = numOrNull(filterState.minP);
+    const maxP = numOrNull(filterState.maxP);
+    const badge = filterState.badge || "ALL";
+
+    if(size !== "ALL"){
+      list = list.filter(p => Array.isArray(p.sizes) && p.sizes.map(String).includes(String(size)));
+    }
+    if(brand){
+      list = list.filter(p => (p.brand||"").toLowerCase().includes(brand));
+    }
+    if(color){
+      list = list.filter(p => (p.color||"").toLowerCase().includes(color));
+    }
+    if(minP !== null) list = list
