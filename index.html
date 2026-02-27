@@ -7,18 +7,13 @@
   <meta name="color-scheme" content="light dark">
   <style>
     :root{
-      --bg:#0b0f14;
-      --card:#0f1621;
-      --card2:#101b28;
       --txt:#eef2ff;
       --muted:#9aa6b2;
       --line:rgba(255,255,255,.08);
       --accent:#22c55e;
       --accent2:#60a5fa;
       --danger:#ef4444;
-      --warn:#f59e0b;
       --shadow: 0 18px 45px rgba(0,0,0,.35);
-      --radius:16px;
       --radius2:22px;
       --max:1200px;
     }
@@ -33,7 +28,8 @@
       min-height:100vh;
     }
     a{color:inherit}
-    .wrap{max-width:var(--max); margin:0 auto; padding:18px 14px 80px}
+    .wrap{max-width:var(--max); margin:0 auto; padding:18px 14px 84px}
+
     /* Top bar */
     .topbar{
       position:sticky; top:0; z-index:40;
@@ -41,7 +37,12 @@
       background: rgba(5,7,10,.72);
       border-bottom: 1px solid var(--line);
     }
-    .topbar-inner{max-width:var(--max); margin:0 auto; padding:12px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between;}
+    .topbar-inner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:12px 14px;
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+    }
     .brand{display:flex; gap:12px; align-items:center;}
     .logo{
       width:44px; height:44px; border-radius:14px;
@@ -50,6 +51,7 @@
       display:grid; place-items:center;
       position:relative;
       overflow:hidden;
+      flex:0 0 auto;
     }
     .logo:before{
       content:"";
@@ -77,6 +79,7 @@
     }
     .brand h1{margin:0; font-size:16px; letter-spacing:.8px}
     .brand p{margin:2px 0 0; color:var(--muted); font-size:12px}
+
     .right-actions{display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
     .chip{
       display:inline-flex; gap:8px; align-items:center;
@@ -86,7 +89,12 @@
       border-radius:999px;
       font-size:12px;
       color:var(--muted);
+      max-width: 62vw;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
+
     .btn{
       appearance:none; border:0; cursor:pointer;
       padding:10px 12px;
@@ -94,7 +102,7 @@
       background: rgba(255,255,255,.06);
       border:1px solid var(--line);
       color:var(--txt);
-      font-weight:600;
+      font-weight:800;
       transition:.15s transform, .15s background, .15s border;
     }
     .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.09);}
@@ -102,53 +110,16 @@
     .btn.blue{background: linear-gradient(135deg, rgba(96,165,250,.92), rgba(96,165,250,.62)); border-color: rgba(96,165,250,.55);}
     .btn.danger{background: rgba(239,68,68,.18); border-color: rgba(239,68,68,.45); color:#ffd6d6;}
     .btn.ghost{background: transparent;}
-    /* Layout */
-    .grid{
-      display:grid;
-      grid-template-columns: 330px 1fr;
-      gap:16px;
-      margin-top:16px;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
-    }
+    .btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
+
+    /* Main panel */
     .panel{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
       border-radius: var(--radius2);
       box-shadow: var(--shadow);
+      overflow:hidden;
     }
-    .panel .head{padding:14px 14px 10px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:10px;}
-    .panel .head h2{margin:0; font-size:14px; letter-spacing:.6px}
-    .panel .body{padding:12px 14px}
-    .search{
-      display:flex; gap:10px; align-items:center;
-      background: rgba(0,0,0,.25);
-      border:1px solid var(--line);
-      border-radius: 14px;
-      padding:10px 12px;
-    }
-    .search input{
-      width:100%; border:0; outline:0;
-      background: transparent; color:var(--txt);
-      font-size:14px;
-    }
-    .search span{color:var(--muted); font-size:12px}
-    .cats{display:flex; flex-direction:column; gap:8px; margin-top:12px;}
-    .cat{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding:10px 12px;
-      border-radius: 14px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      cursor:pointer;
-      transition:.12s background, .12s transform, .12s border;
-    }
-    .cat:hover{transform: translateY(-1px); background: rgba(255,255,255,.06);}
-    .cat.active{border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.08);}
-    .cat .name{font-weight:700; font-size:13px}
-    .cat .count{font-size:12px; color:var(--muted)}
-    /* Products */
     .products-head{
       display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
       padding:14px 14px 10px;
@@ -174,6 +145,7 @@
     }
     @media (max-width: 980px){ .cards{grid-template-columns: repeat(2, minmax(0,1fr));} }
     @media (max-width: 520px){ .cards{grid-template-columns: 1fr;} }
+
     .card{
       border-radius: var(--radius2);
       border:1px solid var(--line);
@@ -207,9 +179,9 @@
       color:#ffe1e1;
     }
     .card .content{padding:12px 12px 12px; display:flex; flex-direction:column; gap:10px; flex:1;}
-    .title{font-weight:800; letter-spacing:.2px}
+    .title{font-weight:950; letter-spacing:.2px}
     .meta{display:flex; align-items:center; justify-content:space-between; gap:10px}
-    .price{font-weight:900}
+    .price{font-weight:950}
     .muted{color:var(--muted); font-size:12px}
     .sizes{display:flex; gap:6px; flex-wrap:wrap}
     .size{
@@ -228,7 +200,8 @@
     .dot.zero{background: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,.12);}
     .actions{display:flex; gap:8px; margin-top:auto}
     .actions .btn{flex:1; padding:10px 10px; border-radius:14px; font-size:13px;}
-    /* Modal */
+
+    /* Modals + Drawer */
     .modal{
       position:fixed; inset:0; z-index:60;
       display:none;
@@ -238,6 +211,7 @@
       overflow:auto;
     }
     .modal.show{display:block}
+
     .modal-card{
       max-width: 900px;
       margin: 20px auto;
@@ -254,11 +228,13 @@
     }
     .modal-head h3{margin:0; font-size:14px; letter-spacing:.6px}
     .modal-body{padding:14px}
+
     .form{
       display:grid; grid-template-columns: 1fr 1fr;
       gap:12px;
     }
     @media (max-width: 760px){ .form{grid-template-columns:1fr;} }
+
     label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px}
     .field input, .field textarea, .field select{
       width:100%;
@@ -273,8 +249,64 @@
     .field textarea{min-height:92px; resize:vertical}
     .help{font-size:12px; color:var(--muted); margin-top:6px}
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .row .btn{padding:10px 12px}
     .divider{height:1px; background: var(--line); margin:12px 0}
+
+    .search{
+      display:flex; gap:10px; align-items:center;
+      background: rgba(0,0,0,.25);
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding:10px 12px;
+    }
+    .search input{
+      width:100%; border:0; outline:0;
+      background: transparent; color:var(--txt);
+      font-size:14px;
+    }
+    .search span{color:var(--muted); font-size:12px}
+
+    .cats{display:flex; flex-direction:column; gap:8px; margin-top:12px;}
+    .cat{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      cursor:pointer;
+      transition:.12s background, .12s transform, .12s border;
+    }
+    .cat:hover{transform: translateY(-1px); background: rgba(255,255,255,.06);}
+    .cat.active{border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.08);}
+    .cat .name{font-weight:950; font-size:13px}
+    .cat .count{font-size:12px; color:var(--muted)}
+
+    /* Drawer */
+    .drawer{
+      position:fixed;
+      top:0; bottom:0;
+      width:min(420px, 92vw);
+      background: linear-gradient(180deg, rgba(15,22,33,.98), rgba(8,12,18,.96));
+      border:1px solid var(--line);
+      box-shadow: 0 26px 70px rgba(0,0,0,.55);
+      overflow:auto;
+      transform: translateX(-105%);
+      transition: transform .18s ease;
+    }
+    .drawer.right{ right:0; transform: translateX(105%); }
+    .drawer.left{ left:0; }
+    .modal.show .drawer.left{ transform: translateX(0); }
+    .modal.show .drawer.right{ transform: translateX(0); }
+    .drawer-head{
+      position:sticky; top:0;
+      background: rgba(5,7,10,.75);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 12px 14px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    }
+    .drawer-body{ padding: 12px 14px; }
+
+    /* Footer bar */
     .footerbar{
       position:fixed; left:0; right:0; bottom:0; z-index:45;
       background: rgba(5,7,10,.78);
@@ -289,9 +321,13 @@
       color:var(--muted);
       font-size:12px;
     }
-    .pill{padding:6px 10px; border-radius:999px; border:1px solid var(--line); background: rgba(255,255,255,.03); color:var(--muted);}
-    .hint{color:var(--muted); font-size:12px}
-    .k{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    .pill{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+    }
   </style>
 </head>
 <body>
@@ -308,57 +344,66 @@
 
       <div class="right-actions">
         <span class="chip" id="chipCat">Категорија: <b id="chipCatName">—</b></span>
+        <button class="btn" id="btnCats">Категории</button>
         <button class="btn ghost" id="btnAdmin">Admin</button>
       </div>
     </div>
   </div>
 
   <div class="wrap">
-    <div class="grid">
-      <!-- LEFT: categories -->
-      <div class="panel">
-        <div class="head">
-          <h2>Категории</h2>
-          <button class="btn blue" id="btnNewCat" title="Додај категорија (Admin)">+ Категорија</button>
+    <div class="panel">
+      <div class="products-head">
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <div style="font-weight:950; letter-spacing:.3px;">Продукти</div>
+          <div class="muted" id="prodInfo">0 продукти</div>
         </div>
-        <div class="body">
-          <div class="search">
-            <span>🔎</span>
-            <input id="catSearch" placeholder="Пребарај категорија..." />
-          </div>
-          <div class="cats" id="cats"></div>
-          <div class="hint" style="margin-top:10px;">
-            * Додавање/бришење/промена на категории работи само кога си логирана како Admin.
-          </div>
+
+        <div class="filters">
+          <input class="input" id="prodSearch" placeholder="Пребарај продукт..." />
+          <select class="select" id="sizeFilter">
+            <option value="">Филтер по величина (само достапни)</option>
+          </select>
+          <button class="btn primary" id="btnNewProd">+ Продукт</button>
         </div>
       </div>
 
-      <!-- RIGHT: products -->
-      <div class="panel">
-        <div class="products-head">
-          <div style="display:flex; flex-direction:column; gap:4px;">
-            <div style="font-weight:800; letter-spacing:.3px;">Продукти</div>
-            <div class="muted" id="prodInfo">0 продукти</div>
-          </div>
-
-          <div class="filters">
-            <input class="input" id="prodSearch" placeholder="Пребарај продукт..." />
-            <select class="select" id="sizeFilter">
-              <option value="">Филтер по величина (само достапни)</option>
-            </select>
-            <button class="btn primary" id="btnNewProd">+ Продукт</button>
-          </div>
-        </div>
-
-        <div class="cards" id="cards"></div>
-      </div>
+      <div class="cards" id="cards"></div>
     </div>
   </div>
 
   <div class="footerbar">
     <div class="inner">
-      <div class="pill">📲 Нарачка = WhatsApp порака со: продукт + цена + величина</div>
-      <div class="pill">🧠 Се чува локално (localStorage)</div>
+      <div class="pill">📲 Нарачка = WhatsApp порака (продукт + цена + величина + количина)</div>
+      <div class="pill">🧠 Податоци локално (localStorage)</div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES DRAWER -->
+  <div class="modal" id="drawerCats" aria-hidden="true">
+    <div class="drawer" id="drawerBox">
+      <div class="drawer-head">
+        <div style="font-weight:950;">Категории</div>
+        <div class="row">
+          <button class="btn" id="btnSide">Лево/Десно</button>
+          <button class="btn" id="btnCloseCats">Затвори</button>
+        </div>
+      </div>
+
+      <div class="drawer-body">
+        <div class="search">
+          <span>🔎</span>
+          <input id="catSearch2" placeholder="Пребарај категорија..." />
+        </div>
+
+        <div class="cats" id="cats2" style="margin-top:12px;"></div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <button class="btn blue" id="btnManageCats">Менаџирај категории</button>
+        </div>
+        <div class="help">* Ова работи само кога си логирана како Admin.</div>
+      </div>
     </div>
   </div>
 
@@ -374,7 +419,7 @@
           <label>Admin лозинка</label>
           <input id="adminPass" type="password" placeholder="Внеси лозинка..." />
           <div class="help">
-            * Лозинката се чува локално. Може да ја смениш по логирање.
+            * Лозинката се чува локално. Стандард: <b>1234</b> (смени ја после).
           </div>
         </div>
 
@@ -399,9 +444,10 @@
           <div class="divider"></div>
 
           <div class="row">
-            <button class="btn blue" id="btnManageCats">Менаџирај категории</button>
+            <button class="btn blue" id="btnOpenCatsAdmin">Категории (Add/Rename/Delete)</button>
+            <button class="btn danger" id="btnResetDemo">Reset demo (бриши + наполни)</button>
           </div>
-          <div class="help">* “Менаџирај категории” отвора листа за rename/delete.</div>
+          <div class="help">* Reset demo ќе ги избрише сите продукти и ќе ги наполни повторно (150/50 по категории).</div>
         </div>
       </div>
     </div>
@@ -417,7 +463,7 @@
       <div class="modal-body">
         <div class="field" style="max-width:520px;">
           <label>Нова категорија</label>
-          <input id="newCatName" placeholder="Пример: Женски / Машки / Обувки..." />
+          <input id="newCatName" placeholder="Пример: Ново / Акции / Обувки..." />
           <div class="row" style="margin-top:10px;">
             <button class="btn primary" id="btnAddCat2">Додај</button>
           </div>
@@ -444,7 +490,7 @@
         <div class="form">
           <div class="field">
             <label>Име</label>
-            <input id="pName" placeholder="Пример: Тренерка Nike..." />
+            <input id="pName" placeholder="Пример: Тренерка..." />
           </div>
           <div class="field">
             <label>Цена (ден)</label>
@@ -465,7 +511,7 @@
           <div class="field" style="grid-column:1/-1;">
             <label>Слики (3–5) — линкови одделени со нов ред</label>
             <textarea id="pImages" placeholder="https://...jpg&#10;https://...jpg"></textarea>
-            <div class="help">Ако немаш линк, остави празно — ќе има placeholder.</div>
+            <div class="help">Ако внесеш повеќе од 5, ќе се земат само првите 5.</div>
           </div>
 
           <div class="field" style="grid-column:1/-1;">
@@ -501,45 +547,44 @@
 /* =========================
    Data + Storage
 ========================= */
-const KEY = "mertax_store_v1";
+const KEY = "mertax_store_v3";
+function uid(){ return Math.random().toString(16).slice(2) + Date.now().toString(16); }
 
 const DEFAULT = {
-  adminPass: "1234", // можеш да ја смениш во Admin
+  adminPass: "1234",
+  settings: { drawerSide: "left" },
   categories: [
-  {id: uid(), name:"Џемпери"},
-  {id: uid(), name:"Кошули"},
-  {id: uid(), name:"Блузони"},
-  {id: uid(), name:"Маици"},
-  {id: uid(), name:"Фармерки/ Панталони"},
-  {id: uid(), name:"Тренерки"},
-  {id: uid(), name:"Одела"},
-  {id: uid(), name:"Јакни"},
-],
+    {id: uid(), name:"Џемпери"},
+    {id: uid(), name:"Кошули"},
+    {id: uid(), name:"Блузони"},
+    {id: uid(), name:"Маици"},
+    {id: uid(), name:"Фармерки/ Панталони"},
+    {id: uid(), name:"Тренерки"},
+    {id: uid(), name:"Одела"},
+    {id: uid(), name:"Јакни"},
+  ],
   products: []
 };
 
 let state = load();
 let session = { isAdmin:false, catId: state.categories[0]?.id || null, editingProdId:null };
 
-function uid(){ return Math.random().toString(16).slice(2) + Date.now().toString(16); }
-
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
     if(!raw) return structuredClone(DEFAULT);
     const data = JSON.parse(raw);
-    // basic healing
     if(!data.categories?.length) data.categories = structuredClone(DEFAULT.categories);
     if(!Array.isArray(data.products)) data.products = [];
     if(!data.adminPass) data.adminPass = DEFAULT.adminPass;
+    if(!data.settings) data.settings = { drawerSide:"left" };
+    if(!data.settings.drawerSide) data.settings.drawerSide = "left";
     return data;
   }catch(e){
     return structuredClone(DEFAULT);
   }
 }
-function save(){
-  localStorage.setItem(KEY, JSON.stringify(state));
-}
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 
 /* =========================
    UI helpers
@@ -557,23 +602,43 @@ function money(n){
   const x = Number(n||0);
   return x.toLocaleString("mk-MK") + " ден";
 }
+function escapeHtml(s){
+  return String(s||"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+function escapeAttr(s){ return escapeHtml(s).replaceAll("\n"," "); }
 
 /* =========================
    Sizes
 ========================= */
 const CLOTHES = ["S","M","L","XL","2XL","3XL"];
 const JEANS = ["30","31","32","33","34","36","38","40","42"];
+function getSizeList(mode){ return mode === "jeans" ? JEANS : CLOTHES; }
 
-function getSizeList(mode){
-  return mode === "jeans" ? JEANS : CLOTHES;
+/* =========================
+   Drawer (left/right)
+========================= */
+function applyDrawerSide(){
+  const side = state.settings?.drawerSide || "left";
+  const box = document.getElementById("drawerBox");
+  box.classList.remove("left","right");
+  box.classList.add(side === "right" ? "right" : "left");
 }
 
 /* =========================
-   Render
+   Rendering
 ========================= */
-function renderCats(){
-  const q = (document.getElementById("catSearch").value || "").trim().toLowerCase();
-  const holder = document.getElementById("cats");
+function catName(id){
+  return (state.categories.find(c=>c.id===id)||{}).name || "—";
+}
+
+function renderCatsDrawer(){
+  const q = (document.getElementById("catSearch2").value || "").trim().toLowerCase();
+  const holder = document.getElementById("cats2");
   holder.innerHTML = "";
 
   const cats = state.categories.filter(c => !q || c.name.toLowerCase().includes(q));
@@ -581,9 +646,16 @@ function renderCats(){
     const count = state.products.filter(p=>p.catId===c.id).length;
     const div = document.createElement("div");
     div.className = "cat" + (session.catId===c.id ? " active":"");
-    div.innerHTML = `<div><div class="name">${escapeHtml(c.name)}</div><div class="count">${count} продукти</div></div>
-                     <div class="muted">›</div>`;
-    div.onclick = ()=>{ session.catId=c.id; renderAll(); };
+    div.innerHTML = `<div>
+        <div class="name">${escapeHtml(c.name)}</div>
+        <div class="count">${count} продукти</div>
+      </div>
+      <div class="muted">›</div>`;
+    div.onclick = ()=>{
+      session.catId = c.id;
+      UI.close("drawerCats");
+      renderAll();
+    };
     holder.appendChild(div);
   });
 
@@ -592,12 +664,24 @@ function renderCats(){
   document.getElementById("chipCatName").textContent = active ? active.name : "—";
 }
 
+function filteredProductsBase(){
+  const activeCat = session.catId;
+  const q = (document.getElementById("prodSearch").value || "").trim().toLowerCase();
+  let prods = state.products.filter(p=>p.catId===activeCat);
+  if(q){
+    prods = prods.filter(p =>
+      (p.name||"").toLowerCase().includes(q) ||
+      (p.desc||"").toLowerCase().includes(q)
+    );
+  }
+  return prods;
+}
+
 function renderSizeFilterOptions(){
   const sel = document.getElementById("sizeFilter");
-  const activeCat = session.catId;
-
-  // collect sizes that exist and have stock >0 inside this category (based on current search)
   const prods = filteredProductsBase();
+
+  // IMPORTANT: only show sizes that exist AND have stock > 0 (remaining sizes)
   const set = new Set();
   prods.forEach(p=>{
     Object.entries(p.stock || {}).forEach(([k,v])=>{
@@ -614,22 +698,8 @@ function renderSizeFilterOptions(){
     sel.appendChild(opt);
   });
 
-  // keep selection if still available
   if([...sel.options].some(o=>o.value===current)) sel.value = current;
-}
-
-function filteredProductsBase(){
-  const activeCat = session.catId;
-  const q = (document.getElementById("prodSearch").value || "").trim().toLowerCase();
-  let prods = state.products.filter(p=>p.catId===activeCat);
-
-  if(q){
-    prods = prods.filter(p =>
-      (p.name||"").toLowerCase().includes(q) ||
-      (p.desc||"").toLowerCase().includes(q)
-    );
-  }
-  return prods;
+  else sel.value = "";
 }
 
 function renderProducts(){
@@ -652,7 +722,6 @@ function renderProducts(){
     const sold = totalStock<=0;
 
     const sizesHtml = Object.entries(p.stock||{})
-      .filter(([k,v]) => Number(v)>=0)
       .sort((a,b)=>a[0].localeCompare(b[0], 'mk'))
       .slice(0, 10)
       .map(([k,v])=>{
@@ -665,7 +734,7 @@ function renderProducts(){
     div.innerHTML = `
       <div class="img">
         ${img ? `<img src="${escapeAttr(img)}" alt="${escapeAttr(p.name||'')}" onerror="this.style.display='none'; this.parentElement.style.background='rgba(0,0,0,.25)';">`
-              : `<div style="height:100%;display:grid;place-items:center;color:rgba(255,255,255,.5);font-weight:700;">Нема слика</div>`}
+              : `<div style="height:100%;display:grid;place-items:center;color:rgba(255,255,255,.5);font-weight:950;">Нема слика</div>`}
         <span class="badge ${sold ? 'soldout':''}">${sold ? 'Нема залиха' : 'Достапно'}</span>
       </div>
       <div class="content">
@@ -683,15 +752,35 @@ function renderProducts(){
     `;
 
     div.querySelector('[data-act="order"]').onclick = ()=> orderWhatsApp(p);
-    div.querySelector('[data-act="view"]').onclick = ()=> openProductModal(p.id);
+    div.querySelector('[data-act="view"]').onclick = ()=> openProductModal(p.id, false);
     cards.appendChild(div);
   });
 
   renderSizeFilterOptions();
 }
 
+function renderAdminUI(){
+  const st = document.getElementById("adminStatus");
+  const tools = document.getElementById("adminTools");
+  const logoutBtn = document.getElementById("btnLogout");
+  const addProdBtn = document.getElementById("btnNewProd");
+
+  if(session.isAdmin){
+    st.textContent = "Admin";
+    tools.style.display = "";
+    logoutBtn.style.display = "";
+    addProdBtn.disabled = false;
+  }else{
+    st.textContent = "Не-админ";
+    tools.style.display = "none";
+    logoutBtn.style.display = "none";
+    addProdBtn.disabled = true;
+  }
+}
+
 function renderAll(){
-  renderCats();
+  applyDrawerSide();
+  renderCatsDrawer();
   renderProducts();
   renderAdminUI();
 }
@@ -699,32 +788,6 @@ function renderAll(){
 /* =========================
    Admin + Categories
 ========================= */
-function renderAdminUI(){
-  const st = document.getElementById("adminStatus");
-  const tools = document.getElementById("adminTools");
-  const logout = document.getElementById("btnLogout");
-  const addCatBtn = document.getElementById("btnNewCat");
-  const addProdBtn = document.getElementById("btnNewProd");
-
-  if(session.isAdmin){
-    st.textContent = "Admin";
-    tools.style.display = "";
-    logout.style.display = "";
-    addCatBtn.disabled = false;
-    addProdBtn.disabled = false;
-  }else{
-    st.textContent = "Не-админ";
-    tools.style.display = "none";
-    logout.style.display = "none";
-    addCatBtn.disabled = true;
-    addProdBtn.disabled = true;
-  }
-}
-
-function catName(id){
-  return (state.categories.find(c=>c.id===id)||{}).name || "—";
-}
-
 function requireAdmin(){
   if(!session.isAdmin){
     UI.open("modalAdmin");
@@ -753,18 +816,18 @@ function renderCatAdminList(){
     row.innerHTML = `
       <div style="flex:1">
         <div class="muted" style="font-size:11px;">Категорија</div>
-        <input class="input" value="${escapeAttr(c.name)}" data-id="${c.id}" />
+        <input class="input" value="${escapeAttr(c.name)}" />
       </div>
-      <button class="btn blue" data-save="${c.id}">Промени</button>
-      <button class="btn danger" data-del="${c.id}">Избриши</button>
+      <button class="btn blue">Промени</button>
+      <button class="btn danger">Избриши</button>
     `;
-    row.querySelector(`[data-save="${c.id}"]`).onclick = ()=>{
+    row.querySelector(".btn.blue").onclick = ()=>{
       const inp = row.querySelector('input');
       const val = (inp.value||"").trim();
       if(!val) return alert("Името не може празно.");
       renameCategory(c.id, val);
     };
-    row.querySelector(`[data-del="${c.id}"]`).onclick = ()=>{
+    row.querySelector(".btn.danger").onclick = ()=>{
       deleteCategory(c.id);
     };
     box.appendChild(row);
@@ -802,20 +865,19 @@ function deleteCategory(id){
 }
 
 /* =========================
-   Products
+   Products (CRUD)
 ========================= */
-function openProductModal(id){
+function openProductModal(id, mustBeAdmin){
   const p = state.products.find(x=>x.id===id);
   session.editingProdId = id || null;
 
-  if(!p){
-    if(!requireAdmin()) return;
-  }
+  if(mustBeAdmin && !requireAdmin()) return;
 
-  document.getElementById("prodModalTitle").textContent = p ? "Уреди продукт" : "Нов продукт";
+  document.getElementById("prodModalTitle").textContent =
+    p ? (session.isAdmin ? "Уреди продукт" : "Детали") : "Нов продукт";
+
   document.getElementById("btnDeleteProd").style.display = (p && session.isAdmin) ? "" : "none";
 
-  // categories select
   const sel = document.getElementById("pCat");
   sel.innerHTML = "";
   state.categories.forEach(c=>{
@@ -824,18 +886,27 @@ function openProductModal(id){
     sel.appendChild(o);
   });
 
-  // fill fields
   document.getElementById("pName").value  = p?.name || "";
-  document.getElementById("pPrice").value = p?.price ?? "";
-  document.getElementById("pCat").value = p?.catId || session.catId || state.categories[0].id;
-  document.getElementById("pWa").value = p?.wa || "";
-  document.getElementById("pDesc").value = p?.desc || "";
+  document.getElementById("pPrice").value = (p?.price ?? "");
+  document.getElementById("pCat").value   = p?.catId || session.catId || state.categories[0].id;
+  document.getElementById("pWa").value    = p?.wa || "";
+  document.getElementById("pDesc").value  = p?.desc || "";
   document.getElementById("pImages").value = (p?.images || []).join("\n");
 
-  const mode = p?.sizeMode || (catName(document.getElementById("pCat").value).toLowerCase().includes("фармерки") ? "jeans" : "clothes");
+  const catNm = catName(document.getElementById("pCat").value).toLowerCase();
+  const mode = p?.sizeMode || ((catNm.includes("фармерки") || catNm.includes("панталони")) ? "jeans" : "clothes");
   document.getElementById("pSizeMode").value = mode;
 
   buildSizeGrid(mode, p?.stock || {});
+
+  // disable for non-admin (view-only)
+  const disabled = !session.isAdmin;
+  ["pName","pPrice","pCat","pWa","pDesc","pImages","pSizeMode"].forEach(fid=>{
+    document.getElementById(fid).disabled = disabled;
+  });
+  document.querySelectorAll('#sizeGrid input[data-size]').forEach(i=> i.disabled = disabled);
+  document.getElementById("btnSaveProd").style.display = session.isAdmin ? "" : "none";
+
   UI.open("modalProd");
 }
 
@@ -885,9 +956,6 @@ function saveProduct(){
   if(!name) return alert("Внеси име на продукт.");
   if(!catId) return alert("Избери категорија.");
 
-  const total = Object.values(stock).reduce((a,b)=>a+Number(b||0),0);
-  // дозволуваме и 0 (може да е во подготовка), па не блокираме
-
   if(session.editingProdId){
     const p = state.products.find(x=>x.id===session.editingProdId);
     if(!p) return;
@@ -917,19 +985,26 @@ function deleteProduct(){
   renderAll();
 }
 
+/* =========================
+   WhatsApp order + auto stock decrement
+========================= */
 function orderWhatsApp(p){
-  // choose size
-  const available = Object.entries(p.stock||{}).filter(([k,v])=>Number(v)>0).map(([k])=>k);
+  const available = Object.entries(p.stock||{})
+    .filter(([k,v])=>Number(v)>0)
+    .map(([k])=>k);
+
   if(available.length===0){
     alert("Овој продукт моментално нема залиха.");
     return;
   }
+
   const size = prompt("Внеси величина (достапни: " + available.join(", ") + ")", available[0]);
   if(!size) return;
   if(!available.includes(size)){
     alert("Нема залиха за таа величина.");
     return;
   }
+
   const qtyStr = prompt("Количина (max " + p.stock[size] + "):", "1");
   if(!qtyStr) return;
   const qty = Math.max(1, parseInt(qtyStr,10) || 1);
@@ -938,14 +1013,14 @@ function orderWhatsApp(p){
     return;
   }
 
-  // reduce stock immediately (simulate order)
+  // auto decrement stock
   p.stock[size] = Math.max(0, Number(p.stock[size]) - qty);
   save();
   renderAll();
 
   const phone = (p.wa || "").replace(/\D/g,"");
   if(!phone){
-    alert("Нема внесен WhatsApp број за овој продукт. (Admin -> внеси број)");
+    alert("Нема внесен WhatsApp број за овој продукт. (Admin -> уреди продукт -> внеси број)");
     return;
   }
 
@@ -964,7 +1039,7 @@ function orderWhatsApp(p){
 }
 
 /* =========================
-   Security-ish (local only)
+   Admin login (local)
 ========================= */
 function login(pass){
   if((pass||"") === state.adminPass){
@@ -986,11 +1061,122 @@ function changeAdminPass(newPass){
 }
 
 /* =========================
+   Demo seed: 150 each, but 50 for Тренерки/Одела/Јакни
+   Each product gets 3–5 images
+========================= */
+function seedDemoProducts(){
+  function makeImages(seed, count){
+    const n = Math.max(3, Math.min(5, count));
+    const arr = [];
+    for(let i=1;i<=n;i++){
+      arr.push(`https://picsum.photos/seed/${encodeURIComponent(seed+"-"+i)}/900/700`);
+    }
+    return arr;
+  }
+  const rint = (a,b)=> Math.floor(Math.random()*(b-a+1))+a;
+
+  function stockClothes(){
+    const s = {};
+    CLOTHES.forEach(sz => s[sz] = rint(0, 6));
+    return s;
+  }
+  function stockJeans(){
+    const s = {};
+    JEANS.forEach(sz => s[sz] = rint(0, 5));
+    return s;
+  }
+
+  const counts = {};
+  state.categories.forEach(c=>{
+    const nm = (c.name||"").toLowerCase();
+    if(nm.includes("тренерки") || nm.includes("одела") || nm.includes("јакни")) counts[c.id] = 50;
+    else counts[c.id] = 150;
+  });
+
+  const now = Date.now();
+  state.products = [];
+
+  state.categories.forEach((cat, ci)=>{
+    const nm = (cat.name||"").toLowerCase();
+    const isJeans = nm.includes("фармерки") || nm.includes("панталони");
+    const N = counts[cat.id] || 150;
+
+    for(let i=1;i<=N;i++){
+      const pSeed = `mertax-${cat.name}-${i}`;
+      const imgCount = rint(3,5);
+
+      let baseName = cat.name;
+      if(nm.includes("џемпери")) baseName = "Џемпер";
+      else if(nm.includes("кошули")) baseName = "Кошула";
+      else if(nm.includes("блузони")) baseName = "Блузон";
+      else if(nm.includes("маици")) baseName = "Маичка";
+      else if(isJeans) baseName = "Фармерки/Панталони";
+      else if(nm.includes("тренерки")) baseName = "Тренерка";
+      else if(nm.includes("одела")) baseName = "Одело";
+      else if(nm.includes("јакни")) baseName = "Јакна";
+
+      let price = 0;
+      if(nm.includes("маици")) price = rint(990, 1790);
+      else if(nm.includes("кошули")) price = rint(1490, 2790);
+      else if(nm.includes("џемпери")) price = rint(1590, 3290);
+      else if(nm.includes("блузони")) price = rint(1690, 3490);
+      else if(isJeans) price = rint(1790, 3990);
+      else if(nm.includes("тренерки")) price = rint(1990, 4990);
+      else if(nm.includes("јакни")) price = rint(2490, 7990);
+      else if(nm.includes("одела")) price = rint(3990, 12990);
+      else price = rint(1490, 3990);
+
+      state.products.push({
+        id: uid(),
+        name: `${baseName} #${String(i).padStart(3,"0")}`,
+        price,
+        catId: cat.id,
+        wa: "",
+        desc: "Demo продукт (замени со реален опис и слики).",
+        images: makeImages(pSeed, imgCount),
+        sizeMode: isJeans ? "jeans" : "clothes",
+        stock: isJeans ? stockJeans() : stockClothes(),
+        createdAt: now + (ci*100000) + i
+      });
+    }
+  });
+
+  save();
+}
+
+function resetDemo(){
+  if(!requireAdmin()) return;
+  if(!confirm("Ова ќе ги избрише сите продукти и ќе ги наполни demo повторно. Продолжи?")) return;
+  seedDemoProducts();
+  alert("Demo наполнето ✅");
+  renderAll();
+}
+
+// Seed only first time
+if(state.products.length === 0){
+  seedDemoProducts();
+}
+
+/* =========================
    Events
 ========================= */
-document.getElementById("catSearch").addEventListener("input", renderCats);
 document.getElementById("prodSearch").addEventListener("input", renderProducts);
 document.getElementById("sizeFilter").addEventListener("change", renderProducts);
+
+document.getElementById("btnCats").onclick = ()=>{
+  applyDrawerSide();
+  document.getElementById("catSearch2").value = "";
+  renderCatsDrawer();
+  UI.open("drawerCats");
+};
+document.getElementById("btnCloseCats").onclick = ()=> UI.close("drawerCats");
+document.getElementById("catSearch2").addEventListener("input", renderCatsDrawer);
+
+document.getElementById("btnSide").onclick = ()=>{
+  state.settings.drawerSide = (state.settings.drawerSide === "left") ? "right" : "left";
+  save();
+  applyDrawerSide();
+};
 
 document.getElementById("btnAdmin").onclick = ()=> UI.open("modalAdmin");
 
@@ -1004,7 +1190,6 @@ document.getElementById("btnLogin").onclick = ()=>{
     alert("Погрешна лозинка ❌");
   }
 };
-
 document.getElementById("btnLogout").onclick = ()=> logout();
 
 document.getElementById("btnChangePass").onclick = ()=>{
@@ -1014,8 +1199,8 @@ document.getElementById("btnChangePass").onclick = ()=>{
 };
 
 document.getElementById("btnManageCats").onclick = openManageCats;
+document.getElementById("btnOpenCatsAdmin").onclick = openManageCats;
 
-document.getElementById("btnNewCat").onclick = openManageCats;
 document.getElementById("btnAddCat2").onclick = ()=>{
   if(!requireAdmin()) return;
   const name = document.getElementById("newCatName").value;
@@ -1025,7 +1210,7 @@ document.getElementById("btnAddCat2").onclick = ()=>{
   renderCatAdminList();
 };
 
-document.getElementById("btnNewProd").onclick = ()=> openProductModal(null);
+document.getElementById("btnNewProd").onclick = ()=> openProductModal(null, true);
 document.getElementById("btnSaveProd").onclick = saveProduct;
 document.getElementById("btnDeleteProd").onclick = deleteProduct;
 
@@ -1034,7 +1219,6 @@ document.getElementById("pSizeMode").addEventListener("change", (e)=>{
 });
 
 document.getElementById("pCat").addEventListener("change", (e)=>{
-  // auto switch size mode if category is jeans
   const name = catName(e.target.value).toLowerCase();
   if(name.includes("фармерки") || name.includes("панталони")){
     document.getElementById("pSizeMode").value = "jeans";
@@ -1042,53 +1226,7 @@ document.getElementById("pCat").addEventListener("change", (e)=>{
   }
 });
 
-/* =========================
-   Helpers
-========================= */
-function escapeHtml(s){
-  return String(s||"")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-function escapeAttr(s){ return escapeHtml(s).replaceAll("\n"," "); }
-
-/* =========================
-   Seed demo products (optional)
-========================= */
-if(state.products.length===0){
-  // 2 пример продукти да се види дизајн
-  const catNew = state.categories[0].id;
-  const catJeans = state.categories.find(c=>c.name.toLowerCase().includes("фармерки"))?.id || catNew;
-
-  state.products.push({
-    id: uid(),
-    name:"Тренерка - пример",
-    price: 1990,
-    catId: catNew,
-    wa: "38970xxxxxx",
-    desc:"Пример продукт. Admin -> уреди и стави свои слики/залиха.",
-    images: [],
-    sizeMode:"clothes",
-    stock: {S:2,M:3,L:1,XL:0,"2XL":0,"3XL":0},
-    createdAt: Date.now()
-  });
-  state.products.push({
-    id: uid(),
-    name:"Фармерки - пример",
-    price: 2490,
-    catId: catJeans,
-    wa: "38970xxxxxx",
-    desc:"Пример за бројки 30-42.",
-    images: [],
-    sizeMode:"jeans",
-    stock: {"30":1,"31":1,"32":2,"33":0,"34":1,"36":0,"38":0,"40":0,"42":0},
-    createdAt: Date.now()
-  });
-  save();
-}
+document.getElementById("btnResetDemo").onclick = resetDemo;
 
 /* init */
 renderAll();
