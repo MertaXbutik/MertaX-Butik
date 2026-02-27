@@ -6,172 +6,142 @@
   <title>MertaX Butik</title>
   <style>
     :root{
-      --bg:#0b0c10;
-      --card:#121420;
-      --card2:#0f111a;
-      --muted:#a9a9b3;
-      --txt:#ffffff;
-      --accent:#22c55e;
-      --danger:#ef4444;
-      --line:#23263a;
-      --chip:#1b1e2f;
-      --shadow: 0 16px 40px rgba(0,0,0,.45);
-      --radius:18px;
+      --bg:#0b0c10; --card:#121420; --muted:#a9a9b3; --txt:#fff;
+      --accent:#22c55e; --danger:#ef4444; --line:#23263a; --chip:#1b1e2f;
+      --shadow:0 16px 40px rgba(0,0,0,.45); --radius:18px;
     }
-    *{ box-sizing:border-box; }
+    *{box-sizing:border-box}
     body{
-      margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: radial-gradient(1200px 600px at 20% -10%, rgba(34,197,94,.18), transparent 50%),
-                  radial-gradient(900px 500px at 100% 0%, rgba(239,68,68,.10), transparent 45%),
-                  var(--bg);
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(34,197,94,.18), transparent 50%),
+        radial-gradient(900px 500px at 100% 0%, rgba(239,68,68,.10), transparent 45%),
+        var(--bg);
       color:var(--txt);
     }
     header{
-      background: rgba(0,0,0,.65);
-      backdrop-filter: blur(8px);
-      color:#fff;
-      padding:14px 14px;
+      background:rgba(0,0,0,.65);
+      backdrop-filter:blur(8px);
+      padding:14px;
       position:sticky; top:0; z-index:50;
       border-bottom:1px solid rgba(255,255,255,.06);
     }
-    .headRow{
-      max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .brand{ font-size:20px; font-weight:900; letter-spacing:.6px; }
-    .headBtns{ display:flex; gap:8px; align-items:center; }
+    .headRow{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .brand{font-size:20px;font-weight:900;letter-spacing:.6px}
+    .headBtns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .btn{
-      border:0; cursor:pointer; padding:11px 13px; border-radius:14px; font-weight:800;
-      background:var(--chip); color:#fff;
+      border:0;cursor:pointer;padding:11px 13px;border-radius:14px;font-weight:900;
+      background:var(--chip);color:#fff
     }
-    .btn-accent{ background:var(--accent); color:#041a0b; }
-    .btn-danger{ background:var(--danger); color:#fff; }
-    .btn-ghost{ background:transparent; border:1px solid rgba(255,255,255,.12); }
-    .wrap{ max-width:1100px; margin:0 auto; padding:14px; }
-
-    .topbar{
-      display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
-      margin:12px 0 14px;
-    }
+    .btn-accent{background:var(--accent);color:#041a0b}
+    .btn-danger{background:var(--danger);color:#fff}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.12)}
+    .wrap{max-width:1100px;margin:0 auto;padding:14px}
+    .topbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:12px 0 14px}
     .badge{
-      background: rgba(255,255,255,.06);
+      background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
-      padding:10px 12px; border-radius:14px;
-      display:flex; gap:10px; align-items:center;
+      padding:10px 12px;border-radius:14px;display:flex;gap:10px;align-items:center
     }
-    .small{ font-size:12px; color:var(--muted); }
-
-    .grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; }
-    @media (min-width:820px){ .grid{ grid-template-columns:repeat(4, 1fr); } }
-
+    .small{font-size:12px;color:var(--muted)}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .inp, .sel, .ta{
+      width:100%;
+      padding:12px 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      color:#fff;outline:none
+    }
+    .sel{padding:12px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    @media(min-width:820px){.grid{grid-template-columns:repeat(4,1fr)}}
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
       border:1px solid rgba(255,255,255,.08);
-      border-radius: var(--radius);
+      border-radius:var(--radius);
       overflow:hidden;
-      box-shadow: var(--shadow);
+      box-shadow:var(--shadow);
       position:relative;
     }
-    .imgWrap{ position:relative; }
-    .img{
-      width:100%; aspect-ratio:1/1; object-fit:cover; display:block; background:#222;
-    }
-    .tagRow{ position:absolute; left:10px; top:10px; display:flex; gap:8px; flex-wrap:wrap; }
+    .imgWrap{position:relative}
+    .img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#222}
+    .tagRow{position:absolute;left:10px;top:10px;display:flex;gap:8px;flex-wrap:wrap}
     .tag{
-      font-size:11px; font-weight:900; letter-spacing:.4px;
-      padding:6px 9px; border-radius:999px;
+      font-size:11px;font-weight:900;letter-spacing:.4px;
+      padding:6px 9px;border-radius:999px;
       background:rgba(0,0,0,.55);
       border:1px solid rgba(255,255,255,.14);
-      backdrop-filter: blur(6px);
+      backdrop-filter:blur(6px)
     }
-    .tag-new{ background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.35); }
-    .tag-sale{ background:rgba(239,68,68,.16); border-color:rgba(239,68,68,.35); }
-
-    .p{ padding:12px; }
-    .name{ margin:0 0 8px; font-weight:900; font-size:14px; }
-    .priceLine{ display:flex; align-items:baseline; gap:8px; margin:0 0 10px; }
-    .priceNow{ font-weight:900; }
-    .priceOld{ color:var(--muted); text-decoration:line-through; font-size:12px; }
-    .row{ display:flex; gap:8px; align-items:center; justify-content:space-between; }
+    .tag-new{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.35)}
+    .tag-sale{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.35)}
+    .p{padding:12px}
+    .name{margin:0 0 8px;font-weight:900;font-size:14px}
+    .priceLine{display:flex;align-items:baseline;gap:8px;margin:0 0 10px}
+    .priceNow{font-weight:900}
+    .priceOld{color:var(--muted);text-decoration:line-through;font-size:12px}
 
     /* Overlay / drawer / modal */
-    .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.60); display:none; z-index:90; }
-    .overlay.show{ display:block; }
-
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.60);display:none;z-index:90}
+    .overlay.show{display:block}
     .drawer{
-      position:fixed; right:0; top:0; height:100%;
-      width:min(420px, 92vw);
-      background: rgba(14,14,18,.92);
-      backdrop-filter: blur(10px);
+      position:fixed;right:0;top:0;height:100%;width:min(420px,92vw);
+      background:rgba(14,14,18,.92);backdrop-filter:blur(10px);
       border-left:1px solid rgba(255,255,255,.10);
-      transform:translateX(110%); transition:.25s;
-      z-index:95; display:flex; flex-direction:column;
+      transform:translateX(110%);transition:.25s;
+      z-index:95;display:flex;flex-direction:column
     }
-    .drawer.open{ transform:translateX(0); }
-    .drawer h2{ margin:0; padding:14px; border-bottom:1px solid rgba(255,255,255,.08); font-size:18px; }
-
-    .cartlist{ padding:10px 14px; overflow:auto; flex:1; }
-    .item{ display:flex; gap:10px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.06); }
-    .thumb{ width:56px; height:56px; border-radius:14px; object-fit:cover; background:#222; }
-    .itxt{ flex:1; }
-    .itxt b{ display:block; font-size:13px; margin-bottom:4px; }
-    .qty{ display:flex; gap:6px; align-items:center; }
+    .drawer.open{transform:translateX(0)}
+    .drawerHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .drawerHead h2{margin:0;font-size:18px}
+    .xbtn{background:rgba(255,255,255,.08);border:0;color:#fff;width:38px;height:38px;border-radius:12px;cursor:pointer;font-size:18px}
+    .cartlist{padding:10px 14px;overflow:auto;flex:1}
+    .item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .thumb{width:56px;height:56px;border-radius:14px;object-fit:cover;background:#222}
+    .itxt{flex:1}
+    .itxt b{display:block;font-size:13px;margin-bottom:4px}
+    .qty{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
     .qty button{
-      width:34px; height:34px; border-radius:12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color:#fff; font-size:18px; cursor:pointer;
+      width:34px;height:34px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);color:#fff;font-size:18px;cursor:pointer
     }
-
-    .foot{ padding:12px 14px; border-top:1px solid rgba(255,255,255,.08); }
-    .foot .line{ display:flex; justify-content:space-between; margin:8px 0; color:#ddd; }
-    .foot .line b{ color:#fff; }
+    .foot{padding:12px 14px;border-top:1px solid rgba(255,255,255,.08)}
+    .foot .line{display:flex;justify-content:space-between;margin:8px 0;color:#ddd}
+    .foot .line b{color:#fff}
 
     .modal{
-      position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
-      width:min(560px, 92vw);
-      background: rgba(16,16,20,.95);
+      position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+      width:min(560px,92vw);
+      background:rgba(16,16,20,.95);
       border:1px solid rgba(255,255,255,.10);
-      border-radius: var(--radius);
-      z-index:100;
-      display:none;
-      box-shadow: var(--shadow);
+      border-radius:var(--radius);
+      z-index:100;display:none;box-shadow:var(--shadow)
     }
-    .modal.show{ display:block; }
+    .modal.show{display:block}
     .modalHead{
-      padding:14px; border-bottom:1px solid rgba(255,255,255,.08);
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:14px;border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;align-items:center;justify-content:space-between;gap:10px
     }
-    .modalHead h3{ margin:0; font-size:18px; }
-    .xbtn{ background:rgba(255,255,255,.08); border:0; color:#fff; width:38px; height:38px; border-radius:12px; cursor:pointer; font-size:18px; }
-    .modalBody{ padding:14px; }
-    .form{ display:grid; gap:10px; }
-    .inp, .ta, .sel{
-      width:100%;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color:#fff; outline:none;
-    }
-    .ta{ min-height:90px; resize:vertical; }
-    .hint{ color:var(--muted); font-size:12px; margin-top:-4px; }
-    .two{ display:grid; gap:10px; grid-template-columns:1fr 1fr; }
-    @media (max-width:520px){ .two{ grid-template-columns:1fr; } }
-    .hr{ height:1px; background:rgba(255,255,255,.08); margin:8px 0; }
+    .modalHead h3{margin:0;font-size:18px}
+    .modalBody{padding:14px}
+    .form{display:grid;gap:10px}
+    .ta{min-height:90px;resize:vertical}
+    .two{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+    @media(max-width:520px){.two{grid-template-columns:1fr}}
+    .hr{height:1px;background:rgba(255,255,255,.08);margin:8px 0}
 
-    .adminList{ display:grid; gap:10px; }
+    .adminList{display:grid;gap:10px}
     .adminItem{
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      border-radius:16px;
-      padding:10px;
-      display:flex; gap:10px; align-items:center;
+      background:rgba(255,255,255,.04);
+      border-radius:16px;padding:10px;display:flex;gap:10px;align-items:center
     }
-    .adminItem img{ width:54px; height:54px; border-radius:14px; object-fit:cover; background:#222; }
-    .adminItem .meta{ flex:1; }
-    .adminItem .meta b{ display:block; font-size:13px; margin-bottom:3px; }
-    .adminItem .meta span{ color:var(--muted); font-size:12px; }
-    .adminItem .actions{ display:flex; gap:8px; }
+    .adminItem img{width:54px;height:54px;border-radius:14px;object-fit:cover;background:#222}
+    .adminItem .meta{flex:1}
+    .adminItem .meta b{display:block;font-size:13px;margin-bottom:3px}
+    .adminItem .meta span{color:var(--muted);font-size:12px}
+    .adminItem .actions{display:flex;gap:8px;flex-wrap:wrap}
   </style>
 </head>
 
@@ -193,7 +163,15 @@
       🛒 <span>Кошничка:</span> <b id="cartCount">0</b>
       <span class="small">| Вкупно: <b id="cartTotal">0</b> ден.</span>
     </div>
-    <div class="small">Нарачки на WhatsApp • Локација: <b>ТЦ Мавровка</b></div>
+
+    <div class="filters" style="flex:1; justify-content:flex-end;">
+      <input class="inp" id="searchInp" placeholder="Пребарај (пример: маичка, патики...)" style="max-width:320px;">
+      <select class="sel" id="catSel" style="max-width:210px;">
+        <option value="ALL">Сите категории</option>
+      </select>
+    </div>
+
+    <div class="small">WhatsApp: <b>+38972912601</b> • Локација: <b>ТЦ Мавровка</b></div>
   </div>
 
   <div class="grid" id="productGrid"></div>
@@ -203,7 +181,10 @@
 
 <!-- Cart drawer -->
 <aside class="drawer" id="drawer">
-  <h2>Твоја кошничка</h2>
+  <div class="drawerHead">
+    <h2>Твоја кошничка</h2>
+    <button class="xbtn" id="closeCartBtn">✕</button>
+  </div>
   <div class="cartlist" id="cartList"></div>
   <div class="foot">
     <div class="line"><span>Производи</span> <b id="sumItems">0</b></div>
@@ -219,13 +200,13 @@
     <button class="xbtn" id="closeCheckoutBtn">✕</button>
   </div>
   <div class="modalBody">
-    <div class="hint">Број на нарачка: <b id="orderIdText">-</b></div>
+    <div class="small">Број на нарачка: <b id="orderIdText">-</b></div>
     <div class="hr"></div>
     <div class="form">
       <input class="inp" id="custName" placeholder="Име и презиме" />
       <input class="inp" id="custPhone" placeholder="Телефон (пример: 07X XXX XXX)" />
       <textarea class="ta" id="custNote" placeholder="Напомена (опционално)"></textarea>
-      <div class="hint">Локација за подигање: <b>ТЦ Мавровка</b>. Ќе се отвори WhatsApp со готова порака.</div>
+      <div class="small">Локација за подигање: <b>ТЦ Мавровка</b>. Ќе се отвори WhatsApp со готова порака.</div>
       <button class="btn btn-accent" id="sendWhatsappBtn">Испрати на WhatsApp</button>
     </div>
   </div>
@@ -241,11 +222,11 @@
     <div id="adminLocked">
       <input class="inp" id="adminPin" placeholder="Внеси PIN" type="password" />
       <button class="btn btn-accent" id="unlockAdminBtn" style="width:100%;">Отклучи</button>
-      <div class="hint">Ова е “лесен” admin (без сервер) – работи преку browser storage.</div>
+      <div class="small">Ова е “лесен” admin (без сервер) – работи преку browser storage.</div>
     </div>
 
     <div id="adminUnlocked" style="display:none;">
-      <div class="hint">Додај/измени производи. Се зачувуваат локално (localStorage).</div>
+      <div class="small">Додај/измени производи. Се зачувуваат локално (localStorage).</div>
       <div class="hr"></div>
 
       <div class="form">
@@ -263,10 +244,16 @@
             <option value="НОВО">НОВО</option>
             <option value="АКЦИЈА">АКЦИЈА</option>
           </select>
-          <input class="inp" id="pId" placeholder="ID (остави празно за автоматски)" />
+          <select class="sel" id="pCat">
+            <option value="Аксесоари">Аксесоари</option>
+            <option value="Облека">Облека</option>
+            <option value="Патики">Патики</option>
+          </select>
         </div>
-
-        <button class="btn btn-accent" id="saveProductBtn">Зачувај (додај/измени)</button>
+        <div class="two">
+          <input class="inp" id="pId" placeholder="ID (остави празно за автоматски)" />
+          <button class="btn btn-accent" id="saveProductBtn">Зачувај (додај/измени)</button>
+        </div>
         <button class="btn btn-ghost" id="resetDefaultsBtn">Врати default производи</button>
       </div>
 
@@ -277,26 +264,21 @@
 </div>
 
 <script>
-  // ✅ Наместено како што бараше
+  // ✅ Наместено
   const WHATSAPP_NUMBER = "38972912601";
   const STORE_LOCATION = "ТЦ Мавровка";
+  const ADMIN_PIN = "1234"; // смени ако сакаш
 
-  // 🔐 Admin PIN (смени ако сакаш)
-  const ADMIN_PIN = "1234";
+  const CART_KEY = "mertax_cart_pro";
+  const PRODUCTS_KEY = "mertax_products_pro";
 
-  // Storage keys
-  const CART_KEY = "mertax_cart_v2";
-  const PRODUCTS_KEY = "mertax_products_v2";
-
-  // Default products (се користат ако нема зачувани)
   const defaultProducts = [
-    { id:"p1", name:"MertaX Паричник", price:790, oldPrice:990, badge:"АКЦИЈА", img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=60" },
-    { id:"p2", name:"MertaX Маичка",  price:990, oldPrice:null, badge:"НОВО",   img:"https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=900&q=60" },
-    { id:"p3", name:"MertaX Капче",   price:590, oldPrice:790, badge:"АКЦИЈА", img:"https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=60" },
-    { id:"p4", name:"MertaX Патики",  price:2990, oldPrice:null, badge:"",     img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=60" },
+    { id:"p1", name:"MertaX Паричник", price:790, oldPrice:990, badge:"АКЦИЈА", cat:"Аксесоари", img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=60" },
+    { id:"p2", name:"MertaX Маичка",  price:990, oldPrice:null, badge:"НОВО",   cat:"Облека",   img:"https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=900&q=60" },
+    { id:"p3", name:"MertaX Капче",   price:590, oldPrice:790, badge:"АКЦИЈА", cat:"Аксесоари", img:"https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=60" },
+    { id:"p4", name:"MertaX Патики",  price:2990, oldPrice:null, badge:"",     cat:"Патики",   img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=60" },
   ];
 
-  // Load/save products
   const loadProducts = () => {
     try{
       const saved = JSON.parse(localStorage.getItem(PRODUCTS_KEY) || "null");
@@ -306,11 +288,9 @@
   };
   const saveProducts = (arr) => localStorage.setItem(PRODUCTS_KEY, JSON.stringify(arr));
 
-  // Cart helpers
   const loadCart = () => JSON.parse(localStorage.getItem(CART_KEY) || "[]");
   const saveCart = (cart) => localStorage.setItem(CART_KEY, JSON.stringify(cart));
 
-  // State
   let products = loadProducts();
   let currentOrderId = null;
 
@@ -336,25 +316,44 @@
   }
 
   function setQty(id, qty){
-    const cart = loadCart()
-      .map(x => x.id === id ? ({...x, qty}) : x)
-      .filter(x => x.qty > 0);
+    const cart = loadCart().map(x => x.id === id ? ({...x, qty}) : x).filter(x => x.qty > 0);
     saveCart(cart);
     renderCartUI();
   }
 
-  function clearCart(){
-    saveCart([]);
-    renderCartUI();
+  function clearCart(){ saveCart([]); renderCartUI(); }
+
+  // ---- Search + Category filter
+  const searchInp = document.getElementById("searchInp");
+  const catSel = document.getElementById("catSel");
+
+  function uniqueCats(){
+    const set = new Set(products.map(p => (p.cat || "Друго")));
+    return ["ALL", ...Array.from(set)];
+  }
+  function renderCats(){
+    const cats = uniqueCats();
+    catSel.innerHTML = cats.map(c => `<option value="${c}">${c==="ALL" ? "Сите категории" : c}</option>`).join("");
   }
 
-  // --- Render products with discount + badges ---
+  function filteredProducts(){
+    const q = (searchInp.value || "").trim().toLowerCase();
+    const cat = catSel.value || "ALL";
+    return products.filter(p => {
+      const okQ = !q || (p.name || "").toLowerCase().includes(q);
+      const okC = (cat === "ALL") || ((p.cat || "Друго") === cat);
+      return okQ && okC;
+    });
+  }
+
+  // ---- Render products
   const grid = document.getElementById("productGrid");
   function renderProducts(){
-    grid.innerHTML = products.map(p => {
-      const hasOld = Number.isFinite(p.oldPrice) || (p.oldPrice !== null && p.oldPrice !== "" && !isNaN(Number(p.oldPrice)));
-      const old = hasOld ? Number(p.oldPrice) : null;
+    const list = filteredProducts();
+    grid.innerHTML = list.map(p => {
+      const old = (p.oldPrice !== null && p.oldPrice !== "" && !isNaN(Number(p.oldPrice))) ? Number(p.oldPrice) : null;
       const badge = (p.badge || "").trim();
+      const pct = (old && old > p.price) ? Math.round(((old - p.price)/old)*100) : null;
 
       return `
         <div class="card">
@@ -362,7 +361,8 @@
             <img class="img" src="${p.img}" alt="${p.name}">
             <div class="tagRow">
               ${badge ? `<span class="tag ${badge==="НОВО" ? "tag-new" : "tag-sale"}">${badge}</span>` : ""}
-              ${old && old > p.price ? `<span class="tag tag-sale">-${Math.round(((old - p.price)/old)*100)}%</span>` : ""}
+              ${pct ? `<span class="tag tag-sale">-${pct}%</span>` : ""}
+              ${p.cat ? `<span class="tag">${p.cat}</span>` : ""}
             </div>
           </div>
           <div class="p">
@@ -381,7 +381,7 @@
     }).join("");
   }
 
-  // --- Cart drawer UI ---
+  // ---- Cart UI
   const cartCount = document.getElementById("cartCount");
   const cartTotal = document.getElementById("cartTotal");
   const cartList = document.getElementById("cartList");
@@ -391,14 +391,8 @@
   const overlay = document.getElementById("overlay");
   const drawer = document.getElementById("drawer");
 
-  function openCart(){
-    overlay.classList.add("show");
-    drawer.classList.add("open");
-  }
-  function closeCart(){
-    drawer.classList.remove("open");
-    if(!checkoutModal.classList.contains("show") && !adminModal.classList.contains("show")) overlay.classList.remove("show");
-  }
+  function openCart(){ overlay.classList.add("show"); drawer.classList.add("open"); }
+  function closeCart(){ drawer.classList.remove("open"); if(!checkoutModal.classList.contains("show") && !adminModal.classList.contains("show")) overlay.classList.remove("show"); }
 
   function renderCartUI(){
     const cart = loadCart();
@@ -427,8 +421,7 @@
               <button onclick="setQty('${c.id}', ${c.qty-1})">−</button>
               <span style="min-width:22px; text-align:center;">${c.qty}</span>
               <button onclick="setQty('${c.id}', ${c.qty+1})">+</button>
-              <button class="btn btn-danger" style="margin-left:auto; padding:8px 10px; border-radius:12px;"
-                      onclick="setQty('${c.id}', 0)">Отстрани</button>
+              <button class="btn btn-danger" style="margin-left:auto; padding:8px 10px; border-radius:12px;" onclick="setQty('${c.id}', 0)">Отстрани</button>
             </div>
           </div>
         </div>
@@ -436,11 +429,8 @@
     }).join("");
   }
 
-  // --- Checkout + Order ID ---
+  // ---- Checkout + Order ID
   const checkoutModal = document.getElementById("checkoutModal");
-  const closeCheckoutBtn = document.getElementById("closeCheckoutBtn");
-  const goCheckoutBtn = document.getElementById("goCheckoutBtn");
-  const sendWhatsappBtn = document.getElementById("sendWhatsappBtn");
   const orderIdText = document.getElementById("orderIdText");
 
   function makeOrderId(){
@@ -453,17 +443,12 @@
 
   function openCheckout(){
     const cart = loadCart();
-    if(cart.length === 0){
-      alert("Кошничката е празна.");
-      return;
-    }
+    if(cart.length === 0){ alert("Кошничката е празна."); return; }
     currentOrderId = makeOrderId();
     orderIdText.textContent = currentOrderId;
-
     checkoutModal.classList.add("show");
     overlay.classList.add("show");
   }
-
   function closeCheckout(){
     checkoutModal.classList.remove("show");
     if(!drawer.classList.contains("open") && !adminModal.classList.contains("show")) overlay.classList.remove("show");
@@ -498,44 +483,30 @@
   }
 
   function sendToWhatsApp(){
-    const text = buildOrderText();
-    const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
+    const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(buildOrderText());
     window.open(url, "_blank");
   }
 
-  // --- Admin ---
+  // ---- Admin
   const adminModal = document.getElementById("adminModal");
-  const adminBtn = document.getElementById("adminBtn");
-  const closeAdminBtn = document.getElementById("closeAdminBtn");
-
   const adminLocked = document.getElementById("adminLocked");
   const adminUnlocked = document.getElementById("adminUnlocked");
   const adminPin = document.getElementById("adminPin");
-  const unlockAdminBtn = document.getElementById("unlockAdminBtn");
+  const adminList = document.getElementById("adminList");
 
   const pName = document.getElementById("pName");
   const pImg = document.getElementById("pImg");
   const pPrice = document.getElementById("pPrice");
   const pOldPrice = document.getElementById("pOldPrice");
   const pBadge = document.getElementById("pBadge");
+  const pCat = document.getElementById("pCat");
   const pId = document.getElementById("pId");
 
-  const saveProductBtn = document.getElementById("saveProductBtn");
-  const resetDefaultsBtn = document.getElementById("resetDefaultsBtn");
-  const adminList = document.getElementById("adminList");
-
-  function openAdmin(){
-    adminModal.classList.add("show");
-    overlay.classList.add("show");
-  }
-  function closeAdmin(){
-    adminModal.classList.remove("show");
-    if(!drawer.classList.contains("open") && !checkoutModal.classList.contains("show")) overlay.classList.remove("show");
-  }
-
-  function setAdminUnlocked(unlocked){
-    adminLocked.style.display = unlocked ? "none" : "block";
-    adminUnlocked.style.display = unlocked ? "block" : "none";
+  function openAdmin(){ adminModal.classList.add("show"); overlay.classList.add("show"); }
+  function closeAdmin(){ adminModal.classList.remove("show"); if(!drawer.classList.contains("open") && !checkoutModal.classList.contains("show")) overlay.classList.remove("show"); }
+  function setAdminUnlocked(ok){
+    adminLocked.style.display = ok ? "none" : "block";
+    adminUnlocked.style.display = ok ? "block" : "none";
   }
 
   function adminRenderList(){
@@ -544,7 +515,7 @@
         <img src="${p.img}" alt="">
         <div class="meta">
           <b>${p.name}</b>
-          <span>ID: ${p.id} • ${p.price} ден.${p.oldPrice ? ` • старо: ${p.oldPrice}` : ""} ${p.badge ? ` • ${p.badge}` : ""}</span>
+          <span>ID: ${p.id} • ${p.price} ден.${p.oldPrice ? ` • старо: ${p.oldPrice}` : ""} ${p.badge ? ` • ${p.badge}` : ""} ${p.cat ? ` • ${p.cat}` : ""}</span>
         </div>
         <div class="actions">
           <button class="btn" onclick="adminEdit('${p.id}')">Измени</button>
@@ -555,13 +526,13 @@
   }
 
   window.adminEdit = (id) => {
-    const p = findProduct(id);
-    if(!p) return;
+    const p = findProduct(id); if(!p) return;
     pName.value = p.name || "";
     pImg.value = p.img || "";
     pPrice.value = String(p.price ?? "");
     pOldPrice.value = p.oldPrice ? String(p.oldPrice) : "";
     pBadge.value = p.badge || "";
+    pCat.value = p.cat || "Аксесоари";
     pId.value = p.id || "";
   };
 
@@ -569,88 +540,89 @@
     if(!confirm("Да избришам производ?")) return;
     products = products.filter(x => x.id !== id);
     saveProducts(products);
+    renderCats();
     renderProducts();
     renderCartUI();
     adminRenderList();
   };
 
   function upsertProduct(){
-    const name = (pName.value || "").trim();
-    const img = (pImg.value || "").trim();
-    const price = Number((pPrice.value || "").trim());
-    const oldRaw = (pOldPrice.value || "").trim();
+    const name = (pName.value||"").trim();
+    const img = (pImg.value||"").trim();
+    const price = Number((pPrice.value||"").trim());
+    const oldRaw = (pOldPrice.value||"").trim();
     const oldPrice = oldRaw ? Number(oldRaw) : null;
-    const badge = (pBadge.value || "").trim();
-    let id = (pId.value || "").trim();
+    const badge = (pBadge.value||"").trim();
+    const cat = (pCat.value||"").trim();
+    let id = (pId.value||"").trim();
 
-    if(!name || !img || !Number.isFinite(price)){
-      alert("Внеси: име, слика URL и нова цена.");
-      return;
-    }
+    if(!name || !img || !Number.isFinite(price)){ alert("Внеси: име, слика URL и нова цена."); return; }
     if(!id) id = "p" + Math.random().toString(16).slice(2,6);
 
-    const next = { id, name, img, price, oldPrice: (Number.isFinite(oldPrice) ? oldPrice : null), badge };
+    const next = { id, name, img, price, oldPrice: (Number.isFinite(oldPrice) ? oldPrice : null), badge, cat };
     const idx = products.findIndex(x => x.id === id);
-    if(idx >= 0) products[idx] = next;
-    else products.unshift(next);
+    if(idx >= 0) products[idx] = next; else products.unshift(next);
 
     saveProducts(products);
+    renderCats();
     renderProducts();
     renderCartUI();
     adminRenderList();
 
-    // clear inputs
-    pName.value = ""; pImg.value = ""; pPrice.value = ""; pOldPrice.value = ""; pBadge.value = ""; pId.value = "";
+    pName.value=""; pImg.value=""; pPrice.value=""; pOldPrice.value=""; pBadge.value=""; pCat.value="Аксесоари"; pId.value="";
     alert("Зачувано ✅");
   }
 
   function resetDefaults(){
-    if(!confirm("Да ги вратам default производите? (ќе ги избрише твоите локално)")) return;
+    if(!confirm("Да ги вратам default производите?")) return;
     products = defaultProducts.slice();
     saveProducts(products);
+    renderCats();
     renderProducts();
     renderCartUI();
     adminRenderList();
   }
 
-  // --- Events ---
+  // --- Events
   document.getElementById("openCartBtn").addEventListener("click", openCart);
+  document.getElementById("closeCartBtn").addEventListener("click", closeCart);
   document.getElementById("clearCartBtn").addEventListener("click", clearCart);
 
-  overlay.addEventListener("click", () => {
-    closeCheckout();
-    closeAdmin();
-    closeCart();
-  });
+  document.getElementById("goCheckoutBtn").addEventListener("click", openCheckout);
+  document.getElementById("closeCheckoutBtn").addEventListener("click", closeCheckout);
+  document.getElementById("sendWhatsappBtn").addEventListener("click", sendToWhatsApp);
 
-  goCheckoutBtn.addEventListener("click", openCheckout);
-  closeCheckoutBtn.addEventListener("click", closeCheckout);
-  sendWhatsappBtn.addEventListener("click", sendToWhatsApp);
+  document.getElementById("adminBtn").addEventListener("click", openAdmin);
+  document.getElementById("closeAdminBtn").addEventListener("click", closeAdmin);
 
-  adminBtn.addEventListener("click", openAdmin);
-  closeAdminBtn.addEventListener("click", closeAdmin);
-
-  unlockAdminBtn.addEventListener("click", () => {
-    if((adminPin.value || "").trim() === ADMIN_PIN){
+  document.getElementById("unlockAdminBtn").addEventListener("click", () => {
+    if((adminPin.value||"").trim() === ADMIN_PIN){
       setAdminUnlocked(true);
-      adminPin.value = "";
+      adminPin.value="";
       adminRenderList();
-    } else {
-      alert("Погрешен PIN");
-    }
+    } else alert("Погрешен PIN");
   });
 
-  saveProductBtn.addEventListener("click", upsertProduct);
-  resetDefaultsBtn.addEventListener("click", resetDefaults);
+  document.getElementById("saveProductBtn").addEventListener("click", upsertProduct);
+  document.getElementById("resetDefaultsBtn").addEventListener("click", resetDefaults);
 
-  // expose add/setQty for buttons in HTML
+  overlay.addEventListener("click", () => { closeCheckout(); closeAdmin(); closeCart(); });
+
+  searchInp.addEventListener("input", renderProducts);
+  catSel.addEventListener("change", renderProducts);
+
+  // expose for inline
   window.addToCart = addToCart;
   window.setQty = setQty;
 
   // Init
-  renderProducts();
-  renderCartUI();
-  setAdminUnlocked(false);
+  function init(){
+    renderCats();
+    renderProducts();
+    renderCartUI();
+    setAdminUnlocked(false);
+  }
+  init();
 </script>
 </body>
 </html>
