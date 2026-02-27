@@ -35,14 +35,14 @@
     .btn-danger{background:var(--danger);color:#fff}
     .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.12)}
     .wrap{max-width:1100px;margin:0 auto;padding:14px}
-    .topbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:12px 0 14px}
+    .topbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:12px 0 10px}
     .badge{
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
       padding:10px 12px;border-radius:14px;display:flex;gap:10px;align-items:center
     }
     .small{font-size:12px;color:var(--muted)}
-    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end; flex:1}
     .inp, .sel, .ta{
       width:100%;
       padding:12px 12px;border-radius:14px;
@@ -80,6 +80,7 @@
     .priceOld{color:var(--muted);text-decoration:line-through;font-size:12px}
     .miniRow{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
     .miniSel{min-width:150px}
+    .center{display:flex;justify-content:center;margin:14px 0}
 
     /* Overlay / drawer / modal */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.60);display:none;z-index:90}
@@ -150,17 +151,21 @@
       <span class="small">| Вкупно: <b id="cartTotal">0</b> ден.</span>
     </div>
 
-    <div class="filters" style="flex:1; justify-content:flex-end;">
-      <input class="inp" id="searchInp" placeholder="Пребарај (пример: маичка, патики...)" style="max-width:320px;">
-      <select class="sel" id="catSel" style="max-width:210px;">
-        <option value="ALL">Сите категории</option>
-      </select>
+    <div class="filters">
+      <input class="inp" id="searchInp" placeholder="Пребарај во категорија..." style="max-width:320px;">
+      <select class="sel" id="catSel" style="max-width:260px;"></select>
     </div>
 
     <div class="small">WhatsApp: <b>+38972912601</b> • Локација: <b>ТЦ Мавровка</b></div>
   </div>
 
+  <div class="small" id="infoLine"></div>
+
   <div class="grid" id="productGrid"></div>
+
+  <div class="center">
+    <button class="btn btn-ghost" id="loadMoreBtn" style="display:none;">Вчитај уште</button>
+  </div>
 </div>
 
 <div class="overlay" id="overlay"></div>
@@ -225,104 +230,76 @@
   const STORE_LOCATION = "ТЦ Мавровка";
   const SHIPPING_FEE = 150;
 
-  const CART_KEY = "mertax_cart_variants_v1";
-  const PRODUCTS_KEY = "mertax_products_variants_v1";
+  // pagination rules
+  const PAGE_SIZE = 30;
+  const MAX_PER_CATEGORY = 100;
 
-  // Variants (sizes)
-  const SIZES = ["S","M","L","XL","2XL","3XL"];
+  // Sizes for clothes
+  const CLOTH_SIZES = ["S","M","L","XL","2XL","3XL"];
 
-  // Default products (можеш да менуваш)
-  const defaultProducts = [
-    { id:"p1", name:"MertaX Маичка",  price:990, oldPrice:1290, badge:"АКЦИЈА", cat:"Облека", sizes:SIZES, img:"https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=900&q=60" },
-    { id:"p2", name:"MertaX Дуќсер",  price:1790, oldPrice:null, badge:"НОВО",   cat:"Облека", sizes:SIZES, img:"https://images.unsplash.com/photo-1520975958225-6a97d5a0f98f?auto=format&fit=crop&w=900&q=60" },
-    { id:"p3", name:"MertaX Патики",  price:2990, oldPrice:null, badge:"",       cat:"Патики", sizes:["40","41","42","43","44","45"], img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=60" },
-    { id:"p4", name:"MertaX Капче",   price:590,  oldPrice:790,  badge:"АКЦИЈА", cat:"Аксесоари", sizes:["UNI"], img:"https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=60" },
+  // categories requested
+  const CATEGORIES = [
+    "Џемпери","Блузони","Маици","Кошули",
+    "Фармерки/Панталони","Тренерки","Јакни","Одела"
   ];
 
-  const loadProducts = () => {
-    try{
-      const saved = JSON.parse(localStorage.getItem(PRODUCTS_KEY) || "null");
-      if(Array.isArray(saved) && saved.length) return saved;
-    }catch(e){}
-    return defaultProducts.slice();
-  };
-  const saveProducts = (arr) => localStorage.setItem(PRODUCTS_KEY, JSON.stringify(arr));
+  const CART_KEY = "mertax_cart_cat30_v1";
+
+  // Demo products (само неколку; додавај преку Admin ако сакаш — за сега можеш и рачно тука)
+  const products = [
+    { id:"p1", name:"MertaX Маичка", price:990, oldPrice:1290, badge:"АКЦИЈА", cat:"Маици", sizes:CLOTH_SIZES, img:"https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=900&q=60" },
+    { id:"p2", name:"MertaX Кошула", price:1490, oldPrice:null, badge:"НОВО", cat:"Кошули", sizes:CLOTH_SIZES, img:"https://images.unsplash.com/photo-1520975958225-6a97d5a0f98f?auto=format&fit=crop&w=900&q=60" },
+    { id:"p3", name:"MertaX Јакна", price:3990, oldPrice:4990, badge:"АКЦИЈА", cat:"Јакни", sizes:CLOTH_SIZES, img:"https://images.unsplash.com/photo-1520975871159-3b2c9c2e21a6?auto=format&fit=crop&w=900&q=60" },
+    { id:"p4", name:"MertaX Тренерки", price:2190, oldPrice:null, badge:"", cat:"Тренерки", sizes:CLOTH_SIZES, img:"https://images.unsplash.com/photo-1520975607364-6a4c35f9b6e4?auto=format&fit=crop&w=900&q=60" },
+  ];
 
   const loadCart = () => JSON.parse(localStorage.getItem(CART_KEY) || "[]");
   const saveCart = (cart) => localStorage.setItem(CART_KEY, JSON.stringify(cart));
 
-  let products = loadProducts();
-  let currentOrderId = null;
-
   const findProduct = (id) => products.find(p => p.id === id);
 
-  // Cart item is: { id, qty, size }
-  function cartTotals(cart, shippingOn){
-    let items = 0, subtotal = 0;
-    for(const c of cart){
-      items += c.qty;
-      const p = findProduct(c.id);
-      if(p) subtotal += p.price * c.qty;
-    }
-    const ship = shippingOn ? SHIPPING_FEE : 0;
-    const total = subtotal + ship;
-    return { items, subtotal, ship, total };
-  }
+  // State for pagination
+  let visibleCount = PAGE_SIZE;
 
-  function addToCart(id, size){
-    const p = findProduct(id);
-    const chosenSize = size || (p && p.sizes && p.sizes[0]) || "UNI";
-    const key = id + "|" + chosenSize;
-
-    const cart = loadCart();
-    const item = cart.find(x => (x.id + "|" + (x.size||"")) === key);
-    if(item) item.qty += 1;
-    else cart.push({ id, size: chosenSize, qty:1 });
-    saveCart(cart);
-    renderCartUI();
-  }
-
-  function setQty(id, size, qty){
-    const cart = loadCart()
-      .map(x => (x.id===id && (x.size||"")===size) ? ({...x, qty}) : x)
-      .filter(x => x.qty > 0);
-    saveCart(cart);
-    renderCartUI();
-  }
-
-  function clearCart(){
-    saveCart([]);
-    renderCartUI();
-  }
-
-  // ---- Search + Category filter
+  // UI refs
+  const grid = document.getElementById("productGrid");
   const searchInp = document.getElementById("searchInp");
   const catSel = document.getElementById("catSel");
+  const loadMoreBtn = document.getElementById("loadMoreBtn");
+  const infoLine = document.getElementById("infoLine");
 
-  function uniqueCats(){
-    const set = new Set(products.map(p => (p.cat || "Друго")));
-    return ["ALL", ...Array.from(set)];
-  }
+  // categories dropdown
   function renderCats(){
-    const cats = uniqueCats();
-    catSel.innerHTML = cats.map(c => `<option value="${c}">${c==="ALL" ? "Сите категории" : c}</option>`).join("");
+    catSel.innerHTML = CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join("");
   }
 
-  function filteredProducts(){
+  function currentCategory(){
+    return catSel.value || CATEGORIES[0];
+  }
+
+  function filteredAll(){
+    const cat = currentCategory();
     const q = (searchInp.value || "").trim().toLowerCase();
-    const cat = catSel.value || "ALL";
-    return products.filter(p => {
-      const okQ = !q || (p.name || "").toLowerCase().includes(q);
-      const okC = (cat === "ALL") || ((p.cat || "Друго") === cat);
-      return okQ && okC;
-    });
+
+    // category filter
+    let list = products.filter(p => (p.cat || "") === cat);
+
+    // enforce max 100 per category (display-wise)
+    list = list.slice(0, MAX_PER_CATEGORY);
+
+    // search
+    if(q) list = list.filter(p => (p.name || "").toLowerCase().includes(q));
+
+    return list;
   }
 
-  // ---- Render products (with size selector)
-  const grid = document.getElementById("productGrid");
   function renderProducts(){
-    const list = filteredProducts();
-    grid.innerHTML = list.map(p => {
+    const list = filteredAll();
+    const show = list.slice(0, visibleCount);
+
+    infoLine.textContent = `Категорија: ${currentCategory()} • Прикажани: ${Math.min(show.length, list.length)} / ${list.length} (макс 100)`;
+
+    grid.innerHTML = show.map(p => {
       const old = (p.oldPrice !== null && p.oldPrice !== "" && !isNaN(Number(p.oldPrice))) ? Number(p.oldPrice) : null;
       const badge = (p.badge || "").trim();
       const pct = (old && old > p.price) ? Math.round(((old - p.price)/old)*100) : null;
@@ -359,31 +336,71 @@
         </div>
       `;
     }).join("");
+
+    // Load more button logic
+    if(visibleCount < list.length){
+      loadMoreBtn.style.display = "inline-block";
+      const next = Math.min(visibleCount + PAGE_SIZE, list.length);
+      loadMoreBtn.textContent = `Вчитај уште (${visibleCount} → ${next})`;
+    } else {
+      loadMoreBtn.style.display = "none";
+    }
   }
 
-  // ---- Cart UI
+  // Cart item: { id, qty, size }
+  function cartTotals(cart, shippingOn){
+    let items = 0, subtotal = 0;
+    for(const c of cart){
+      items += c.qty;
+      const p = findProduct(c.id);
+      if(p) subtotal += p.price * c.qty;
+    }
+    const ship = shippingOn ? SHIPPING_FEE : 0;
+    return { items, subtotal, ship, total: subtotal + ship };
+  }
+
+  function addToCart(id, size){
+    const p = findProduct(id);
+    const chosenSize = size || (p && p.sizes && p.sizes[0]) || "UNI";
+    const key = id + "|" + chosenSize;
+
+    const cart = loadCart();
+    const item = cart.find(x => (x.id + "|" + (x.size||"")) === key);
+    if(item) item.qty += 1;
+    else cart.push({ id, size: chosenSize, qty:1 });
+    saveCart(cart);
+    renderCartUI();
+  }
+
+  function setQty(id, size, qty){
+    const cart = loadCart()
+      .map(x => (x.id===id && (x.size||"")===size) ? ({...x, qty}) : x)
+      .filter(x => x.qty > 0);
+    saveCart(cart);
+    renderCartUI();
+  }
+
+  function clearCart(){ saveCart([]); renderCartUI(); }
+
+  // Drawer + totals UI
   const cartCount = document.getElementById("cartCount");
   const cartTotal = document.getElementById("cartTotal");
   const cartList = document.getElementById("cartList");
   const sumItems = document.getElementById("sumItems");
   const sumTotal = document.getElementById("sumTotal");
   const shipLine = document.getElementById("shipLine");
-
   const overlay = document.getElementById("overlay");
   const drawer = document.getElementById("drawer");
+
+  const deliverySel = document.getElementById("deliverySel");
+  function shippingOn(){ return (deliverySel.value || "Да") === "Да"; }
 
   function openCart(){ overlay.classList.add("show"); drawer.classList.add("open"); }
   function closeCart(){ drawer.classList.remove("open"); if(!checkoutModal.classList.contains("show")) overlay.classList.remove("show"); }
 
-  // Checkout fields affecting totals
-  const deliverySel = document.getElementById("deliverySel");
-  function shippingOn(){
-    return (deliverySel.value || "Да") === "Да";
-  }
-
   function renderCartUI(){
     const cart = loadCart();
-    const { items, subtotal, ship, total } = cartTotals(cart, shippingOn());
+    const { items, ship, total } = cartTotals(cart, shippingOn());
 
     cartCount.textContent = items;
     cartTotal.textContent = total;
@@ -399,18 +416,18 @@
     cartList.innerHTML = cart.map(c => {
       const p = findProduct(c.id);
       if(!p) return "";
-      const size = c.size || "UNI";
+      const s = c.size || "UNI";
       return `
         <div class="item">
           <img class="thumb" src="${p.img}" alt="${p.name}">
           <div class="itxt">
-            <b>${p.name} <span class="small">(${size})</span></b>
+            <b>${p.name} <span class="small">(${s})</span></b>
             <div class="small">${p.price} ден. × ${c.qty} = <b>${p.price*c.qty}</b> ден.</div>
             <div class="qty" style="margin-top:8px;">
-              <button onclick="setQty('${c.id}','${size}', ${c.qty-1})">−</button>
+              <button onclick="setQty('${c.id}','${s}', ${c.qty-1})">−</button>
               <span style="min-width:22px; text-align:center;">${c.qty}</span>
-              <button onclick="setQty('${c.id}','${size}', ${c.qty+1})">+</button>
-              <button class="btn btn-danger" style="margin-left:auto; padding:8px 10px; border-radius:12px;" onclick="setQty('${c.id}','${size}', 0)">Отстрани</button>
+              <button onclick="setQty('${c.id}','${s}', ${c.qty+1})">+</button>
+              <button class="btn btn-danger" style="margin-left:auto; padding:8px 10px; border-radius:12px;" onclick="setQty('${c.id}','${s}', 0)">Отстрани</button>
             </div>
           </div>
         </div>
@@ -418,7 +435,7 @@
     }).join("");
   }
 
-  // ---- Checkout + Order ID
+  // Checkout
   const checkoutModal = document.getElementById("checkoutModal");
   const orderIdText = document.getElementById("orderIdText");
 
@@ -429,6 +446,7 @@
     const rnd = Math.random().toString(16).slice(2,6).toUpperCase();
     return `MX-${base}-${rnd}`;
   }
+  let currentOrderId = null;
 
   function openCheckout(){
     const cart = loadCart();
@@ -437,7 +455,6 @@
     orderIdText.textContent = currentOrderId;
     checkoutModal.classList.add("show");
     overlay.classList.add("show");
-    // sync totals when opening
     renderCartUI();
   }
   function closeCheckout(){
@@ -467,8 +484,8 @@
     lines.push("📞 Телефон: " + (phone || "-"));
     lines.push("💳 Плаќање: " + payment);
     lines.push("🔁 Замена: " + exchange);
-
     lines.push("");
+
     if(deliveryYes){
       lines.push("🚚 Достава: Да (+150 ден)");
       lines.push("🏠 Адреса: " + (deliveryAddress || "-"));
@@ -477,18 +494,17 @@
       lines.push("📍 Подигање: " + STORE_LOCATION);
     }
 
-    if(note) { lines.push(""); lines.push("📝 Напомена: " + note); }
+    if(note){ lines.push(""); lines.push("📝 Напомена: " + note); }
 
     lines.push("");
     lines.push("📦 Производи:");
     cart.forEach(c=>{
       const p = findProduct(c.id);
       if(p){
-        const size = c.size || "UNI";
-        lines.push(`- ${p.name} (${size}) x${c.qty} = ${p.price*c.qty} ден.`);
+        const s = c.size || "UNI";
+        lines.push(`- ${p.name} (${s}) x${c.qty} = ${p.price*c.qty} ден.`);
       }
     });
-
     lines.push("");
     lines.push(`🧺 Подсума: ${subtotal} ден.`);
     lines.push(`🚚 Достава: ${ship} ден.`);
@@ -502,7 +518,7 @@
     window.open(url, "_blank");
   }
 
-  // --- Events
+  // Events
   document.getElementById("openCartBtn").addEventListener("click", openCart);
   document.getElementById("closeCartBtn").addEventListener("click", closeCart);
   document.getElementById("clearCartBtn").addEventListener("click", clearCart);
@@ -513,10 +529,18 @@
 
   overlay.addEventListener("click", () => { closeCheckout(); closeCart(); });
 
-  searchInp.addEventListener("input", renderProducts);
-  catSel.addEventListener("change", renderProducts);
+  // Pagination events
+  loadMoreBtn.addEventListener("click", () => {
+    visibleCount += PAGE_SIZE;
+    renderProducts();
+  });
 
-  // Recalculate totals if delivery changes
+  // Reset pagination when category/search changes
+  function resetPaging(){ visibleCount = PAGE_SIZE; }
+  catSel.addEventListener("change", () => { resetPaging(); renderProducts(); });
+  searchInp.addEventListener("input", () => { resetPaging(); renderProducts(); });
+
+  // Recalc totals if delivery changes
   deliverySel.addEventListener("change", renderCartUI);
 
   // expose for inline
@@ -524,12 +548,10 @@
   window.setQty = setQty;
 
   // Init
-  function init(){
-    renderCats();
-    renderProducts();
-    renderCartUI();
-  }
-  init();
+  renderCats();
+  catSel.value = CATEGORIES[0];
+  renderProducts();
+  renderCartUI();
 </script>
 </body>
 </html>
