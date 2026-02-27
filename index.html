@@ -1187,13 +1187,7 @@ document.getElementById("btnResetDemo").onclick = resetDemo;
 
 /* init */
 renderAll();
-document.getElementById("prodInfo").textContent += " • vTEST";
-// TEST (само да видиме дали работи кликот)
-let orderState = { prodId:null };
-
-function openOrderModal(p){
-  orderState.prodId = p.id;
-
+document.getElementById("prodInfo").textContent += " • 
   document.getElementById("oImg").src = p.images?.[0] || "";
   document.getElementById("oTitle").textContent = p.name;
   document.getElementById("oCat").textContent = catName(p.catId);
