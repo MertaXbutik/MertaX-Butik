@@ -617,4 +617,527 @@
       const p = findProductById(c.id);
       if(p) subtotal += p.price * c.qty;
     }
-    const ship = (shippingEnabled && items > 0) ? SHIPPING_FEE
+    const ship = (shippingEnabled && items > 0) ? SHIPPING_FEE : 0;
+    return { items, subtotal, ship, total: subtotal + ship };
+  }
+
+  function addToCart(id, size){
+    const p = findProductById(id);
+    const chosenSize = size || (p && p.sizes && p.sizes[0]) || "UNI";
+    const key = id + "|" + chosenSize;
+
+    const cart = loadCart();
+    const item = cart.find(x => (x.id + "|" + (x.size||"")) === key);
+    if(item) item.qty += 1;
+    else cart.push({ id, size: chosenSize, qty:1 });
+    saveCart(cart);
+    renderCartUI();
+  }
+
+  function setQty(id, size, qty){
+    const cart = loadCart()
+      .map(x => (x.id===id && (x.size||"")===size) ? ({...x, qty}) : x)
+      .filter(x => x.qty > 0);
+    saveCart(cart);
+    renderCartUI();
+  }
+
+  function clearCart(){ saveCart([]); renderCartUI(); }
+
+  function openCart(){ overlay?.classList.add("show"); drawer?.classList.add("open"); }
+  function closeCart(){
+    drawer?.classList.remove("open");
+    if(!checkoutModal?.classList.contains("show") && !adminModal?.classList.contains("show")) overlay?.classList.remove("show");
+  }
+
+  function renderCartUI(){
+    const cart = loadCart();
+    const { items, ship, total } = cartTotals(cart, shippingOn());
+
+    if(cartCount) cartCount.textContent = items;
+    if(cartTotal) cartTotal.textContent = total;
+    if(sumItems) sumItems.textContent = items;
+    if(sumTotal) sumTotal.textContent = total;
+    if(shipLine) shipLine.textContent = ship + " ден.";
+
+    if(!cartList) return;
+    if(cart.length === 0){
+      cartList.innerHTML = `<p class="small">Кошничката е празна.</p>`;
+      return;
+    }
+
+    cartList.innerHTML = cart.map(c => {
+      const p = findProductById(c.id);
+      if(!p) return "";
+      const s = c.size || "UNI";
+      return `
+        <div class="item">
+          <img class="thumb" loading="lazy" src="${p.img}" alt="${p.name}">
+          <div class="itxt">
+            <b>${p.name} <span class="small">(${s})</span></b>
+            <div class="small">${p.price} ден. × ${c.qty} = <b>${p.price*c.qty}</b> ден.</div>
+            <div class="qty" style="margin-top:8px;">
+              <button onclick="setQty('${c.id}','${s}', ${c.qty-1})">−</button>
+              <span style="min-width:22px; text-align:center;">${c.qty}</span>
+              <button onclick="setQty('${c.id}','${s}', ${c.qty+1})">+</button>
+              <button class="btn btn-danger" style="margin-left:auto; padding:8px 10px; border-radius:12px;"
+                onclick="setQty('${c.id}','${s}', 0)">Отстрани</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  // ===== CHECKOUT =====
+  const checkoutModal = document.getElementById("checkoutModal");
+  const orderIdText = document.getElementById("orderIdText");
+  let currentOrderId = null;
+
+  function makeOrderId(){
+    const d = new Date();
+    const pad = (n)=> String(n).padStart(2,"0");
+    const base = `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+    const rnd = Math.random().toString(16).slice(2,6).toUpperCase();
+    return `MX-${base}-${rnd}`;
+  }
+
+  function openCheckout(){
+    const cart = loadCart();
+    if(cart.length === 0){ alert("Кошничката е празна."); return; }
+    currentOrderId = makeOrderId();
+    if(orderIdText) orderIdText.textContent = currentOrderId;
+    checkoutModal?.classList.add("show");
+    overlay?.classList.add("show");
+    renderCartUI();
+  }
+
+  function closeCheckout(){
+    checkoutModal?.classList.remove("show");
+    if(!drawer?.classList.contains("open") && !adminModal?.classList.contains("show")) overlay?.classList.remove("show");
+  }
+
+  function buildOrderText(){
+    const name = (document.getElementById("custName")?.value || "").trim();
+    const phone = (document.getElementById("custPhone")?.value || "").trim();
+    const note = (document.getElementById("custNote")?.value || "").trim();
+    const payment = (document.getElementById("paymentSel")?.value || "Готово при прием").trim();
+    const exchange = (document.getElementById("exchangeSel")?.value || "Да").trim();
+
+    const deliveryYes = shippingOn();
+    const deliveryAddress = (document.getElementById("deliveryAddress")?.value || "").trim();
+
+    const cart = loadCart();
+    const { items, subtotal, ship, total } = cartTotals(cart, deliveryYes);
+
+    let lines = [];
+    lines.push("🛍️ Нарачка - MertaX");
+    lines.push("🧾 Број: " + (currentOrderId || "-"));
+    lines.push("");
+    lines.push("👤 Име: " + (name || "-"));
+    lines.push("📞 Телефон: " + (phone || "-"));
+    lines.push("💳 Плаќање: " + payment);
+    lines.push("🔁 Замена: " + exchange);
+    lines.push("");
+
+    if(deliveryYes && items>0){
+      lines.push("🚚 Достава: Да (+150 ден)");
+      lines.push("🏠 Адреса: " + (deliveryAddress || "-"));
+    } else {
+      lines.push("🚚 Достава: Не");
+      lines.push("📍 Подигање: " + STORE_LOCATION);
+    }
+
+    if(note){ lines.push(""); lines.push("📝 Напомена: " + note); }
+
+    lines.push("");
+    lines.push("📦 Производи:");
+    cart.forEach(c=>{
+      const p = findProductById(c.id);
+      if(p){
+        const s = c.size || "UNI";
+        lines.push(`- ${p.name} (${s}) x${c.qty} = ${p.price*c.qty} ден.`);
+      }
+    });
+
+    lines.push("");
+    lines.push(`🧺 Подсума: ${subtotal} ден.`);
+    lines.push(`🚚 Достава: ${ship} ден.`);
+    lines.push(`✅ Вкупно производи: ${items}`);
+    lines.push(`💰 Вкупно: ${total} ден.`);
+    return lines.join("\n");
+  }
+
+  function sendToWhatsApp(){
+    const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(buildOrderText());
+    window.open(url, "_blank");
+  }
+
+  // ===== ADMIN =====
+  const adminModal = document.getElementById("adminModal");
+  const adminLoginBox = document.getElementById("adminLoginBox");
+  const adminPanelBox = document.getElementById("adminPanelBox");
+  const adminMsg = document.getElementById("adminMsg");
+
+  const pId = document.getElementById("pId");
+  const pName = document.getElementById("pName");
+  const pCat = document.getElementById("pCat");
+  const pPrice = document.getElementById("pPrice");
+  const pOldPrice = document.getElementById("pOldPrice");
+  const pBadge = document.getElementById("pBadge");
+  const pImg = document.getElementById("pImg");
+  const pSizes = document.getElementById("pSizes");
+  const pImgFile = document.getElementById("pImgFile");
+  const pImgCam = document.getElementById("pImgCam");
+  const imgPreview = document.getElementById("imgPreview");
+
+  const adminFilterCat = document.getElementById("adminFilterCat");
+  const adminSearch = document.getElementById("adminSearch");
+  const adminList = document.getElementById("adminList");
+  const jsonBox = document.getElementById("jsonBox");
+
+  function getPin(){ return localStorage.getItem(ADMIN_PIN_KEY) || "1234"; }
+  function setPin(pin){ localStorage.setItem(ADMIN_PIN_KEY, pin); }
+
+  function toast(msg){
+    if(!adminMsg) return;
+    adminMsg.textContent = msg;
+    setTimeout(()=>{ if(adminMsg.textContent===msg) adminMsg.textContent=""; }, 2500);
+  }
+
+  function openAdmin(){
+    adminModal?.classList.add("show");
+    overlay?.classList.add("show");
+    if(adminLoginBox) adminLoginBox.style.display = "block";
+    if(adminPanelBox) adminPanelBox.style.display = "none";
+    if(adminMsg) adminMsg.textContent = "";
+    const pinInp = document.getElementById("adminPinInp");
+    if(pinInp) pinInp.value = "";
+  }
+  function closeAdmin(){
+    adminModal?.classList.remove("show");
+    if(!drawer?.classList.contains("open") && !checkoutModal?.classList.contains("show")) overlay?.classList.remove("show");
+  }
+
+  function fillCatSelects(){
+    if(pCat) pCat.innerHTML = CATEGORIES.map(c=>`<option value="${c}">${c}</option>`).join("");
+    if(adminFilterCat) adminFilterCat.innerHTML =
+      [`<option value="ALL">Сите категории</option>`].concat(CATEGORIES.map(c=>`<option value="${c}">${c}</option>`)).join("");
+  }
+
+  function parseSizes(str, cat){
+    const raw = (str || "").trim();
+    if(!raw) return sizesByCategory(cat);
+    return raw.split(",").map(x=>x.trim()).filter(Boolean);
+  }
+
+  function clearForm(){
+    if(pId) pId.value = "";
+    if(pName) pName.value = "";
+    if(pCat) pCat.value = CATEGORIES[0];
+    if(pPrice) pPrice.value = "";
+    if(pOldPrice) pOldPrice.value = "";
+    if(pBadge) pBadge.value = "";
+    if(pImg) pImg.value = "";
+    if(pSizes) pSizes.value = sizesByCategory(CATEGORIES[0]).join(",");
+    if(imgPreview) imgPreview.style.display = "none";
+    if(pImgFile) pImgFile.value = "";
+    if(pImgCam) pImgCam.value = "";
+  }
+
+  async function fileToCompressedDataURL(file, maxSize=900, quality=0.82){
+    const dataURL = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+
+    const img = await new Promise((resolve, reject) => {
+      const im = new Image();
+      im.onload = () => resolve(im);
+      im.onerror = reject;
+      im.src = dataURL;
+    });
+
+    let w = img.width, h = img.height;
+    const scale = Math.min(1, maxSize / Math.max(w, h));
+    w = Math.round(w * scale);
+    h = Math.round(h * scale);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, w, h);
+
+    return canvas.toDataURL("image/jpeg", quality);
+  }
+
+  async function handleFilePick(file){
+    if(!file) return;
+    try{
+      const compressed = await fileToCompressedDataURL(file, 900, 0.82);
+      if(pImg) pImg.value = compressed;
+      if(imgPreview){ imgPreview.src = compressed; imgPreview.style.display = "block"; }
+      toast("Сликата е додадена ✅");
+    }catch(e){
+      alert("Не успеа upload. Пробај друга слика.");
+    }
+  }
+
+  pImgFile?.addEventListener("change", () => handleFilePick(pImgFile.files && pImgFile.files[0]));
+  pImgCam?.addEventListener("change",  () => handleFilePick(pImgCam.files && pImgCam.files[0]));
+
+  function saveProductCustom(){
+    const id = (pId?.value || "").trim() || makeId();
+    const name = (pName?.value || "").trim();
+    const cat = pCat?.value || CATEGORIES[0];
+    const price = Number((pPrice?.value || "").trim());
+    const oldPriceRaw = (pOldPrice?.value || "").trim();
+    const oldPrice = oldPriceRaw ? Number(oldPriceRaw) : null;
+    const badge = (pBadge?.value || "").trim();
+    const img = (pImg?.value || "").trim() || demoImg(id);
+    const sizes = parseSizes(pSizes?.value || "", cat);
+
+    if(!name){ toast("Внеси име."); return; }
+    if(!Number.isFinite(price) || price<=0){ toast("Внеси валидна цена."); return; }
+
+    const item = { id, name, cat, price, oldPrice: Number.isFinite(oldPrice)?oldPrice:null, badge, img, sizes };
+
+    // if was deleted, remove from deleted
+    const del = loadDeleted().filter(x => x !== id);
+    saveDeleted(del);
+
+    const arr = loadCustom();
+    const idx = arr.findIndex(x => x.id === id);
+    if(idx >= 0) arr[idx] = item;
+    else arr.unshift(item);
+    saveCustom(arr);
+
+    if(pId) pId.value = id;
+    if(imgPreview){ imgPreview.src = img; imgPreview.style.display = "block"; }
+
+    toast(idx>=0 ? "Ажурирано ✅" : "Додадено ✅");
+    resetPaging(); renderSizeFilter(); renderProducts(); renderCartUI(); renderAdminList();
+  }
+
+  function deleteById(){
+    const id = (pId?.value || "").trim();
+    if(!id){ toast("Внеси ID за бришење."); return; }
+    if(!confirm("Сигурно да се избрише/скрие овој ID?")) return;
+
+    saveCustom(loadCustom().filter(x => x.id !== id));
+    const del = new Set(loadDeleted());
+    del.add(id);
+    saveDeleted([...del]);
+
+    toast("Избришано/скриено ✅");
+    clearForm();
+    resetPaging(); renderSizeFilter(); renderProducts(); renderCartUI(); renderAdminList();
+  }
+
+  function clearOverrides(){
+    if(!confirm("Reset demo overrides?")) return;
+    saveDeleted([]);
+    toast("Deleted листа исчистена ✅");
+    resetPaging(); renderSizeFilter(); renderProducts(); renderCartUI(); renderAdminList();
+  }
+
+  function clearAllCustom(){
+    if(!confirm("Избриши СИТЕ custom производи?")) return;
+    saveCustom([]);
+    toast("Custom избришани ✅");
+    resetPaging(); renderSizeFilter(); renderProducts(); renderCartUI(); renderAdminList();
+  }
+
+  function loadToForm(id){
+    const p = findProductById(id);
+    if(!p){ toast("Нема таков ID."); return; }
+
+    if(pId) pId.value = p.id;
+    if(pName) pName.value = p.name || "";
+    if(pCat) pCat.value = p.cat || CATEGORIES[0];
+    if(pPrice) pPrice.value = p.price || "";
+    if(pOldPrice) pOldPrice.value = (p.oldPrice ?? "") === null ? "" : (p.oldPrice ?? "");
+    if(pBadge) pBadge.value = p.badge || "";
+    if(pImg) pImg.value = p.img || "";
+    if(pSizes) pSizes.value = (p.sizes && p.sizes.length) ? p.sizes.join(",") : sizesByCategory(p.cat || CATEGORIES[0]).join(",");
+
+    if(imgPreview && p.img){
+      imgPreview.src = p.img;
+      imgPreview.style.display = "block";
+    } else if(imgPreview){
+      imgPreview.style.display = "none";
+    }
+    toast("Вчитано ✅");
+  }
+
+  function renderAdminList(){
+    if(!adminList) return;
+    const q = (adminSearch?.value || "").trim().toLowerCase();
+    const f = adminFilterCat?.value || "ALL";
+    let list = [];
+
+    for(const cat of CATEGORIES){
+      if(f !== "ALL" && cat !== f) continue;
+      list = list.concat(getCategoryList(cat));
+    }
+    if(q){
+      list = list.filter(p =>
+        (p.name||"").toLowerCase().includes(q) ||
+        (p.id||"").toLowerCase().includes(q)
+      );
+    }
+    list = list.slice(0, 200);
+
+    adminList.innerHTML = list.map(p=>{
+      return `
+        <div class="listRow">
+          <div style="min-width:220px;">
+            <b>${p.name}</b>
+            <div class="small">ID: ${p.id}</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <span class="pill">${p.cat}</span>
+            <span class="pill">${p.price} ден.</span>
+            ${p.badge ? `<span class="pill">${p.badge}</span>` : ""}
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-ghost" onclick="adminEdit('${p.id}')">Edit</button>
+          </div>
+        </div>
+      `;
+    }).join("") || `<div class="small">Нема резултати.</div>`;
+  }
+
+  async function exportJson(){
+    const payload = { custom: loadCustom(), deleted: loadDeleted(), maxPerCategory: MAX_PER_CATEGORY };
+    const txt = JSON.stringify(payload, null, 2);
+    if(jsonBox) jsonBox.value = txt;
+    try{
+      await navigator.clipboard.writeText(txt);
+      toast("JSON копиран ✅");
+    }catch(e){
+      toast("Export спремен (копирај рачно).");
+    }
+  }
+
+  function importJson(){
+    try{
+      const txt = (jsonBox?.value || "").trim();
+      if(!txt){ toast("Залепи JSON во полето."); return; }
+      const obj = JSON.parse(txt);
+      if(!obj || typeof obj !== "object"){ toast("Грешен JSON."); return; }
+
+      const custom = Array.isArray(obj.custom) ? obj.custom : [];
+      const deleted = Array.isArray(obj.deleted) ? obj.deleted : [];
+
+      const cleaned = custom.map(p=>({
+        id: String(p.id || makeId()),
+        name: String(p.name || "Без име"),
+        cat: CATEGORIES.includes(p.cat) ? p.cat : CATEGORIES[0],
+        price: Number(p.price || 0),
+        oldPrice: (p.oldPrice===null || p.oldPrice===undefined || p.oldPrice==="") ? null : Number(p.oldPrice),
+        badge: (p.badge==="НОВО" || p.badge==="АКЦИЈА") ? p.badge : "",
+        img: String(p.img || demoImg(p.id||"img")),
+        sizes: Array.isArray(p.sizes) && p.sizes.length ? p.sizes : sizesByCategory(CATEGORIES.includes(p.cat)?p.cat:CATEGORIES[0])
+      })).filter(p=>p.price>0);
+
+      saveCustom(cleaned);
+      saveDeleted(deleted.map(String));
+
+      toast("Import успешен ✅");
+      resetPaging(); renderSizeFilter(); renderProducts(); renderCartUI(); renderAdminList();
+    }catch(e){
+      toast("Грешка во JSON.");
+    }
+  }
+
+  window.adminEdit = loadToForm;
+
+  // ===== EVENTS =====
+  const $ = (id)=> document.getElementById(id);
+
+  $("openCartBtn")?.addEventListener("click", openCart);
+  $("closeCartBtn")?.addEventListener("click", closeCart);
+  $("clearCartBtn")?.addEventListener("click", clearCart);
+
+  $("goCheckoutBtn")?.addEventListener("click", openCheckout);
+  $("closeCheckoutBtn")?.addEventListener("click", closeCheckout);
+  $("sendWhatsappBtn")?.addEventListener("click", sendToWhatsApp);
+
+  $("adminBtn")?.addEventListener("click", openAdmin);
+  $("closeAdminBtn")?.addEventListener("click", closeAdmin);
+
+  overlay?.addEventListener("click", () => { closeCheckout(); closeCart(); closeAdmin(); });
+
+  loadMoreBtn?.addEventListener("click", () => { visibleCount += PAGE_SIZE; renderProducts(); });
+
+  function onFilterChange(){
+    resetPaging();
+    renderProducts();
+    renderCartUI();
+  }
+
+  catSel?.addEventListener("change", () => { renderSizeFilter(); onFilterChange(); });
+  searchInp?.addEventListener("input", onFilterChange);
+  sizeFilterSel?.addEventListener("change", onFilterChange);
+  minPriceInp?.addEventListener("input", onFilterChange);
+  maxPriceInp?.addEventListener("input", onFilterChange);
+  sortSel?.addEventListener("change", onFilterChange);
+  deliverySel?.addEventListener("change", renderCartUI);
+
+  // Admin events
+  $("adminLoginBtn")?.addEventListener("click", () => {
+    const pin = ($("adminPinInp")?.value || "").trim();
+    if(pin === getPin()){
+      if(adminLoginBox) adminLoginBox.style.display = "block";
+      if(adminPanelBox) adminPanelBox.style.display = "block";
+      // hide login box
+      if(adminLoginBox) adminLoginBox.style.display = "none";
+      fillCatSelects();
+      clearForm();
+      renderAdminList();
+      toast("Добредојде ✅");
+    }else{
+      alert("Погрешен PIN.");
+    }
+  });
+
+  $("saveProductBtn")?.addEventListener("click", saveProductCustom);
+  $("deleteProductBtn")?.addEventListener("click", deleteById);
+  $("clearOverridesBtn")?.addEventListener("click", clearOverrides);
+  $("clearCustomBtn")?.addEventListener("click", clearAllCustom);
+
+  $("exportBtn")?.addEventListener("click", exportJson);
+  $("importBtn")?.addEventListener("click", importJson);
+
+  adminFilterCat?.addEventListener("change", renderAdminList);
+  adminSearch?.addEventListener("input", renderAdminList);
+
+  $("changePinBtn")?.addEventListener("click", () => {
+    const cur = prompt("Внеси тековен PIN:");
+    if(cur === null) return;
+    if(cur.trim() !== getPin()){ alert("Погрешен PIN."); return; }
+    const next = prompt("Внеси нов PIN (4+ знаци):");
+    if(next === null) return;
+    if(next.trim().length < 4){ alert("PIN мора да има барем 4 знаци."); return; }
+    setPin(next.trim());
+    alert("PIN е сменет ✅");
+  });
+
+  // expose cart functions
+  window.addToCart = addToCart;
+  window.setQty = setQty;
+
+  // ===== SAFE INIT =====
+  window.addEventListener("DOMContentLoaded", () => {
+    renderCats();
+    if(catSel) catSel.value = CATEGORIES[0];
+    renderSizeFilter();
+    renderProducts();
+    renderCartUI();
+  });
+</script>
+</body>
+</html>
