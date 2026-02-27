@@ -226,36 +226,158 @@
 </div>
 
 <script>
+  // ✅ Податоци што бараше
   const WHATSAPP_NUMBER = "38972912601";
   const STORE_LOCATION = "ТЦ Мавровка";
   const SHIPPING_FEE = 150;
 
-  // pagination rules
+  // ✅ Правила за категории и листање
   const PAGE_SIZE = 30;
   const MAX_PER_CATEGORY = 100;
 
-  // Sizes for clothes
-  const CLOTH_SIZES = ["S","M","L","XL","2XL","3XL"];
+  const SIZES = ["S","M","L","XL","2XL","3XL"];
 
-  // categories requested
   const CATEGORIES = [
-    "Џемпери","Блузони","Маици","Кошули",
-    "Фармерки/Панталони","Тренерки","Јакни","Одела"
+    "Џемпери",
+    "Блузони",
+    "Маици",
+    "Кошули",
+    "Фармерки/Панталони",
+    "Тренерки",
+    "Јакни",
+    "Одела"
   ];
 
-  const CART_KEY = "mertax_cart_cat30_v1";
+  const CART_KEY = "mertax_cart_full_v1";
 
-  // Demo products (само неколку; додавај преку Admin ако сакаш — за сега можеш и рачно тука)
-  const products = [
-    { id:"p1", name:"MertaX Маичка", price:990, oldPrice:1290, badge:"АКЦИЈА", cat:"Маици", sizes:CLOTH_SIZES, img:"https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=900&q=60" },
-    { id:"p2", name:"MertaX Кошула", price:1490, oldPrice:null, badge:"НОВО", cat:"Кошули", sizes:CLOTH_SIZES, img:"https://images.unsplash.com/photo-1520975958225-6a97d5a0f98f?auto=format&fit=crop&w=900&q=60" },
-    { id:"p3", name:"MertaX Јакна", price:3990, oldPrice:4990, badge:"АКЦИЈА", cat:"Јакни", sizes:CLOTH_SIZES, img:"https://images.unsplash.com/photo-1520975871159-3b2c9c2e21a6?auto=format&fit=crop&w=900&q=60" },
-    { id:"p4", name:"MertaX Тренерки", price:2190, oldPrice:null, badge:"", cat:"Тренерки", sizes:CLOTH_SIZES, img:"https://images.unsplash.com/photo-1520975607364-6a4c35f9b6e4?auto=format&fit=crop&w=900&q=60" },
-  ];
+  // ---------------------------------------------------------
+  // 1) ОВДЕ СТАВАШ РЕАЛНИ ПРОИЗВОДИ (ако сакаш)
+  //    Подолу има "demo auto fill" до 100 по категорија.
+  // ---------------------------------------------------------
+  function seedBaseProducts(){
+    // Тука стави реални производи (пример):
+    return [
+      // Маици
+      { id:"m1", name:"MertaX Маичка Basic", price:990, oldPrice:1290, badge:"АКЦИЈА", cat:"Маици", sizes:SIZES, img:demoImg("maici-1") },
+      { id:"m2", name:"MertaX Маичка Premium", price:1190, oldPrice:null, badge:"НОВО", cat:"Маици", sizes:SIZES, img:demoImg("maici-2") },
 
+      // Џемпери
+      { id:"j1", name:"MertaX Џемпер Classic", price:1890, oldPrice:2390, badge:"АКЦИЈА", cat:"Џемпери", sizes:SIZES, img:demoImg("dzemperi-1") },
+
+      // Блузони
+      { id:"b1", name:"MertaX Блузон Urban", price:2190, oldPrice:null, badge:"НОВО", cat:"Блузони", sizes:SIZES, img:demoImg("bluzoni-1") },
+
+      // Кошули
+      { id:"k1", name:"MertaX Кошула Slim", price:1490, oldPrice:null, badge:"", cat:"Кошули", sizes:SIZES, img:demoImg("kosuli-1") },
+
+      // Фармерки/Панталони
+      { id:"f1", name:"MertaX Фармерки Dark", price:1990, oldPrice:2490, badge:"АКЦИЈА", cat:"Фармерки/Панталони", sizes:SIZES, img:demoImg("farmerki-1") },
+
+      // Тренерки
+      { id:"t1", name:"MertaX Тренерки Set", price:2290, oldPrice:null, badge:"", cat:"Тренерки", sizes:SIZES, img:demoImg("trenerki-1") },
+
+      // Јакни
+      { id:"y1", name:"MertaX Јакна зимска", price:3990, oldPrice:4990, badge:"АКЦИЈА", cat:"Јакни", sizes:SIZES, img:demoImg("jakni-1") },
+
+      // Одела
+      { id:"o1", name:"MertaX Одело Classic", price:7990, oldPrice:null, badge:"НОВО", cat:"Одела", sizes:SIZES, img:demoImg("odela-1") },
+    ];
+  }
+
+  // Демо слики (работат сигурно, не се “скршени”)
+  function demoImg(seed){
+    return `https://picsum.photos/seed/${encodeURIComponent(seed)}/900/900`;
+  }
+
+  // ---------------------------------------------------------
+  // 2) DEMO AUTO-FILL ДО 100 ПО КАТЕГОРИЈА
+  // ---------------------------------------------------------
+  function ensure100PerCategory(base){
+    const out = [...base];
+    const byCat = new Map();
+    for(const c of CATEGORIES) byCat.set(c, []);
+    for(const p of out){
+      if(byCat.has(p.cat)) byCat.get(p.cat).push(p);
+    }
+
+    let globalIdx = 1;
+
+    for(const cat of CATEGORIES){
+      const arr = byCat.get(cat);
+      const need = Math.max(0, MAX_PER_CATEGORY - arr.length);
+
+      for(let i=0;i<need;i++){
+        const idx = arr.length + i + 1;
+
+        // малку варијација цена и попуст
+        const basePrice = priceByCategory(cat);
+        const price = round10(basePrice + (idx%7)*40);
+        const isSale = (idx % 4 === 0);
+        const isNew  = (!isSale && idx % 7 === 0);
+        const oldPrice = isSale ? round10(price + 300 + (idx%5)*50) : null;
+        const badge = isSale ? "АКЦИЈА" : (isNew ? "НОВО" : "");
+
+        const id = `auto_${catKey(cat)}_${idx}_${globalIdx++}`;
+
+        const item = {
+          id,
+          name: `MertaX ${cat} #${idx}`,
+          price,
+          oldPrice,
+          badge,
+          cat,
+          sizes: SIZES,
+          img: demoImg(`${catKey(cat)}-${idx}`)
+        };
+        out.push(item);
+      }
+    }
+    return out;
+  }
+
+  function catKey(cat){
+    return cat
+      .toLowerCase()
+      .replaceAll(" ", "-")
+      .replaceAll("/", "-")
+      .replaceAll("ќ","k").replaceAll("џ","dz").replaceAll("ж","zh")
+      .replaceAll("ч","ch").replaceAll("ш","sh")
+      .replaceAll("љ","lj").replaceAll("њ","nj")
+      .replaceAll("ѓ","gj").replaceAll("ѕ","dz")
+      .replaceAll("а","a").replaceAll("б","b").replaceAll("в","v").replaceAll("г","g")
+      .replaceAll("д","d").replaceAll("е","e").replaceAll("з","z").replaceAll("и","i")
+      .replaceAll("ј","j").replaceAll("к","k").replaceAll("л","l").replaceAll("м","m")
+      .replaceAll("н","n").replaceAll("о","o").replaceAll("п","p").replaceAll("р","r")
+      .replaceAll("с","s").replaceAll("т","t").replaceAll("у","u").replaceAll("ф","f")
+      .replaceAll("х","h").replaceAll("ц","c");
+  }
+
+  function priceByCategory(cat){
+    switch(cat){
+      case "Маици": return 990;
+      case "Кошули": return 1490;
+      case "Џемпери": return 1890;
+      case "Блузони": return 2190;
+      case "Фармерки/Панталони": return 1990;
+      case "Тренерки": return 2290;
+      case "Јакни": return 3990;
+      case "Одела": return 7990;
+      default: return 1490;
+    }
+  }
+
+  function round10(n){ return Math.round(n/10)*10; }
+
+  // ---------------------------------------------------------
+  // 3) DATA
+  // ---------------------------------------------------------
+  const products = ensure100PerCategory(seedBaseProducts());
+
+  // ---------------------------------------------------------
+  // Cart
+  // ---------------------------------------------------------
   const loadCart = () => JSON.parse(localStorage.getItem(CART_KEY) || "[]");
   const saveCart = (cart) => localStorage.setItem(CART_KEY, JSON.stringify(cart));
-
   const findProduct = (id) => products.find(p => p.id === id);
 
   // State for pagination
@@ -268,28 +390,17 @@
   const loadMoreBtn = document.getElementById("loadMoreBtn");
   const infoLine = document.getElementById("infoLine");
 
-  // categories dropdown
   function renderCats(){
     catSel.innerHTML = CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join("");
   }
-
-  function currentCategory(){
-    return catSel.value || CATEGORIES[0];
-  }
+  function currentCategory(){ return catSel.value || CATEGORIES[0]; }
 
   function filteredAll(){
     const cat = currentCategory();
     const q = (searchInp.value || "").trim().toLowerCase();
 
-    // category filter
-    let list = products.filter(p => (p.cat || "") === cat);
-
-    // enforce max 100 per category (display-wise)
-    list = list.slice(0, MAX_PER_CATEGORY);
-
-    // search
+    let list = products.filter(p => (p.cat || "") === cat).slice(0, MAX_PER_CATEGORY);
     if(q) list = list.filter(p => (p.name || "").toLowerCase().includes(q));
-
     return list;
   }
 
@@ -328,7 +439,8 @@
               <select class="sel miniSel" id="${sizeSelId}">
                 ${sizes.map(s => `<option value="${s}">${s}</option>`).join("")}
               </select>
-              <button class="btn btn-accent" onclick="addToCart('${p.id}', document.getElementById('${sizeSelId}').value)">Додај</button>
+              <button class="btn btn-accent"
+                onclick="addToCart('${p.id}', document.getElementById('${sizeSelId}').value)">Додај</button>
             </div>
 
             <div class="small" style="margin-top:8px;">ID: ${p.id}</div>
@@ -337,7 +449,6 @@
       `;
     }).join("");
 
-    // Load more button logic
     if(visibleCount < list.length){
       loadMoreBtn.style.display = "inline-block";
       const next = Math.min(visibleCount + PAGE_SIZE, list.length);
@@ -347,7 +458,7 @@
     }
   }
 
-  // Cart item: { id, qty, size }
+  // Cart totals
   function cartTotals(cart, shippingOn){
     let items = 0, subtotal = 0;
     for(const c of cart){
@@ -359,6 +470,7 @@
     return { items, subtotal, ship, total: subtotal + ship };
   }
 
+  // Cart actions
   function addToCart(id, size){
     const p = findProduct(id);
     const chosenSize = size || (p && p.sizes && p.sizes[0]) || "UNI";
@@ -427,7 +539,8 @@
               <button onclick="setQty('${c.id}','${s}', ${c.qty-1})">−</button>
               <span style="min-width:22px; text-align:center;">${c.qty}</span>
               <button onclick="setQty('${c.id}','${s}', ${c.qty+1})">+</button>
-              <button class="btn btn-danger" style="margin-left:auto; padding:8px 10px; border-radius:12px;" onclick="setQty('${c.id}','${s}', 0)">Отстрани</button>
+              <button class="btn btn-danger" style="margin-left:auto; padding:8px 10px; border-radius:12px;"
+                onclick="setQty('${c.id}','${s}', 0)">Отстрани</button>
             </div>
           </div>
         </div>
@@ -438,6 +551,7 @@
   // Checkout
   const checkoutModal = document.getElementById("checkoutModal");
   const orderIdText = document.getElementById("orderIdText");
+  let currentOrderId = null;
 
   function makeOrderId(){
     const d = new Date();
@@ -446,7 +560,6 @@
     const rnd = Math.random().toString(16).slice(2,6).toUpperCase();
     return `MX-${base}-${rnd}`;
   }
-  let currentOrderId = null;
 
   function openCheckout(){
     const cart = loadCart();
@@ -457,6 +570,7 @@
     overlay.classList.add("show");
     renderCartUI();
   }
+
   function closeCheckout(){
     checkoutModal.classList.remove("show");
     if(!drawer.classList.contains("open")) overlay.classList.remove("show");
@@ -505,6 +619,7 @@
         lines.push(`- ${p.name} (${s}) x${c.qty} = ${p.price*c.qty} ден.`);
       }
     });
+
     lines.push("");
     lines.push(`🧺 Подсума: ${subtotal} ден.`);
     lines.push(`🚚 Достава: ${ship} ден.`);
@@ -529,21 +644,19 @@
 
   overlay.addEventListener("click", () => { closeCheckout(); closeCart(); });
 
-  // Pagination events
+  // Pagination
   loadMoreBtn.addEventListener("click", () => {
     visibleCount += PAGE_SIZE;
     renderProducts();
   });
 
-  // Reset pagination when category/search changes
   function resetPaging(){ visibleCount = PAGE_SIZE; }
   catSel.addEventListener("change", () => { resetPaging(); renderProducts(); });
   searchInp.addEventListener("input", () => { resetPaging(); renderProducts(); });
 
-  // Recalc totals if delivery changes
   deliverySel.addEventListener("change", renderCartUI);
 
-  // expose for inline
+  // expose inline
   window.addToCart = addToCart;
   window.setQty = setQty;
 
