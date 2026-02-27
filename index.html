@@ -2,234 +2,279 @@
 <html lang="mk">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MertaX Butik</title>
   <style>
     :root{
       --bg:#0b0b0b;
-      --card:#121212;
-      --card2:#161616;
+      --bg2:#0f2a22;
+      --card:rgba(18,18,18,.65);
       --line:rgba(255,255,255,.10);
       --txt:#fff;
-      --muted:rgba(255,255,255,.70);
+      --muted:rgba(255,255,255,.72);
       --muted2:rgba(255,255,255,.55);
       --accent:#22c55e;
       --accent2:#16a34a;
       --danger:#ef4444;
-      --warn:#f59e0b;
-      --shadow:0 12px 30px rgba(0,0,0,.35);
-      --radius:16px;
+      --shadow:0 18px 40px rgba(0,0,0,.55);
+      --r:18px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background: radial-gradient(1200px 600px at 20% 0%, rgba(34,197,94,.22), transparent 60%),
-                  radial-gradient(900px 500px at 90% 10%, rgba(59,130,246,.18), transparent 60%),
-                  #060606;
       color:var(--txt);
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 700px at 15% 25%, rgba(34,197,94,.22), transparent 55%),
+        radial-gradient(900px 650px at 85% 35%, rgba(6,182,212,.14), transparent 55%),
+        linear-gradient(180deg, var(--bg) 0%, #060606 55%, var(--bg2) 100%);
+      min-height:100vh;
     }
-    a{color:inherit}
+
+    /* HEADER like Metro */
     .top{
-      position:sticky; top:0; z-index:10;
+      position:sticky; top:0; z-index:50;
+      background:rgba(10,10,10,.82);
       backdrop-filter: blur(10px);
-      background: rgba(0,0,0,.55);
       border-bottom:1px solid var(--line);
     }
     .top-inner{
-      max-width:1100px; margin:0 auto;
-      padding:14px 14px 12px;
-      display:flex; gap:14px; align-items:center; justify-content:space-between;
+      max-width:1200px;
+      margin:0 auto;
+      padding:10px 14px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      justify-content:space-between;
     }
-    .brand{display:flex; gap:12px; align-items:center;}
-    .logo{
-      width:48px;height:48px;border-radius:14px;
-      background: linear-gradient(135deg, rgba(34,197,94,.9), rgba(59,130,246,.75));
+    .left{
+      display:flex; align-items:center; gap:10px; min-width:0;
+    }
+    .hamb{
+      width:42px; height:42px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--txt);
       display:grid; place-items:center;
-      box-shadow: var(--shadow);
-      flex:0 0 auto;
+      cursor:pointer;
     }
-    .logo svg{filter: drop-shadow(0 6px 10px rgba(0,0,0,.35))}
+    .hamb svg{opacity:.9}
+    .brand{
+      display:flex; align-items:center; gap:10px; min-width:0;
+      cursor:pointer;
+      user-select:none;
+    }
+    .logo{
+      width:44px; height:44px;
+      border-radius:14px;
+      overflow:hidden;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      flex:0 0 44px;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .logo img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      background:#fff;
+      padding:4px;
+      display:block;
+    }
     .btxt{line-height:1.05}
-.logo{
-  width:56px;
-  height:56px;
-  border-radius:14px;
-  overflow:hidden;
-  flex:0 0 56px;
-  background: rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.12);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.logo img{
-  width:100%;
-  height:100%;
-  object-fit:cover;   /* важно */
-  display:block;
-}
-.brand{
-  display:flex;
-  gap:12px;
-  align-items:center;
-}
-    .btxt b{display:block; font-size:22px; letter-spacing:.6px}
-    .btxt small{display:block; color:var(--muted); font-size:12.5px; margin-top:4px}
-    .right-actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
+    .btxt .title{font-weight:900; font-size:20px; letter-spacing:.2px}
+    .btxt .sub{font-size:12.5px; color:var(--muted2)}
+    .search{
+      flex:1;
+      max-width:520px;
+      display:flex; gap:10px; align-items:center;
+      margin-left:10px;
+    }
+    .search input{
+      width:100%;
+      height:42px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--txt);
+      padding:0 14px;
+      outline:none;
+    }
+    .actions{
+      display:flex; align-items:center; gap:8px;
+    }
     .chip{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
+      background:rgba(255,255,255,.05);
       padding:8px 10px;
       border-radius:999px;
-      color:var(--muted);
       font-size:12.5px;
-      max-width:60vw;
+      color:var(--muted);
+      max-width:48vw;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
     .btn{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.06);
+      background:rgba(255,255,255,.07);
       color:var(--txt);
-      padding:10px 12px;
       border-radius:12px;
+      height:42px;
+      padding:0 12px;
       cursor:pointer;
-      font-weight:650;
-      transition:.15s transform,.15s background,.15s border;
-      display:inline-flex; align-items:center; gap:8px;
+      font-weight:700;
     }
-    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.09)}
-    .btn:active{transform: translateY(0)}
-    .btn.primary{background: rgba(34,197,94,.18); border-color: rgba(34,197,94,.40)}
-    .btn.primary:hover{background: rgba(34,197,94,.25)}
-    .btn.danger{background: rgba(239,68,68,.15); border-color: rgba(239,68,68,.35)}
-    .btn.ghost{background: transparent}
-    .container{
-      max-width:1100px; margin:0 auto; padding:16px 14px 40px;
+    .btn.primary{background:rgba(34,197,94,.14); border-color:rgba(34,197,94,.35)}
+    .btn.danger{background:rgba(239,68,68,.14); border-color:rgba(239,68,68,.35)}
+    .btn:active{transform: translateY(1px)}
+
+    /* layout */
+    .wrap{
+      max-width:1200px;
+      margin:16px auto 40px;
+      padding:0 14px;
+      display:grid;
+      grid-template-columns: 1.05fr 1.75fr;
+      gap:16px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .wrap{grid-template-columns:1fr}
+      .search{display:none}
     }
 
     .panel{
       border:1px solid var(--line);
-      background: rgba(10,10,10,.55);
-      border-radius: var(--radius);
+      border-radius:var(--r);
+      background:var(--card);
       box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .products-head{
-      padding:14px 14px 12px;
+    .panel-h{
+      padding:14px 14px 10px;
       border-bottom:1px solid var(--line);
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
       gap:10px;
-      flex-wrap:wrap;
     }
-    .title{font-size:22px; font-weight:900; letter-spacing:.4px}
-    .muted{color:var(--muted)}
-    .muted2{color:var(--muted2)}
+    .panel-h h2{
+      margin:0;
+      font-size:22px;
+      letter-spacing:.2px;
+    }
+    .muted{color:var(--muted2); font-size:12.5px; margin-top:4px}
+    .panel-b{padding:14px}
     .howto{
-      margin-top:8px;
       font-size:13px;
       color:var(--muted);
       line-height:1.35;
+      margin:8px 0 10px;
     }
+
     .filters{
-      padding:12px 14px;
-      display:flex; gap:10px; flex-wrap:wrap;
-      border-bottom:1px solid var(--line);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
       align-items:center;
+      margin-top:10px;
     }
-    .input, .select{
+    select, input[type="number"], input[type="text"], textarea{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.05);
+      background:rgba(255,255,255,.06);
       color:var(--txt);
-      padding:11px 12px;
-      border-radius:14px;
+      border-radius:12px;
+      padding:10px 12px;
       outline:none;
-      min-width:210px;
+      font-size:14px;
     }
-    .select{min-width:230px}
-    .small{font-size:12.5px}
-    .cards{
-      padding:14px;
+    textarea{width:100%}
+    .small{font-size:12px; color:var(--muted2)}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+    .field{flex:1; min-width:220px}
+    label{display:block; font-size:12px; color:var(--muted2); margin-bottom:6px}
+
+    /* product cards */
+    .grid{
       display:grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, minmax(0,1fr));
       gap:12px;
     }
-    @media (max-width: 980px){ .cards{grid-template-columns: repeat(2, 1fr);} }
-    @media (max-width: 560px){ .cards{grid-template-columns: 1fr;} }
-
+    @media (max-width: 560px){
+      .grid{grid-template-columns:1fr}
+    }
     .card{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      border-radius: 18px;
+      background:rgba(255,255,255,.04);
+      border-radius:18px;
       overflow:hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,.28);
-      display:flex; flex-direction:column;
-      min-height: 360px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+      display:flex;
+      flex-direction:column;
+      min-height:360px;
     }
     .imgwrap{
       position:relative;
       aspect-ratio: 16/10;
-      background: rgba(255,255,255,.03);
+      background:rgba(255,255,255,.03);
       overflow:hidden;
     }
     .imgwrap img{
-      width:100%; height:100%;
+      width:100%;
+      height:100%;
       object-fit:cover;
       display:block;
     }
     .badge{
-      position:absolute; top:10px; left:10px;
+      position:absolute;
+      top:10px; left:10px;
       padding:7px 10px;
       border-radius:999px;
-      font-size:12px;
       font-weight:800;
+      font-size:12px;
       border:1px solid var(--line);
-      background: rgba(0,0,0,.45);
+      background:rgba(0,0,0,.45);
       backdrop-filter: blur(6px);
     }
-    .cardbody{padding:12px 12px 12px; display:flex; flex-direction:column; gap:10px; flex:1}
-    .pname{font-size:18px; font-weight:900; letter-spacing:.2px; line-height:1.15}
-    .price{font-size:18px; font-weight:900}
-    .meta{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; color:var(--muted)}
+    .cardbody{padding:12px}
+    .pname{font-size:18px; font-weight:900; margin:0 0 6px}
+    .price{font-size:18px; font-weight:900; color:rgba(34,197,94,.95)}
+    .meta{display:flex; justify-content:space-between; gap:10px; color:var(--muted2); font-size:12.5px; margin-top:6px}
     .sizes{
       display:flex; gap:8px; flex-wrap:wrap;
+      margin-top:10px;
     }
     .sz{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.05);
-      padding:6px 8px;
+      background:rgba(255,255,255,.05);
       border-radius:999px;
-      font-size:12.5px;
-      display:inline-flex; align-items:center; gap:7px;
+      padding:6px 8px;
+      font-size:12px;
       color:var(--muted);
+      display:inline-flex;
+      gap:6px;
+      align-items:center;
     }
-    .dot{width:10px;height:10px;border-radius:50%}
-    .dot.g{background: var(--accent)}
-    .dot.r{background: var(--danger)}
-    .actions{
+    .dot{
+      width:8px; height:8px; border-radius:99px;
+      background:rgba(34,197,94,.9);
+    }
+    .dot.out{background:rgba(239,68,68,.9)}
+    .cardfoot{
       margin-top:auto;
+      padding:12px;
+      border-top:1px solid var(--line);
       display:flex; gap:10px;
     }
-    .actions .btn{flex:1; justify-content:center}
-
-    .footerbar{
-      margin-top:10px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:space-between;
-      padding:12px 14px 14px;
-      color:var(--muted2);
-    }
+    .cardfoot .btn{flex:1}
 
     /* MODALS */
     .modal{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.62);
+      background:rgba(0,0,0,.62);
+      backdrop-filter: blur(8px);
       display:none;
       z-index:999;
       padding:14px;
@@ -237,83 +282,110 @@
     }
     .modal.open{display:block}
     .modal-card{
-      max-width:640px; margin:40px auto;
-      border:1px solid var(--line);
-      background: rgba(12,12,12,.92);
-      border-radius: 18px;
+      max-width:720px;
+      margin:24px auto;
+      background:rgba(18,18,18,.86);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:22px;
       box-shadow: var(--shadow);
       overflow:hidden;
     }
     .modal-head{
-      padding:14px 14px 12px;
-      border-bottom:1px solid var(--line);
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      padding:14px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
     }
-    .modal-head h3{margin:0; font-size:18px; font-weight:950}
+    .modal-head h3{margin:0; font-size:18px}
     .modal-body{padding:14px}
-    .divider{height:1px;background:var(--line);margin:12px 0}
-    .row{display:flex; gap:12px; flex-wrap:wrap}
-    .field{flex:1; min-width:220px}
-    label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:700}
-    textarea{min-height:90px; resize:vertical}
-    .help{font-size:12px; color:var(--muted2); margin-top:6px; line-height:1.35}
+    .divider{height:1px; background:rgba(255,255,255,.10); margin:12px 0}
+    .help{font-size:12px; color:var(--muted2); line-height:1.35}
 
-    .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
-    @media(max-width:560px){.grid2{grid-template-columns:1fr}}
-
-    .mini{
-      font-size:12px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      color:var(--muted);
-    }
+    .mini{font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--muted)}
   </style>
 </head>
-
 <body>
+
+  <!-- HEADER -->
   <div class="top">
     <div class="top-inner">
-     <div class="brand">
-  <div class="logo">
-    <img src="IMG_9833.jpeg" alt="MertaX Butik">
-  </div>
+      <div class="left">
+        <button class="hamb" id="btnCats" title="Категории">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
 
-  <div class="btxt">
-    <div class="title">MertaX Butik</div>
-    <div class="subtitle">Онлајн нарачки преку WhatsApp • Величини • Залиха</div>
-  </div>
-</div>
-  <div class="container">
-    <div class="panel">
-      <div class="products-head">
-        <div>
-          <div class="title">Продукти</div>
-          <div class="muted" id="prodInfo">0 продукти</div>
-          <div class="howto">
-            <b>Како да нарачаш?</b><br>
-            1) Избери продукт → 2) Притисни „Нарачај“ → 3) Избери величина и количина → 4) Потврди → WhatsApp ќе се отвори со готова порака.
+        <div class="brand" id="brandClick" title="Категории">
+          <div class="logo">
+            <img src="IMG_9833.jpeg" alt="MertaX Butik лого" />
+          </div>
+          <div class="btxt">
+            <div class="title">MertaX Butik</div>
+            <div class="sub">Онлајн нарачки преку WhatsApp • Величини • Залиха</div>
           </div>
         </div>
-        <div class="row">
-          <button class="btn primary" id="btnAddProd" title="Додај продукт (само Admin)">+ Продукт</button>
+      </div>
+
+      <div class="search">
+        <input id="qTop" type="text" placeholder="Пребарај продукт..." />
+      </div>
+
+      <div class="actions">
+        <span class="chip" id="chipCat">Категорија: (сите)</span>
+        <button class="btn primary" id="btnAdd">+ Продукт</button>
+        <button class="btn" id="btnAdmin">Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- LEFT PANEL -->
+    <div class="panel">
+      <div class="panel-h">
+        <div>
+          <h2>Продукти</h2>
+          <div class="muted" id="prodInfo">0 продукти</div>
+          <div class="howto">
+            <b>Како да нарачаш?</b><br/>
+            1) Избери продукт → 2) Притисни „Нарачај“ → 3) Избери величина и количина →
+            4) Потврди → WhatsApp ќе се отвори со готова порака.
+          </div>
         </div>
       </div>
 
-      <div class="filters">
-        <input class="input" id="prodSearch" placeholder="Пребарај продукт..." />
-        <select class="select" id="sizeFilter">
-          <option value="">Филтер по величина (само достапни)</option>
-        </select>
-        <button class="btn" id="btnResetFilters">Reset</button>
+      <div class="panel-b">
+        <div class="filters">
+          <input id="q" type="text" placeholder="Пребарај продукт..." style="flex:1; min-width:220px" />
+          <select id="sizeFilter">
+            <option value="">Филтер по величина (само достапни)</option>
+          </select>
+          <button class="btn" id="btnResetFilters">Reset</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="small">📱 Нарачка = WhatsApp порака (продукт + цена + величина + количина)</div>
+        <div class="small" style="margin-top:6px;">🧠 Податоци локално (localStorage) — остануваат на истиот телефон/PC.</div>
       </div>
+    </div>
 
-      <div class="cards" id="cards"></div>
-
-      <div class="footerbar">
-        <div>📲 Нарачка = WhatsApp порака (продукт + цена + величина + количина)</div>
-        <div>🧠 Податоци локално (localStorage)</div>
+    <!-- RIGHT PANEL -->
+    <div class="panel">
+      <div class="panel-h">
+        <div>
+          <h2 id="listTitle">Листа</h2>
+          <div class="muted" id="listSub">Избери категорија од ☰ или пребарај.</div>
+        </div>
+        <div class="row" style="gap:8px; align-items:center">
+          <span class="mini" id="demoTag">DEMO</span>
+        </div>
+      </div>
+      <div class="panel-b">
+        <div class="grid" id="grid"></div>
+        <div class="muted" id="empty" style="display:none; padding:18px 6px;">Нема резултати за избраниот филтер.</div>
       </div>
     </div>
   </div>
@@ -329,6 +401,124 @@
     </div>
   </div>
 
+  <!-- MODAL: Order -->
+  <div class="modal" id="modalOrder">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Нарачка</h3>
+        <button class="btn" onclick="UI.close('modalOrder')">Затвори</button>
+      </div>
+      <div class="modal-body">
+        <div class="row" style="gap:12px; align-items:flex-start">
+          <img id="oImg" alt="" style="width:120px; height:90px; object-fit:cover; border-radius:14px; border:1px solid rgba(255,255,255,.12)" />
+          <div style="flex:1; min-width:220px">
+            <div id="oTitle" style="font-weight:900; font-size:18px"></div>
+            <div class="muted" id="oCat"></div>
+            <div style="margin-top:6px; font-weight:900; color:rgba(34,197,94,.95)" id="oPrice"></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <div class="field">
+            <label>Величина (само достапни)</label>
+            <select id="oSize"></select>
+          </div>
+          <div class="field">
+            <label>Количина</label>
+            <input id="oQty" type="number" min="1" value="1" />
+            <div class="help" id="oHint" style="margin-top:6px;"></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <div class="field">
+            <label>Име и презиме</label>
+            <input id="cName" type="text" placeholder="Пример: Ерен Туна" />
+          </div>
+          <div class="field">
+            <label>Град / Адреса</label>
+            <input id="cAddr" type="text" placeholder="Пример: Скопје, Аеродром..." />
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Забелешка (опционално)</label>
+            <textarea id="cNote" placeholder="Боја, дополнителни барања..."></textarea>
+          </div>
+        </div>
+
+        <div class="row" style="gap:10px; margin-top:10px">
+          <button class="btn primary" id="btnSendWA">Потврди & отвори WhatsApp</button>
+          <button class="btn danger" onclick="UI.close('modalOrder')">Откажи</button>
+        </div>
+
+        <div class="help" style="margin-top:10px">
+          * По потврда, залихата автоматски се намалува за избраната величина.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Add product -->
+  <div class="modal" id="modalAdd">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Додај продукт</h3>
+        <button class="btn" onclick="UI.close('modalAdd')">Затвори</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="field">
+            <label>Категорија</label>
+            <select id="aCat"></select>
+          </div>
+          <div class="field">
+            <label>Име на продукт</label>
+            <input id="aName" type="text" placeholder="Пример: Nike тренерка" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Цена (ден)</label>
+            <input id="aPrice" type="number" min="0" value="1990" />
+          </div>
+          <div class="field">
+            <label>Слики (3–5 URL или празно = авто)</label>
+            <input id="aImgs" type="text" placeholder="URL1, URL2, URL3 ..." />
+            <div class="help">Можеш и подоцна да менуваш во код/админ.</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <div class="field">
+            <label>Тип на величини</label>
+            <select id="aSizeMode">
+              <option value="clothes">S–3XL</option>
+              <option value="jeans">Фармерки 30–42</option>
+            </select>
+            <div class="help">* За „Фармерки/Панталони“ избери jeans.</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row" id="stockGrid" style="gap:10px"></div>
+
+        <div class="row" style="gap:10px; margin-top:12px">
+          <button class="btn primary" id="btnSaveProduct">Зачувај</button>
+          <button class="btn" onclick="UI.close('modalAdd')">Откажи</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: Admin -->
   <div class="modal" id="modalAdmin">
     <div class="modal-card">
@@ -337,19 +527,15 @@
         <button class="btn" onclick="UI.close('modalAdmin')">Затвори</button>
       </div>
       <div class="modal-body">
-        <div class="muted">Локален Admin (само на твојот уред)</div>
-        <div class="divider"></div>
-
         <div class="row">
           <div class="field">
-            <label>Admin лозинка</label>
-            <input class="input" id="adminPass" type="password" placeholder="Внеси лозинка..." />
-            <div class="help">Совет: стави силна лозинка. Се чува локално на уредот.</div>
+            <label>Admin PIN (пример 1234)</label>
+            <input id="pin" type="number" placeholder="PIN" />
+            <div class="help">PIN е локален, само на твојот уред.</div>
           </div>
           <div class="field">
-            <label>&nbsp;</label>
-            <button class="btn primary" id="btnLogin">Login</button>
-            <button class="btn" id="btnLogout">Logout</button>
+            <label>Копче</label>
+            <button class="btn primary" id="btnSetPin">Сними PIN</button>
           </div>
         </div>
 
@@ -357,876 +543,655 @@
 
         <div class="row">
           <div class="field">
-            <label>WhatsApp број (без +, пример 3897...)</label>
-            <input class="input" id="shopWa" placeholder="38972912601" />
-            <div class="help">Овој број се користи за сите нарачки.</div>
+            <label>Демо продукти</label>
+            <button class="btn danger" id="btnResetDemo">Reset demo (ги брише сите продукти)</button>
+            <div class="help">⚠️ Ова ќе избрише сè од localStorage на тој уред.</div>
           </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="row">
-          <button class="btn" id="btnSeedDemo">Стави Demo продукти (генерира)</button>
-          <button class="btn danger" id="btnClearAll">Избриши СÈ</button>
-        </div>
-
-        <div class="divider"></div>
-        <div class="muted2 small">
-          ✅ Demo = 150 продукти по категорија (Тренерки/Јакни/Одела = 70) <br>
-          ✅ Величини: S–3XL, а за Фармерки/Панталони: 30,31,32,33,34,36,38,40,42
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: Product editor -->
-  <div class="modal" id="modalProd">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3 id="prodModalTitle">Продукт</h3>
-        <div class="row">
-          <button class="btn danger" id="btnDeleteProd">Избриши</button>
-          <button class="btn" onclick="UI.close('modalProd')">Затвори</button>
-        </div>
-      </div>
-      <div class="modal-body">
-        <div class="grid2">
-          <div class="field">
-            <label>Име</label>
-            <input class="input" id="pName" placeholder="Пример: Чемпер #001" />
-          </div>
-          <div class="field">
-            <label>Цена (ден)</label>
-            <input class="input" id="pPrice" type="number" min="0" step="1" placeholder="1990" />
-          </div>
-
-          <div class="field">
-            <label>Категорија</label>
-            <select class="select" id="pCat"></select>
-          </div>
-
-          <div class="field">
-            <label>WhatsApp број (опционално, ако сакаш различен)</label>
-            <input class="input" id="pWa" placeholder="празно = ќе користи shop WhatsApp" />
-            <div class="help">Ако е празно, користи бројот од Admin.</div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="field">
-          <label>Опис</label>
-          <textarea class="input" id="pDesc" placeholder="Краток опис..."></textarea>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="field">
-          <label>Слики (3–5 линкови, по ред, една линија = еден линк)</label>
-          <textarea class="input" id="pImgs" placeholder="https://..."></textarea>
-          <div class="help">Стави најмалку 1 линк. Може и 3–5 за галерија.</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="row">
-          <div class="field">
-            <label>Тип величини</label>
-            <select class="select" id="pSizeMode">
-              <option value="clothes">Облека (S–3XL)</option>
-              <option value="jeans">Фармерки/Панталони (30–42)</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>&nbsp;</label>
-            <span class="mini" id="sizeHint">S, M, L, XL, 2XL, 3XL</span>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-        <div class="field">
-          <label>Залиха по величини (пополнуваш бројки)</label>
-          <div id="stockGrid" class="row"></div>
-          <div class="help">Кога ќе се направи нарачка, залихата автоматски се намалува.</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="row">
-          <button class="btn primary" id="btnSaveProd">Зачувај</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: Product details -->
-  <div class="modal" id="modalDetails">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3 id="dTitle">Детали</h3>
-        <button class="btn" onclick="UI.close('modalDetails')">Затвори</button>
-      </div>
-      <div class="modal-body">
-        <div class="row" style="align-items:flex-start;">
-          <img id="dImg" alt="" style="width:180px;height:120px;object-fit:cover;border-radius:14px;border:1px solid var(--line)" />
-          <div style="flex:1; min-width:240px;">
-            <div class="muted" id="dCat"></div>
-            <div style="margin-top:6px;font-weight:950;font-size:18px" id="dPrice"></div>
-            <div class="divider"></div>
-            <div class="muted2" id="dDesc" style="white-space:pre-wrap"></div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-        <div class="muted small">Галерија</div>
-        <div class="row" id="dGallery"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: Order -->
-  <div class="modal" id="modalOrder">
-    <div class="modal-card" style="max-width:720px;">
-      <div class="modal-head">
-        <h3>Нарачка</h3>
-        <button class="btn" onclick="UI.close('modalOrder')">Затвори</button>
-      </div>
-      <div class="modal-body">
-        <div class="row" style="align-items:flex-start;">
-          <img id="oImg" alt="" style="width:200px;height:135px;object-fit:cover;border-radius:14px;border:1px solid var(--line)" />
-          <div style="flex:1; min-width:250px;">
-            <div id="oTitle" style="font-weight:950;font-size:18px"></div>
-            <div class="muted" id="oCat"></div>
-            <div id="oPrice" style="margin-top:6px;font-weight:950;font-size:18px"></div>
-            <div class="help">Избери величина што има залиха и внеси количина.</div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="grid2">
-          <div class="field">
-            <label>Величина (само достапни)</label>
-            <select class="select" id="oSize"></select>
-          </div>
-          <div class="field">
-            <label>Количина</label>
-            <input class="input" id="oQty" type="number" min="1" step="1" value="1" />
-          </div>
-
-          <div class="field">
-            <label>Име / Презиме (опционално)</label>
-            <input class="input" id="cName" placeholder="Пример: Ерен" />
-          </div>
-          <div class="field">
-            <label>Телефон (опционално)</label>
-            <input class="input" id="cPhone" placeholder="07x..." />
-          </div>
-
-          <div class="field" style="grid-column:1/-1">
-            <label>Адреса / Град (опционално)</label>
-            <input class="input" id="cAddr" placeholder="Пример: Скопје, ... улица ..." />
-          </div>
-
-          <div class="field" style="grid-column:1/-1">
-            <label>Порака / Забелешка (опционално)</label>
-            <textarea class="input" id="cNote" placeholder="Боја, напомена, испорака..."></textarea>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="row">
-          <button class="btn primary" id="btnSendOrder">Прати на WhatsApp</button>
-          <button class="btn" id="btnJustCopy">Копирај текст</button>
-        </div>
-
-        <div class="help">
-          ✅ Со „Прати на WhatsApp“ се намалува залихата автоматски (само ако има доволно).<br>
-          Ако сакаш прво да тестираш без да намалува залиха, кажи ми и ќе ти додадам „Test mode“.
         </div>
       </div>
     </div>
   </div>
 
 <script>
-/* =========================
-   MertaX Butik — Single File
-   ========================= */
+/* ===========================
+   CONFIG
+=========================== */
+const WA_PHONE = "38972912601"; // твој WhatsApp број
+const LS_KEY = "mertax_butik_v3";
 
-const STORE_KEY = "mertax_butik_state_v1";
-
+/* ===========================
+   DATA / HELPERS
+=========================== */
 const SIZES_CLOTHES = ["S","M","L","XL","2XL","3XL"];
 const SIZES_JEANS   = ["30","31","32","33","34","36","38","40","42"];
 
-const DEFAULT_SHOP_WA = "38972912601"; // ✅ Твојот број
-
 const CATS = [
-  {id:"c1", name:"Чемпери"},
-  {id:"c2", name:"Маички"},
-  {id:"c3", name:"Тренерки"},
-  {id:"c4", name:"Јакни"},
-  {id:"c5", name:"Одела"},
-  {id:"c6", name:"Блузони"},
-  {id:"c7", name:"Фармерки/Панталони"},
-  {id:"c8", name:"Патики"},
+  { id:"cemperi", name:"Чемпери", sizeMode:"clothes", demoCount:150 },
+  { id:"maicki", name:"Маички", sizeMode:"clothes", demoCount:150 },
+  { id:"trenerki", name:"Тренерки", sizeMode:"clothes", demoCount:70  },
+  { id:"jakni", name:"Јакни", sizeMode:"clothes", demoCount:70  },
+  { id:"odela", name:"Одела", sizeMode:"clothes", demoCount:70  },
+  { id:"bluzoni", name:"Блузони", sizeMode:"clothes", demoCount:150 },
+  { id:"farmerki", name:"Фармерки/Панталони", sizeMode:"jeans", demoCount:150 },
+  { id:"patiki", name:"Патики", sizeMode:"clothes", demoCount:150 }
 ];
 
-const UI = {
-  open(id){ document.getElementById(id).classList.add("open"); },
-  close(id){ document.getElementById(id).classList.remove("open"); },
-  toast(msg){ alert(msg); }
-};
-
-function uid(){
-  return Math.random().toString(16).slice(2) + Date.now().toString(16);
-}
+function uid(){ return Math.random().toString(16).slice(2)+Date.now().toString(16); }
 function money(n){
   const x = Number(n||0);
   return x.toLocaleString("mk-MK") + " ден";
 }
-function catName(id){
-  return (CATS.find(c=>c.id===id)||{name:"—"}).name;
-}
-function getSizes(mode){
-  return mode==="jeans" ? SIZES_JEANS : SIZES_CLOTHES;
-}
-function safeNum(v){ const n = Number(v); return Number.isFinite(n) ? n : 0; }
+function now(){ return Date.now(); }
 
-let state = load();
-let session = { isAdmin:false };
-let view = { catId: state.activeCatId || CATS[0].id, q:"", size:"" };
-let orderState = { prodId:null };
+function rint(min,max){
+  return Math.floor(Math.random()*(max-min+1))+min;
+}
+
+function makePics(seed, count){
+  // бесплатни placeholder (без да мораш да качуваш слики)
+  // можеш подоцна да смениш со твои URL
+  const arr=[];
+  for(let i=0;i<count;i++){
+    arr.push(`https://picsum.photos/seed/${seed}_${i}/900/600`);
+  }
+  return arr;
+}
+function defaultStock(mode){
+  const sizes = mode==="jeans" ? SIZES_JEANS : SIZES_CLOTHES;
+  const stock = {};
+  sizes.forEach(s=>{
+    // демо залиха (0-6)
+    stock[s] = rint(0,6);
+  });
+  // да има барем нешто
+  if(Object.values(stock).every(v=>v===0)){
+    stock[sizes[rint(0,sizes.length-1)]] = rint(1,4);
+  }
+  return stock;
+}
 
 function load(){
   try{
-    const raw = localStorage.getItem(STORE_KEY);
-    if(raw){
-      const s = JSON.parse(raw);
-      // минимални default-и
-      if(!s.shop) s.shop = {};
-      if(!s.shop.wa) s.shop.wa = DEFAULT_SHOP_WA;
-      if(!Array.isArray(s.products)) s.products = [];
-      if(!s.activeCatId) s.activeCatId = CATS[0].id;
-      if(!s.adminPass) s.adminPass = "";
-      return s;
-    }
-  }catch(e){}
-  return {
-    shop:{ wa: DEFAULT_SHOP_WA },
-    adminPass:"",
-    activeCatId: CATS[0].id,
-    products:[]
-  };
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){
+    return null;
+  }
 }
 function save(){
-  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
 }
 
-/* ==============
-   Render helpers
-   ============== */
+function catById(id){ return CATS.find(c=>c.id===id) || null; }
 
-function buildCats(){
-  const wrap = document.getElementById("catsList");
-  wrap.innerHTML = "";
+function totalAvailable(p){
+  return Object.values(p.stock||{}).reduce((a,b)=>a+Number(b||0),0);
+}
+
+function sizesFor(p){
+  return p.sizeMode==="jeans" ? SIZES_JEANS : SIZES_CLOTHES;
+}
+
+/* ===========================
+   STATE
+=========================== */
+let state = load() || {
+  adminPin: "",          // локално
+  selectedCat: "",       // catId
+  q: "",
+  sizeFilter: "",
+  products: [],
+  demoSeeded: false
+};
+
+/* ===========================
+   DEMO SEED
+=========================== */
+function seedDemoProducts(){
+  const products=[];
+  const baseNames = {
+    "Чемпери":"Чемпер",
+    "Маички":"Маичка",
+    "Тренерки":"Тренерка",
+    "Јакни":"Јакна",
+    "Одела":"Одело",
+    "Блузони":"Блузон",
+    "Фармерки/Панталони":"Фармерки",
+    "Патики":"Патики"
+  };
+
+  CATS.forEach((cat, ci)=>{
+    const count = cat.demoCount;
+    for(let i=1;i<=count;i++){
+      const base = baseNames[cat.name] || "Продукт";
+      const nm = `${base} #${i}`;
+      let price;
+      if(cat.id==="patiki") price = rint(1990, 6990);
+      else if(cat.id==="farmerki") price = rint(1790, 4490);
+      else if(cat.id==="jakni") price = rint(2990, 8990);
+      else if(cat.id==="odela") price = rint(3990, 12990);
+      else price = rint(1190, 4990);
+
+      const imgCount = rint(3,5);
+      const pSeed = `${cat.id}_${i}_${now()}`;
+
+      products.push({
+        id: uid(),
+        name: nm,
+        catId: cat.id,
+        price,
+        images: makePics(pSeed, imgCount),
+        sizeMode: cat.sizeMode,
+        stock: defaultStock(cat.sizeMode),
+        createdAt: now() + (ci*100000) + i
+      });
+    }
+  });
+
+  state.products = products;
+  state.demoSeeded = true;
+  save();
+}
+
+/* seed ако нема продукти */
+if(!state.products || state.products.length===0){
+  seedDemoProducts();
+}
+
+/* ===========================
+   UI
+=========================== */
+const UI = {
+  open(id){ document.getElementById(id).classList.add("open"); },
+  close(id){ document.getElementById(id).classList.remove("open"); },
+  toast(msg){
+    alert(msg);
+  }
+};
+
+function renderCats(){
+  const el = document.getElementById("catsList");
+  el.innerHTML = "";
   CATS.forEach(c=>{
+    const count = state.products.filter(p=>p.catId===c.id).length;
     const btn = document.createElement("button");
     btn.className = "btn";
     btn.style.width = "100%";
-    btn.style.justifyContent="space-between";
-    btn.innerHTML = `<span>${c.name}</span><span class="mini">${countCat(c.id)}</span>`;
+    btn.style.height = "56px";
+    btn.style.display = "flex";
+    btn.style.justifyContent = "space-between";
+    btn.style.alignItems = "center";
+    btn.style.borderRadius = "16px";
+    btn.style.marginBottom = "10px";
+    btn.innerHTML = `<span style="font-weight:900">${c.name}</span><span class="chip" style="max-width:none">${count}</span>`;
     btn.onclick = ()=>{
-      view.catId = c.id;
-      state.activeCatId = c.id;
+      state.selectedCat = c.id;
       save();
       UI.close("modalCats");
       renderAll();
     };
-    wrap.appendChild(btn);
-    wrap.appendChild(document.createElement("div")).style.height="10px";
+    el.appendChild(btn);
   });
-}
-function countCat(catId){
-  return state.products.filter(p=>p.catId===catId).length;
+
+  const btnAll = document.createElement("button");
+  btnAll.className = "btn";
+  btnAll.style.width="100%";
+  btnAll.style.height="56px";
+  btnAll.style.borderRadius="16px";
+  btnAll.innerHTML = `<span style="font-weight:900">Сите категории</span>`;
+  btnAll.onclick = ()=>{
+    state.selectedCat = "";
+    save();
+    UI.close("modalCats");
+    renderAll();
+  };
+  el.appendChild(btnAll);
 }
 
-function availableSizes(p){
-  return Object.entries(p.stock||{})
-    .filter(([k,v])=>safeNum(v)>0)
-    .map(([k])=>k);
-}
-function totalStock(p){
-  return Object.values(p.stock||{}).reduce((a,v)=>a+safeNum(v),0);
-}
-
-function buildSizeFilter(){
+function buildSizeFilterOptions(){
   const sel = document.getElementById("sizeFilter");
-  const catProds = state.products.filter(p=>p.catId===view.catId);
-  const set = new Set();
-  catProds.forEach(p=>{
-    availableSizes(p).forEach(s=>set.add(s));
-  });
-  const current = sel.value || "";
+  const cur = state.sizeFilter || "";
   sel.innerHTML = `<option value="">Филтер по величина (само достапни)</option>`;
-  [...set].sort((a,b)=>{
-    // да не меша бројки и букви хаотично
-    const na = Number(a), nb = Number(b);
-    if(Number.isFinite(na) && Number.isFinite(nb)) return na-nb;
-    return a.localeCompare(b);
-  }).forEach(s=>{
-    const opt = document.createElement("option");
-    opt.value = s;
-    opt.textContent = s;
-    sel.appendChild(opt);
+
+  // дозволи величини што постојат во моментната категорија
+  let possible = new Set();
+  filteredProductsBase().forEach(p=>{
+    Object.entries(p.stock||{}).forEach(([k,v])=>{
+      if(Number(v)>0) possible.add(k);
+    });
   });
-  sel.value = current;
+
+  Array.from(possible).sort((a,b)=>{
+    // clothes order first if matches
+    const A = SIZES_CLOTHES.indexOf(a); const B = SIZES_CLOTHES.indexOf(b);
+    const AJ = SIZES_JEANS.indexOf(a);  const BJ = SIZES_JEANS.indexOf(b);
+    if(A!==-1 && B!==-1) return A-B;
+    if(AJ!==-1 && BJ!==-1) return AJ-BJ;
+    return (""+a).localeCompare(""+b);
+  }).forEach(s=>{
+    const op = document.createElement("option");
+    op.value = s;
+    op.textContent = s;
+    sel.appendChild(op);
+  });
+
+  sel.value = cur;
 }
 
-function matchProduct(p){
-  if(p.catId !== view.catId) return false;
-  if(view.q){
-    const t = (p.name+" "+(p.desc||"")).toLowerCase();
-    if(!t.includes(view.q.toLowerCase())) return false;
+function filteredProductsBase(){
+  let arr = [...state.products];
+
+  if(state.selectedCat){
+    arr = arr.filter(p=>p.catId===state.selectedCat);
   }
-  if(view.size){
-    if(safeNum((p.stock||{})[view.size])<=0) return false;
+
+  const q = (state.q||"").trim().toLowerCase();
+  if(q){
+    arr = arr.filter(p => (p.name||"").toLowerCase().includes(q));
   }
-  return true;
+
+  return arr;
 }
 
-function renderCards(){
-  const cards = document.getElementById("cards");
-  cards.innerHTML = "";
+function filteredProducts(){
+  let arr = filteredProductsBase();
 
-  const list = state.products.filter(matchProduct);
+  const sf = state.sizeFilter || "";
+  if(sf){
+    arr = arr.filter(p => Number((p.stock||{})[sf]||0) > 0);
+  }
 
-  document.getElementById("prodInfo").textContent = `${list.length} продукти`;
-  document.getElementById("chipCat").textContent = `Категорија: ${catName(view.catId)}`;
+  // ако category set, покажи најнови прво
+  arr.sort((a,b)=> (b.createdAt||0)-(a.createdAt||0));
+  return arr;
+}
 
-  list.forEach(p=>{
-    const img = (p.images && p.images[0]) ? p.images[0] : "";
-    const tot = totalStock(p);
-    const badge = tot>0 ? "Достапно" : "Нема залиха";
-    const badgeColor = tot>0 ? "" : "style='border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.12)'";
+function renderGrid(){
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+  const arr = filteredProducts();
+  grid.innerHTML = "";
 
-    const c = document.createElement("div");
-    c.className="card";
-    c.innerHTML = `
+  if(arr.length===0){
+    empty.style.display="block";
+    return;
+  }
+  empty.style.display="none";
+
+  arr.slice(0, 120).forEach(p=>{
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const img = (p.images && p.images[0]) ? p.images[0] : "https://picsum.photos/seed/x/900/600";
+    const cat = catById(p.catId)?.name || "";
+    const avail = totalAvailable(p);
+
+    const sizesHtml = sizesFor(p).map(s=>{
+      const v = Number((p.stock||{})[s]||0);
+      const dotClass = v>0 ? "dot" : "dot out";
+      return `<span class="sz"><span class="${dotClass}"></span>${s} <span style="opacity:.8">(${v})</span></span>`;
+    }).join("");
+
+    card.innerHTML = `
       <div class="imgwrap">
         <img src="${img}" alt="">
-        <div class="badge" ${badgeColor}>${badge}</div>
+        <div class="badge">${cat}</div>
       </div>
       <div class="cardbody">
-        <div class="pname">${escapeHtml(p.name)}</div>
+        <div class="pname">${escapeHtml(p.name||"")}</div>
+        <div class="price">${money(p.price)}</div>
         <div class="meta">
-          <div class="muted">${catName(p.catId)}</div>
-          <div class="price">${money(p.price)}</div>
+          <div>Достапно: <b>${avail}</b></div>
+          <div>${p.sizeMode==="jeans" ? "Jeans" : "S–3XL"}</div>
         </div>
-        <div class="sizes">${renderSizeChips(p)}</div>
-        <div class="actions">
-          <button class="btn primary" ${tot>0 ? "" : "disabled style='opacity:.5;cursor:not-allowed'"}>Нарачај</button>
-          <button class="btn">Детали</button>
-        </div>
+        <div class="sizes">${sizesHtml}</div>
+      </div>
+      <div class="cardfoot">
+        <button class="btn primary" ${avail<=0 ? "disabled" : ""}>Нарачај</button>
+        <button class="btn">Детали</button>
       </div>
     `;
-    const btnOrder = c.querySelectorAll("button")[0];
-    const btnDet   = c.querySelectorAll("button")[1];
+
+    const [btnOrder, btnDetails] = card.querySelectorAll("button");
     btnOrder.onclick = ()=> openOrderModal(p);
-    btnDet.onclick   = ()=> openDetails(p);
+    btnDetails.onclick = ()=> openOrderModal(p);
 
-    cards.appendChild(c);
+    if(avail<=0){
+      btnOrder.classList.remove("primary");
+      btnOrder.textContent = "Нема залиха";
+      btnOrder.disabled = true;
+    }
+
+    grid.appendChild(card);
   });
-
-  if(list.length===0){
-    const empty = document.createElement("div");
-    empty.className="muted";
-    empty.style.padding="18px";
-    empty.textContent = "Нема резултати за избраниот филтер.";
-    cards.appendChild(empty);
-  }
 }
 
-function renderSizeChips(p){
-  const sizes = getSizes(p.sizeMode||"clothes");
-  return sizes.map(s=>{
-    const v = safeNum((p.stock||{})[s]);
-    const dot = v>0 ? "g" : "r";
-    return `<span class="sz"><span class="dot ${dot}"></span>${s} (${v})</span>`;
-  }).join("");
+function renderTopInfo(){
+  const prodInfo = document.getElementById("prodInfo");
+  const listTitle = document.getElementById("listTitle");
+  const listSub = document.getElementById("listSub");
+  const chipCat = document.getElementById("chipCat");
+
+  const total = state.products.length;
+  prodInfo.textContent = `${total} продукти`;
+
+  const cat = state.selectedCat ? (catById(state.selectedCat)?.name || "") : "(сите)";
+  chipCat.textContent = `Категорија: ${cat}`;
+
+  if(state.selectedCat){
+    listTitle.textContent = cat;
+    listSub.textContent = `Пребарај или филтрирај по величина (само достапни).`;
+  }else{
+    listTitle.textContent = "Сите продукти";
+    listSub.textContent = "Избери категорија од ☰ или пребарај.";
+  }
 }
 
 function renderAll(){
-  buildCats();
-  fillProdCatSelect();
-  buildSizeFilter();
-  renderCards();
-  syncAdminUI();
+  renderCats();
+  buildSizeFilterOptions();
+  renderTopInfo();
+  renderGrid();
 }
 
-/* ============
-   Product edit
-   ============ */
-
-let editingProdId = null;
-
-function requireAdmin(){
-  if(!session.isAdmin){
-    UI.toast("Ова е само за Admin. Влези во Admin прво.");
-    UI.open("modalAdmin");
-    return false;
-  }
-  return true;
-}
-
-function fillProdCatSelect(){
-  const sel = document.getElementById("pCat");
-  sel.innerHTML = "";
-  CATS.forEach(c=>{
-    const opt=document.createElement("option");
-    opt.value=c.id;
-    opt.textContent=c.name;
-    sel.appendChild(opt);
-  });
-}
-
-function openProdEditor(prod){
-  if(!requireAdmin()) return;
-
-  editingProdId = prod ? prod.id : null;
-  document.getElementById("prodModalTitle").textContent = prod ? "Измени продукт" : "Нов продукт";
-  document.getElementById("btnDeleteProd").style.display = prod ? "inline-flex" : "none";
-
-  const p = prod || {
-    id: uid(),
-    name:"",
-    price:0,
-    catId:view.catId,
-    wa:"",
-    desc:"",
-    images:[],
-    sizeMode:"clothes",
-    stock: makeStock("clothes", 0)
-  };
-
-  document.getElementById("pName").value = p.name;
-  document.getElementById("pPrice").value = p.price;
-  document.getElementById("pCat").value = p.catId;
-  document.getElementById("pWa").value = p.wa || "";
-  document.getElementById("pDesc").value = p.desc || "";
-  document.getElementById("pImgs").value = (p.images||[]).join("\n");
-  document.getElementById("pSizeMode").value = p.sizeMode || "clothes";
-
-  updateSizeHint();
-  buildStockInputs(p);
-
-  UI.open("modalProd");
-
-  document.getElementById("btnSaveProd").onclick = ()=>{
-    const mode = document.getElementById("pSizeMode").value;
-    const stock = readStockInputs(mode);
-
-    const images = document.getElementById("pImgs").value
-      .split("\n").map(s=>s.trim()).filter(Boolean);
-
-    const out = {
-      id: p.id,
-      name: document.getElementById("pName").value.trim() || "Без име",
-      price: safeNum(document.getElementById("pPrice").value),
-      catId: document.getElementById("pCat").value,
-      wa: document.getElementById("pWa").value.trim(),
-      desc: document.getElementById("pDesc").value.trim(),
-      images,
-      sizeMode: mode,
-      stock
-    };
-
-    const idx = state.products.findIndex(x=>x.id===out.id);
-    if(idx>=0) state.products[idx] = out;
-    else state.products.unshift(out);
-
-    save();
-    UI.close("modalProd");
-    renderAll();
-  };
-
-  document.getElementById("btnDeleteProd").onclick = ()=>{
-    if(!confirm("Сигурно сакаш да го избришеш продуктот?")) return;
-    state.products = state.products.filter(x=>x.id!==p.id);
-    save();
-    UI.close("modalProd");
-    renderAll();
-  };
-}
-
-function updateSizeHint(){
-  const mode = document.getElementById("pSizeMode").value;
-  document.getElementById("sizeHint").textContent = getSizes(mode).join(", ");
-}
-document.getElementById("pSizeMode").addEventListener("change", ()=>{
-  updateSizeHint();
-  buildStockInputs({ sizeMode: document.getElementById("pSizeMode").value, stock:{} });
-});
-
-function makeStock(mode, fill){
-  const st = {};
-  getSizes(mode).forEach(s=>st[s]=fill);
-  return st;
-}
-
-function buildStockInputs(p){
-  const mode = document.getElementById("pSizeMode").value;
-  const sizes = getSizes(mode);
-  const wrap = document.getElementById("stockGrid");
-  wrap.innerHTML = "";
-
-  sizes.forEach(s=>{
-    const v = safeNum((p.stock||{})[s]);
-    const box = document.createElement("div");
-    box.className="field";
-    box.style.minWidth="140px";
-    box.innerHTML = `
-      <label>${s}</label>
-      <input class="input stockIn" data-size="${s}" type="number" min="0" step="1" value="${v}">
-    `;
-    wrap.appendChild(box);
-  });
-}
-
-function readStockInputs(mode){
-  const st = makeStock(mode, 0);
-  document.querySelectorAll(".stockIn").forEach(inp=>{
-    const s = inp.getAttribute("data-size");
-    st[s] = Math.max(0, parseInt(inp.value||"0",10) || 0);
-  });
-  return st;
-}
-
-/* ===========
-   Product view
-   =========== */
-
-function openDetails(p){
-  document.getElementById("dTitle").textContent = p.name;
-  document.getElementById("dCat").textContent = catName(p.catId);
-  document.getElementById("dPrice").textContent = money(p.price);
-  document.getElementById("dDesc").textContent = p.desc || "—";
-  document.getElementById("dImg").src = (p.images&&p.images[0])?p.images[0]:"";
-
-  const g = document.getElementById("dGallery");
-  g.innerHTML="";
-  (p.images||[]).slice(0,5).forEach(url=>{
-    const im=document.createElement("img");
-    im.src=url;
-    im.alt="";
-    im.style.width="110px";
-    im.style.height="80px";
-    im.style.objectFit="cover";
-    im.style.borderRadius="12px";
-    im.style.border="1px solid var(--line)";
-    im.style.cursor="pointer";
-    im.onclick=()=>{ document.getElementById("dImg").src=url; };
-    g.appendChild(im);
-  });
-
-  UI.open("modalDetails");
-}
-
-/* ===========
-   Order system
-   =========== */
+/* ===========================
+   ORDER FLOW (WhatsApp + stock decrement)
+=========================== */
+let orderState = { prodId:null };
 
 function openOrderModal(p){
   orderState.prodId = p.id;
 
-  document.getElementById("oImg").src = (p.images&&p.images[0])?p.images[0]:"";
-  document.getElementById("oTitle").textContent = p.name;
-  document.getElementById("oCat").textContent = catName(p.catId);
+  document.getElementById("oImg").src = (p.images && p.images[0]) ? p.images[0] : "https://picsum.photos/seed/x/900/600";
+  document.getElementById("oTitle").textContent = p.name || "";
+  document.getElementById("oCat").textContent = catById(p.catId)?.name || "";
   document.getElementById("oPrice").textContent = money(p.price);
 
-  // Build size options (only available)
   const sel = document.getElementById("oSize");
   sel.innerHTML = "";
-  const sizes = getSizes(p.sizeMode||"clothes");
-  const av = sizes.filter(s=>safeNum((p.stock||{})[s])>0);
+  const sizes = sizesFor(p);
 
-  if(av.length===0){
-    const opt=document.createElement("option");
-    opt.value="";
-    opt.textContent="Нема залиха";
-    sel.appendChild(opt);
-    document.getElementById("btnSendOrder").disabled = true;
-  }else{
-    av.forEach(s=>{
-      const opt=document.createElement("option");
-      opt.value=s;
-      opt.textContent = `${s} (останато: ${safeNum(p.stock[s])})`;
-      sel.appendChild(opt);
-    });
-    document.getElementById("btnSendOrder").disabled = false;
+  // само достапни величини
+  const avail = sizes.filter(s=>Number((p.stock||{})[s]||0)>0);
+  avail.forEach(s=>{
+    const v = Number((p.stock||{})[s]||0);
+    const op = document.createElement("option");
+    op.value = s;
+    op.textContent = `${s} (${v} на залиха)`;
+    sel.appendChild(op);
+  });
+
+  // ако нема ништо
+  if(avail.length===0){
+    const op = document.createElement("option");
+    op.value = "";
+    op.textContent = "Нема достапни величини";
+    sel.appendChild(op);
   }
 
   document.getElementById("oQty").value = 1;
-  document.getElementById("cName").value = "";
-  document.getElementById("cPhone").value = "";
-  document.getElementById("cAddr").value = "";
-  document.getElementById("cNote").value = "";
+  document.getElementById("oHint").textContent = avail.length
+    ? "Избери величина и количина. Ќе се намали залихата по потврда."
+    : "Нема залиха за овој продукт.";
 
   UI.open("modalOrder");
 }
 
-function orderMessage(p, size, qty){
+function buildWhatsAppText(p, size, qty){
   const name = (document.getElementById("cName").value||"").trim();
-  const phone = (document.getElementById("cPhone").value||"").trim();
   const addr = (document.getElementById("cAddr").value||"").trim();
   const note = (document.getElementById("cNote").value||"").trim();
+  const cat = catById(p.catId)?.name || "";
 
-  let msg =
-`Здраво, сакам да нарачам:
-• Продукт: ${p.name}
-• Категорија: ${catName(p.catId)}
-• Цена: ${money(p.price)}
-• Величина: ${size}
-• Количина: ${qty}`;
+  let msg = `Здраво 👋\n\nСакам да нарачам:\n\n🛍 Производ: ${p.name}\n📁 Категорија: ${cat}\n📏 Величина: ${size}\n🔢 Количина: ${qty}\n💰 Цена: ${money(p.price)}\n`;
 
-  if(name)  msg += `\n• Име: ${name}`;
-  if(phone) msg += `\n• Телефон: ${phone}`;
-  if(addr)  msg += `\n• Адреса: ${addr}`;
-  if(note)  msg += `\n• Забелешка: ${note}`;
+  if(name) msg += `\n👤 Име: ${name}`;
+  if(addr) msg += `\n📍 Адреса/Град: ${addr}`;
+  if(note) msg += `\n📝 Забелешка: ${note}`;
 
-  msg += `\n\n(Пратено од MertaX Butik)`;
+  msg += `\n\nВе молам потврдете достапност.`;
   return msg;
 }
 
-function sendWhatsApp(phoneDigits, text){
-  const phone = (phoneDigits||"").replace(/\D/g,"");
-  if(!phone){
-    UI.toast("Нема внесен WhatsApp број (во Admin).");
-    return;
-  }
-  const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(text);
-  window.open(url, "_blank");
-}
-
 function decrementStock(p, size, qty){
-  const current = safeNum((p.stock||{})[size]);
-  if(qty>current) return false;
-  p.stock[size] = Math.max(0, current - qty);
+  const cur = Number((p.stock||{})[size]||0);
+  if(cur < qty) return false;
+  p.stock[size] = cur - qty;
   return true;
 }
 
-document.getElementById("btnSendOrder").onclick = ()=>{
-  const p = state.products.find(x=>x.id===orderState.prodId);
-  if(!p){ UI.toast("Грешка: продукт не е најден."); return; }
-
-  const size = document.getElementById("oSize").value;
-  const qty = Math.max(1, parseInt(document.getElementById("oQty").value||"1",10) || 1);
-
-  if(!size){ UI.toast("Нема достапна величина."); return; }
-  if(qty<=0){ UI.toast("Количина мора да е 1 или повеќе."); return; }
-
-  if(!decrementStock(p, size, qty)){
-    UI.toast("Немаме толку залиха за таа величина.");
-    return;
-  }
-
-  save();
-  renderAll();
-
-  const msg = orderMessage(p, size, qty);
-  const phone = (p.wa && p.wa.trim()) ? p.wa.trim() : (state.shop.wa || DEFAULT_SHOP_WA);
-  sendWhatsApp(phone, msg);
-
-  UI.close("modalOrder");
-};
-
-document.getElementById("btnJustCopy").onclick = ()=>{
-  const p = state.products.find(x=>x.id===orderState.prodId);
-  if(!p){ UI.toast("Грешка: продукт не е најден."); return; }
-
-  const size = document.getElementById("oSize").value;
-  const qty = Math.max(1, parseInt(document.getElementById("oQty").value||"1",10) || 1);
-  if(!size){ UI.toast("Нема достапна величина."); return; }
-
-  const msg = orderMessage(p, size, qty);
-  navigator.clipboard?.writeText(msg);
-  UI.toast("Пораката е копирана ✅");
-};
-
-/* ===========
-   Admin logic
-   =========== */
-
-function syncAdminUI(){
-  document.getElementById("btnAddProd").style.display = session.isAdmin ? "inline-flex" : "none";
-  document.getElementById("shopWa").value = state.shop.wa || DEFAULT_SHOP_WA;
-}
-
-function login(pass){
-  if((pass||"") === (state.adminPass||"")){
-    session.isAdmin = true;
-    return true;
-  }
-  return false;
-}
-
-document.getElementById("btnLogin").onclick = ()=>{
-  const pass = document.getElementById("adminPass").value || "";
-  if(!state.adminPass){
-    // прво поставување лозинка
-    if(!pass.trim()){
-      UI.toast("Внеси лозинка за да ја поставиш.");
-      return;
-    }
-    state.adminPass = pass.trim();
-    save();
-    session.isAdmin = true;
-    UI.toast("Admin лозинка поставена ✅");
-    UI.close("modalAdmin");
-    renderAll();
-    return;
-  }
-
-  if(login(pass.trim())){
-    UI.toast("Login успешен ✅");
-    UI.close("modalAdmin");
-    renderAll();
-  }else{
-    UI.toast("Погрешна лозинка.");
-  }
-};
-
-document.getElementById("btnLogout").onclick = ()=>{
-  session.isAdmin = false;
-  UI.toast("Logout ✅");
-  UI.close("modalAdmin");
-  renderAll();
-};
-
-document.getElementById("shopWa").addEventListener("input", ()=>{
-  state.shop.wa = (document.getElementById("shopWa").value||"").replace(/\D/g,"");
-  save();
-});
-
-document.getElementById("btnSeedDemo").onclick = ()=>{
-  if(!requireAdmin()) return;
-  if(!confirm("Сигурно сакаш да генерираш Demo продукти? (ќе додаде многу продукти)")) return;
-  seedDemoProducts();
-  save();
-  renderAll();
-  UI.toast("Demo продукти се додадени ✅");
-};
-
-document.getElementById("btnClearAll").onclick = ()=>{
-  if(!requireAdmin()) return;
-  if(!confirm("Ова ќе избрише СИТЕ продукти. Сигурно?")) return;
-  state.products = [];
-  save();
-  renderAll();
-  UI.toast("Сè избришано ✅");
-};
-
-function seedDemoProducts(){
-  // ако веќе има многу, не додава повторно
-  if(state.products.length > 30){
-    if(!confirm("Веќе имаш продукти. Да додаде уште?")) return;
-  }
-
-  const demoImg = (seed)=>`https://picsum.photos/seed/${seed}/900/560`;
-
-  const perCat = (catName)=>{
-    const nm = catName.toLowerCase();
-    if(nm.includes("тренерки")) return 70;
-    if(nm.includes("јакни")) return 70;
-    if(nm.includes("одела")) return 70;
-    return 150;
-  };
-
-  CATS.forEach((cat,ci)=>{
-    const count = perCat(cat.name);
-    for(let i=1;i<=count;i++){
-      const isJeans = cat.name.includes("Фармерки");
-      const mode = isJeans ? "jeans" : "clothes";
-      const sizes = getSizes(mode);
-
-      // stock random
-      const stock = {};
-      sizes.forEach(s=>{
-        const v = Math.random()<0.25 ? 0 : Math.floor(Math.random()*6); // 0..5
-        stock[s]=v;
-      });
-
-      // price by category
-      let price = 1490 + Math.floor(Math.random()*2500);
-      const nm = cat.name.toLowerCase();
-      if(nm.includes("патики")) price = 2490 + Math.floor(Math.random()*3500);
-      if(nm.includes("јакни")) price = 2990 + Math.floor(Math.random()*4500);
-      if(nm.includes("одела")) price = 3490 + Math.floor(Math.random()*5500);
-
-      const seed = `mertax_${ci}_${i}`;
-      const imgs = [
-        demoImg(seed+"a"),
-        demoImg(seed+"b"),
-        demoImg(seed+"c"),
-      ];
-
-      state.products.push({
-        id: uid(),
-        name: `${cat.name} #${String(i).padStart(3,"0")}`,
-        price,
-        catId: cat.id,
-        wa: "",
-        desc: "Demo продукт (замени со реален опис).",
-        images: imgs,
-        sizeMode: mode,
-        stock
-      });
-    }
+/* ===========================
+   ADD PRODUCT
+=========================== */
+function openAddModal(){
+  const aCat = document.getElementById("aCat");
+  aCat.innerHTML = "";
+  CATS.forEach(c=>{
+    const op=document.createElement("option");
+    op.value=c.id;
+    op.textContent=c.name;
+    aCat.appendChild(op);
   });
 
-  // start cat
-  state.activeCatId = CATS[0].id;
+  // default
+  aCat.value = state.selectedCat || CATS[0].id;
+
+  document.getElementById("aName").value = "";
+  document.getElementById("aPrice").value = 1990;
+  document.getElementById("aImgs").value = "";
+  const sizeModeSel = document.getElementById("aSizeMode");
+  sizeModeSel.value = (catById(aCat.value)?.sizeMode || "clothes");
+
+  function rebuildStock(){
+    const mode = sizeModeSel.value;
+    const sizes = mode==="jeans" ? SIZES_JEANS : SIZES_CLOTHES;
+    const grid = document.getElementById("stockGrid");
+    grid.innerHTML = "";
+    sizes.forEach(s=>{
+      const d = document.createElement("div");
+      d.className="field";
+      d.style.minWidth="140px";
+      d.innerHTML = `
+        <label>Залиха ${s}</label>
+        <input type="number" min="0" value="0" data-size="${s}">
+      `;
+      grid.appendChild(d);
+    });
+  }
+
+  rebuildStock();
+  aCat.onchange = ()=>{
+    const cm = catById(aCat.value)?.sizeMode || "clothes";
+    sizeModeSel.value = cm;
+    rebuildStock();
+  };
+  sizeModeSel.onchange = rebuildStock;
+
+  UI.open("modalAdd");
 }
 
-/* ==========
-   Page wiring
-   ========== */
+function saveNewProduct(){
+  const catId = document.getElementById("aCat").value;
+  const name = (document.getElementById("aName").value||"").trim();
+  const price = Number(document.getElementById("aPrice").value||0);
+  const imgsRaw = (document.getElementById("aImgs").value||"").trim();
+  const sizeMode = document.getElementById("aSizeMode").value;
 
+  if(!name){
+    UI.toast("Внеси име на продукт.");
+    return;
+  }
+
+  let images = [];
+  if(imgsRaw){
+    images = imgsRaw.split(",").map(x=>x.trim()).filter(Boolean).slice(0,5);
+  }else{
+    images = makePics("custom_"+uid(), rint(3,5));
+  }
+
+  const stock = {};
+  document.querySelectorAll("#stockGrid input[data-size]").forEach(inp=>{
+    const s = inp.getAttribute("data-size");
+    stock[s] = Math.max(0, Number(inp.value||0));
+  });
+
+  // ако сите 0, стави 1 на првата
+  if(Object.values(stock).every(v=>Number(v)===0)){
+    const first = (sizeMode==="jeans" ? SIZES_JEANS[0] : SIZES_CLOTHES[0]);
+    stock[first] = 1;
+  }
+
+  state.products.unshift({
+    id: uid(),
+    name,
+    catId,
+    price,
+    images,
+    sizeMode,
+    stock,
+    createdAt: now()
+  });
+
+  save();
+  UI.close("modalAdd");
+  renderAll();
+  UI.toast("Продуктот е додаден ✅");
+}
+
+/* ===========================
+   ADMIN
+=========================== */
+function isAdminOk(){
+  const pin = (document.getElementById("pin").value||"").trim();
+  return pin && state.adminPin && pin === state.adminPin;
+}
+
+function resetDemo(){
+  if(!isAdminOk()){
+    UI.toast("Погрешен PIN.");
+    return;
+  }
+  if(!confirm("Ова ќе избрише СИТЕ продукти на овој уред. Сигурно?")) return;
+  localStorage.removeItem(LS_KEY);
+  state = {
+    adminPin: state.adminPin,
+    selectedCat: "",
+    q: "",
+    sizeFilter: "",
+    products: [],
+    demoSeeded: false
+  };
+  seedDemoProducts();
+  renderAll();
+  UI.close("modalAdmin");
+  UI.toast("Reset направен ✅");
+}
+
+/* ===========================
+   EVENTS
+=========================== */
 document.getElementById("btnCats").onclick = ()=> UI.open("modalCats");
-document.getElementById("btnAdmin").onclick = ()=> UI.open("modalAdmin");
-document.getElementById("btnAddProd").onclick = ()=> openProdEditor(null);
+document.getElementById("brandClick").onclick = ()=> UI.open("modalCats");
 
-document.getElementById("prodSearch").addEventListener("input", (e)=>{
-  view.q = e.target.value || "";
-  renderAll();
+document.getElementById("q").addEventListener("input", (e)=>{
+  state.q = e.target.value || "";
+  document.getElementById("qTop").value = state.q;
+  save();
+  buildSizeFilterOptions();
+  renderGrid();
 });
+document.getElementById("qTop").addEventListener("input", (e)=>{
+  state.q = e.target.value || "";
+  document.getElementById("q").value = state.q;
+  save();
+  buildSizeFilterOptions();
+  renderGrid();
+});
+
 document.getElementById("sizeFilter").addEventListener("change", (e)=>{
-  view.size = e.target.value || "";
-  renderAll();
+  state.sizeFilter = e.target.value || "";
+  save();
+  renderGrid();
 });
+
 document.getElementById("btnResetFilters").onclick = ()=>{
-  view.q = "";
-  view.size = "";
-  document.getElementById("prodSearch").value = "";
-  document.getElementById("sizeFilter").value = "";
-  renderAll();
+  state.q = "";
+  state.sizeFilter = "";
+  document.getElementById("q").value = "";
+  document.getElementById("qTop").value = "";
+  save();
+  buildSizeFilterOptions();
+  renderGrid();
 };
 
-// Click outside to close modals
-["modalCats","modalAdmin","modalProd","modalDetails","modalOrder"].forEach(id=>{
-  const m=document.getElementById(id);
+document.getElementById("btnAdd").onclick = ()=> openAddModal();
+document.getElementById("btnSaveProduct").onclick = ()=> saveNewProduct();
+
+document.getElementById("btnAdmin").onclick = ()=> UI.open("modalAdmin");
+document.getElementById("btnSetPin").onclick = ()=>{
+  const pin = (document.getElementById("pin").value||"").trim();
+  if(!pin || pin.length<3){
+    UI.toast("Стави PIN (на пример 1234).");
+    return;
+  }
+  state.adminPin = pin;
+  save();
+  UI.toast("PIN зачуван ✅");
+};
+
+document.getElementById("btnResetDemo").onclick = ()=> resetDemo();
+
+document.getElementById("btnSendWA").onclick = ()=>{
+  const p = state.products.find(x=>x.id===orderState.prodId);
+  if(!p){ UI.toast("Грешка: продукт не е најден."); return; }
+
+  const size = document.getElementById("oSize").value;
+  const qty  = Math.max(1, Number(document.getElementById("oQty").value||1));
+
+  if(!size){
+    UI.toast("Нема достапна величина.");
+    return;
+  }
+
+  const ok = decrementStock(p, size, qty);
+  if(!ok){
+    UI.toast("Нема доволна залиха за таа количина.");
+    return;
+  }
+
+  save();
+  renderAll();
+  UI.close("modalOrder");
+
+  const text = buildWhatsAppText(p, size, qty);
+  const url = `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`;
+  window.open(url, "_blank");
+};
+
+/* close modal on background click */
+["modalCats","modalOrder","modalAdd","modalAdmin"].forEach(id=>{
+  const m = document.getElementById(id);
   m.addEventListener("click",(e)=>{
     if(e.target===m) UI.close(id);
   });
 });
 
+/* ===========================
+   SAFE HTML
+=========================== */
 function escapeHtml(s){
-  return (s||"").replace(/[&<>"']/g, m=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[m]));
+  return String(s||"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
 /* init */
+document.getElementById("q").value = state.q || "";
+document.getElementById("qTop").value = state.q || "";
 renderAll();
 </script>
 </body>
