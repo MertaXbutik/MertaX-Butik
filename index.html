@@ -993,55 +993,8 @@ function deleteProduct(){
    WhatsApp order + auto stock decrement
 ========================= */
 function orderWhatsApp(p){
-  const available = Object.entries(p.stock||{})
-    .filter(([k,v])=>Number(v)>0)
-    .map(([k])=>k);
-
-  if(available.length===0){
-    alert("Овој продукт моментално нема залиха.");
-    return;
-  }
-
-  const size = prompt("Внеси величина (достапни: " + available.join(", ") + ")", available[0]);
-  if(!size) return;
-  if(!available.includes(size)){
-    alert("Нема залиха за таа величина.");
-    return;
-  }
-
-  const qtyStr = prompt("Количина (max " + p.stock[size] + "):", "1");
-  if(!qtyStr) return;
-  const qty = Math.max(1, parseInt(qtyStr,10) || 1);
-  if(qty > p.stock[size]){
-    alert("Немаме толку залиха за таа величина.");
-    return;
-  }
-
-  // auto decrement stock
-  p.stock[size] = Math.max(0, Number(p.stock[size]) - qty);
-  save();
-  renderAll();
-
-  const phone = "38972912601";
-  if(!phone){
-    alert("Нема внесен WhatsApp број за овој продукт. (Admin -> уреди продукт -> внеси број)");
-    return;
-  }
-
-  const msg =
-`Здраво, сакам да нарачам:
-• Продукт: ${p.name}
-• Категорија: ${catName(p.catId)}
-• Цена: ${money(p.price)}
-• Величина: ${size}
-• Количина: ${qty}
-
-(Пратено од MertaX Butik)`;
-
-  const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
-  window.open(url, "_blank");
+  openOrderModal(p);
 }
-
 /* =========================
    Admin login (local)
 ========================= */
