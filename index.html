@@ -7,9 +7,9 @@
 
   <style>
     :root{
-      --bg:#f5f6fa; --card:#ffffff; --muted:#6b7280; --txt:#111827;
+      --bg:#f6f7fb; --card:#ffffff; --muted:#6b7280; --txt:#111827;
       --accent:#16a34a; --danger:#dc2626; --chip:#f3f4f6; --border:#e5e7eb;
-      --shadow:0 10px 28px rgba(0,0,0,.08); --radius:18px;
+      --shadow:0 10px 26px rgba(0,0,0,.08); --radius:18px;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--txt)}
@@ -22,14 +22,16 @@
     .btn-accent{background:var(--accent);color:#fff;border-color:transparent}
     .btn-danger{background:var(--danger);color:#fff;border-color:transparent}
     .btn-ghost{background:transparent}
-
     .wrap{max-width:1100px;margin:0 auto;padding:14px}
-    .topbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:12px 0 10px}
-    .badge{background:#fff;border:1px solid var(--border);padding:10px 12px;border-radius:14px;display:flex;gap:10px;align-items:center}
+
+    .topbar{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin:12px 0 12px}
+    .badge{background:#fff;border:1px solid var(--border);padding:10px 12px;border-radius:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .small{font-size:12px;color:var(--muted)}
-    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;flex:1}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start;justify-content:flex-end;flex:1}
     .inp,.sel,.ta{width:100%;padding:12px;border-radius:14px;border:1px solid var(--border);background:#fff;color:var(--txt);outline:none}
     .ta{min-height:90px;resize:vertical}
+    .filters .block{display:flex;flex-direction:column;gap:6px}
+    .lbl{font-size:12px;color:var(--muted);font-weight:700;margin-left:4px}
 
     .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
     @media(min-width:820px){.grid{grid-template-columns:repeat(4,1fr)}}
@@ -45,13 +47,13 @@
 
     .p{padding:12px}
     .name{margin:0 0 8px;font-weight:900;font-size:14px}
-    .priceLine{display:flex;align-items:baseline;gap:8px;margin:0 0 10px}
+    .priceLine{display:flex;align-items:baseline;gap:8px;margin:0 0 10px;flex-wrap:wrap}
     .priceNow{font-weight:900;font-size:16px}
     .priceOld{color:var(--muted);text-decoration:line-through;font-size:13px}
     .miniRow{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
     .miniSel{min-width:150px}
-    .center{display:flex;justify-content:center;margin:14px 0}
 
+    .center{display:flex;justify-content:center;margin:14px 0}
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:90}
     .overlay.show{display:block}
 
@@ -116,8 +118,42 @@
     </div>
 
     <div class="filters">
-      <input class="inp" id="searchInp" placeholder="Пребарај во категорија..." style="max-width:320px;">
-      <select class="sel" id="catSel" style="max-width:260px;"></select>
+      <div class="block" style="max-width:320px;">
+        <div class="lbl">Пребарај</div>
+        <input class="inp" id="searchInp" placeholder="Пребарај по име..." />
+      </div>
+
+      <div class="block" style="max-width:260px;">
+        <div class="lbl">Категорија</div>
+        <select class="sel" id="catSel"></select>
+      </div>
+
+      <div class="block" style="max-width:220px;">
+        <div class="lbl">Големина</div>
+        <select class="sel" id="sizeFilterSel"></select>
+      </div>
+
+      <div class="block" style="max-width:160px;">
+        <div class="lbl">Цена од</div>
+        <input class="inp" id="minPriceInp" inputmode="numeric" placeholder="0" />
+      </div>
+
+      <div class="block" style="max-width:160px;">
+        <div class="lbl">Цена до</div>
+        <input class="inp" id="maxPriceInp" inputmode="numeric" placeholder="99999" />
+      </div>
+
+      <div class="block" style="max-width:220px;">
+        <div class="lbl">Сортирање</div>
+        <select class="sel" id="sortSel">
+          <option value="default">Стандардно</option>
+          <option value="price_asc">Цена ↑</option>
+          <option value="price_desc">Цена ↓</option>
+          <option value="new_first">НОВО прво</option>
+          <option value="sale_first">АКЦИЈА прво</option>
+          <option value="name_asc">Име A→Z</option>
+        </select>
+      </div>
     </div>
 
     <div class="small">WhatsApp: <b>+38972912601</b> • Локација: <b>ТЦ Мавровка</b></div>
@@ -233,7 +269,7 @@
           </select>
 
           <input class="inp" id="pImg" placeholder="Слика URL (опц.) или ќе се пополни од Upload" />
-          <input class="inp" id="pSizes" placeholder="Големини (запирка) пример: S,M,L,XL,2XL,3XL" />
+          <input class="inp" id="pSizes" placeholder="Големини (запирка) пример: S,M,L,XL,2XL,3XL или 30,31..42" />
         </div>
 
         <div class="three">
@@ -270,3 +306,315 @@
       <div class="two" style="margin-top:10px;">
         <button class="btn btn-ghost" id="exportBtn">Копирај JSON (Export)</button>
         <button class="btn btn-ghost" id="importBtn">Внеси JSON (Import)</button>
+      </div>
+      <textarea class="ta" id="jsonBox" placeholder="Тука ќе се појави JSON (Export) или залепи JSON за Import..."></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== SETTINGS =====
+  const WHATSAPP_NUMBER = "38972912601";
+  const STORE_LOCATION = "ТЦ Мавровка";
+  const SHIPPING_FEE = 150;
+
+  const PAGE_SIZE = 30;
+  const MAX_PER_CATEGORY = 150;
+
+  const DEFAULT_SIZES = ["S","M","L","XL","2XL","3XL"];
+  const JEANS_SIZES = Array.from({length: 13}, (_,i)=> String(30+i)); // 30..42
+
+  const CATEGORIES = [
+    "Џемпери","Блузони","Маици","Кошули",
+    "Фармерки/Панталони","Тренерки","Јакни","Одела"
+  ];
+
+  // Storage keys
+  const CART_KEY = "mertax_cart_v200";
+  const ADMIN_PIN_KEY = "mertax_admin_pin_v1";
+  const CUSTOM_KEY = "mertax_custom_products_v1";
+  const DELETED_KEY = "mertax_deleted_ids_v1";
+
+  const round10 = (n)=> Math.round(n/10)*10;
+
+  function catKey(cat){
+    return cat.toLowerCase()
+      .replaceAll(" ","-").replaceAll("/","-")
+      .replaceAll("ќ","k").replaceAll("џ","dz").replaceAll("ж","zh")
+      .replaceAll("ч","ch").replaceAll("ш","sh")
+      .replaceAll("љ","lj").replaceAll("њ","nj")
+      .replaceAll("ѓ","gj").replaceAll("ѕ","dz")
+      .replaceAll("а","a").replaceAll("б","b").replaceAll("в","v").replaceAll("г","g")
+      .replaceAll("д","d").replaceAll("е","e").replaceAll("з","z").replaceAll("и","i")
+      .replaceAll("ј","j").replaceAll("к","k").replaceAll("л","l").replaceAll("м","m")
+      .replaceAll("н","n").replaceAll("о","o").replaceAll("п","p").replaceAll("р","r")
+      .replaceAll("с","s").replaceAll("т","t").replaceAll("у","u").replaceAll("ф","f")
+      .replaceAll("х","h").replaceAll("ц","c");
+  }
+
+  function demoImg(seed){
+    return `https://picsum.photos/seed/${encodeURIComponent(seed)}/900/900`;
+  }
+
+  function priceByCategory(cat){
+    switch(cat){
+      case "Маици": return 990;
+      case "Кошули": return 1490;
+      case "Џемпери": return 1890;
+      case "Блузони": return 2190;
+      case "Фармерки/Панталони": return 1990;
+      case "Тренерки": return 2290;
+      case "Јакни": return 3990;
+      case "Одела": return 7990;
+      default: return 1490;
+    }
+  }
+
+  function sizesByCategory(cat){
+    return (cat === "Фармерки/Панталони") ? JEANS_SIZES.slice() : DEFAULT_SIZES.slice();
+  }
+
+  function makeId(){
+    const rnd = Math.random().toString(16).slice(2,8).toUpperCase();
+    const t = Date.now().toString(16).slice(-6).toUpperCase();
+    return `mx_${t}_${rnd}`;
+  }
+
+  // ===== LAZY DEMO =====
+  function demoProduct(cat, idx1){
+    const basePrice = priceByCategory(cat);
+    const price = round10(basePrice + (idx1 % 7) * 40);
+    const isSale = (idx1 % 4 === 0);
+    const isNew  = (!isSale && idx1 % 7 === 0);
+    const oldPrice = isSale ? round10(price + 300 + (idx1 % 5) * 50) : null;
+    const badge = isSale ? "АКЦИЈА" : (isNew ? "НОВО" : "");
+    const id = `auto_${catKey(cat)}_${idx1}`;
+
+    return {
+      id, name: `MertaX ${cat} #${idx1}`, cat,
+      price, oldPrice, badge,
+      sizes: sizesByCategory(cat),
+      img: demoImg(`${catKey(cat)}-${idx1}`)
+    };
+  }
+
+  // ===== STORAGE =====
+  function loadCustom(){
+    try{ const arr = JSON.parse(localStorage.getItem(CUSTOM_KEY) || "[]"); return Array.isArray(arr)?arr:[]; }
+    catch(e){ return []; }
+  }
+  function saveCustom(arr){ localStorage.setItem(CUSTOM_KEY, JSON.stringify(arr)); }
+
+  function loadDeleted(){
+    try{ const arr = JSON.parse(localStorage.getItem(DELETED_KEY) || "[]"); return Array.isArray(arr)?arr:[]; }
+    catch(e){ return []; }
+  }
+  function saveDeleted(arr){ localStorage.setItem(DELETED_KEY, JSON.stringify(arr)); }
+
+  function customMap(){
+    const map = new Map();
+    for(const p of loadCustom()) map.set(p.id, p);
+    return map;
+  }
+
+  function getCategoryList(cat){
+    const del = new Set(loadDeleted());
+    const cMap = customMap();
+    const list = [];
+
+    // demo products
+    for(let i=1;i<=MAX_PER_CATEGORY;i++){
+      const dp = demoProduct(cat, i);
+      if(del.has(dp.id)) continue;
+      const ov = cMap.get(dp.id);
+      list.push(ov ? ov : dp);
+    }
+
+    // custom non-demo (put first)
+    for(const p of cMap.values()){
+      if(p.cat !== cat) continue;
+      if((p.id || "").startsWith("auto_")) continue;
+      if(del.has(p.id)) continue;
+      list.unshift(p);
+    }
+
+    return list;
+  }
+
+  // ===== CART =====
+  const loadCart = () => JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+  const saveCart = (cart) => localStorage.setItem(CART_KEY, JSON.stringify(cart));
+
+  function findProductById(id){
+    const cMap = customMap();
+    if(cMap.has(id)) return cMap.get(id);
+
+    if(id.startsWith("auto_")){
+      for(const cat of CATEGORIES){
+        const prefix = `auto_${catKey(cat)}_`;
+        if(id.startsWith(prefix)){
+          const idx = Number(id.slice(prefix.length));
+          if(Number.isFinite(idx) && idx>=1 && idx<=MAX_PER_CATEGORY){
+            return demoProduct(cat, idx);
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  // ===== UI REFS =====
+  const grid = document.getElementById("productGrid");
+  const searchInp = document.getElementById("searchInp");
+  const catSel = document.getElementById("catSel");
+  const sizeFilterSel = document.getElementById("sizeFilterSel");
+  const minPriceInp = document.getElementById("minPriceInp");
+  const maxPriceInp = document.getElementById("maxPriceInp");
+  const sortSel = document.getElementById("sortSel");
+  const loadMoreBtn = document.getElementById("loadMoreBtn");
+  const infoLine = document.getElementById("infoLine");
+
+  let visibleCount = PAGE_SIZE;
+
+  function currentCategory(){ return (catSel && catSel.value) ? catSel.value : CATEGORIES[0]; }
+
+  function renderCats(){
+    if(!catSel) return;
+    catSel.innerHTML = CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join("");
+  }
+
+  function renderSizeFilter(){
+    if(!sizeFilterSel) return;
+    const cat = currentCategory();
+    const sizes = sizesByCategory(cat);
+    sizeFilterSel.innerHTML = [`<option value="ALL">Сите</option>`]
+      .concat(sizes.map(s=>`<option value="${s}">${s}</option>`)).join("");
+  }
+
+  function numOrNull(v){
+    const t = String(v || "").trim();
+    if(!t) return null;
+    const n = Number(t);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function filteredAll(){
+    const cat = currentCategory();
+    const q = (searchInp?.value || "").trim().toLowerCase();
+    const size = (sizeFilterSel?.value || "ALL");
+    const minP = numOrNull(minPriceInp?.value);
+    const maxP = numOrNull(maxPriceInp?.value);
+
+    let list = getCategoryList(cat);
+
+    if(q) list = list.filter(p => (p.name || "").toLowerCase().includes(q));
+
+    if(size !== "ALL"){
+      list = list.filter(p => Array.isArray(p.sizes) && p.sizes.includes(size));
+    }
+
+    if(minP !== null) list = list.filter(p => Number(p.price) >= minP);
+    if(maxP !== null) list = list.filter(p => Number(p.price) <= maxP);
+
+    // sorting
+    const mode = sortSel?.value || "default";
+    const scoreBadge = (p, wanted)=> (String(p.badge||"").trim() === wanted) ? 1 : 0;
+
+    if(mode === "price_asc") list.sort((a,b)=>a.price-b.price);
+    else if(mode === "price_desc") list.sort((a,b)=>b.price-a.price);
+    else if(mode === "new_first") list.sort((a,b)=> scoreBadge(b,"НОВО")-scoreBadge(a,"НОВО") || a.price-b.price);
+    else if(mode === "sale_first") list.sort((a,b)=> scoreBadge(b,"АКЦИЈА")-scoreBadge(a,"АКЦИЈА") || a.price-b.price);
+    else if(mode === "name_asc") list.sort((a,b)=> (a.name||"").localeCompare(b.name||""));
+
+    return list;
+  }
+
+  function renderProducts(){
+    if(!grid) return;
+
+    const list = filteredAll();
+    const show = list.slice(0, visibleCount);
+
+    if(infoLine){
+      const size = (sizeFilterSel?.value || "ALL");
+      const minP = (minPriceInp?.value || "").trim();
+      const maxP = (maxPriceInp?.value || "").trim();
+      infoLine.textContent =
+        `Категорија: ${currentCategory()} • Прикажани: ${show.length} / ${list.length} (макс ${MAX_PER_CATEGORY})` +
+        ` • Големина: ${size==="ALL"?"Сите":size}` +
+        ` • Цена: ${minP||"0"} - ${maxP||"∞"}`;
+    }
+
+    grid.innerHTML = show.map(p => {
+      const old = (p.oldPrice !== null && p.oldPrice !== "" && !isNaN(Number(p.oldPrice))) ? Number(p.oldPrice) : null;
+      const badge = (p.badge || "").trim();
+      const pct = (old && old > p.price) ? Math.round(((old - p.price)/old)*100) : null;
+      const sizes = Array.isArray(p.sizes) && p.sizes.length ? p.sizes : ["UNI"];
+      const safeId = (p.id || "").replaceAll('"','');
+      const sizeSelId = `size_${safeId}`;
+
+      return `
+        <div class="card">
+          <div class="imgWrap">
+            <img class="img" loading="lazy" src="${p.img}" alt="${p.name}">
+            <div class="tagRow">
+              ${badge ? `<span class="tag ${badge==="НОВО" ? "tag-new" : "tag-sale"}">${badge}</span>` : ""}
+              ${pct ? `<span class="tag tag-sale">-${pct}%</span>` : ""}
+              ${p.cat ? `<span class="tag">${p.cat}</span>` : ""}
+            </div>
+          </div>
+          <div class="p">
+            <p class="name">${p.name}</p>
+            <div class="priceLine">
+              <span class="priceNow">${p.price} ден.</span>
+              ${old && old > p.price ? `<span class="priceOld">${old} ден.</span>` : ""}
+            </div>
+
+            <div class="miniRow">
+              <select class="sel miniSel" id="${sizeSelId}">
+                ${sizes.map(s => `<option value="${s}">${s}</option>`).join("")}
+              </select>
+              <button class="btn btn-accent"
+                onclick="addToCart('${p.id}', document.getElementById('${sizeSelId}').value)">Додај</button>
+            </div>
+
+            <div class="small" style="margin-top:8px;">ID: ${p.id}</div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    if(loadMoreBtn){
+      if(visibleCount < list.length){
+        loadMoreBtn.style.display = "inline-block";
+        const next = Math.min(visibleCount + PAGE_SIZE, list.length);
+        loadMoreBtn.textContent = `Вчитај уште (${visibleCount} → ${next})`;
+      } else {
+        loadMoreBtn.style.display = "none";
+      }
+    }
+  }
+
+  function resetPaging(){ visibleCount = PAGE_SIZE; }
+
+  // ===== CART UI =====
+  const cartCount = document.getElementById("cartCount");
+  const cartTotal = document.getElementById("cartTotal");
+  const cartList = document.getElementById("cartList");
+  const sumItems = document.getElementById("sumItems");
+  const sumTotal = document.getElementById("sumTotal");
+  const shipLine = document.getElementById("shipLine");
+  const overlay = document.getElementById("overlay");
+  const drawer = document.getElementById("drawer");
+
+  const deliverySel = document.getElementById("deliverySel");
+  function shippingOn(){ return (deliverySel?.value || "Да") === "Да"; }
+
+  function cartTotals(cart, shippingEnabled){
+    let items = 0, subtotal = 0;
+    for(const c of cart){
+      items += c.qty;
+      const p = findProductById(c.id);
+      if(p) subtotal += p.price * c.qty;
+    }
+    const ship = (shippingEnabled && items > 0) ? SHIPPING_FEE
