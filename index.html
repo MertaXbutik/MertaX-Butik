@@ -6,8 +6,8 @@
   <title>MertaX Butik</title>
   <style>
     :root{
-      --bg:#0b0c10; --card:#121420; --muted:#a9a9b3; --txt:#fff;
-      --accent:#22c55e; --danger:#ef4444; --line:#23263a; --chip:#1b1e2f;
+      --bg:#0b0c10; --muted:#a9a9b3; --txt:#fff;
+      --accent:#22c55e; --danger:#ef4444; --chip:#1b1e2f;
       --shadow:0 16px 40px rgba(0,0,0,.45); --radius:18px;
     }
     *{box-sizing:border-box}
@@ -30,10 +30,7 @@
     .headRow{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
     .brand{font-size:20px;font-weight:900;letter-spacing:.6px}
     .headBtns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .btn{
-      border:0;cursor:pointer;padding:11px 13px;border-radius:14px;font-weight:900;
-      background:var(--chip);color:#fff
-    }
+    .btn{border:0;cursor:pointer;padding:11px 13px;border-radius:14px;font-weight:900;background:var(--chip);color:#fff}
     .btn-accent{background:var(--accent);color:#041a0b}
     .btn-danger{background:var(--danger);color:#fff}
     .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.12)}
@@ -81,6 +78,8 @@
     .priceLine{display:flex;align-items:baseline;gap:8px;margin:0 0 10px}
     .priceNow{font-weight:900}
     .priceOld{color:var(--muted);text-decoration:line-through;font-size:12px}
+    .miniRow{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .miniSel{min-width:150px}
 
     /* Overlay / drawer / modal */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.60);display:none;z-index:90}
@@ -130,18 +129,6 @@
     .two{display:grid;gap:10px;grid-template-columns:1fr 1fr}
     @media(max-width:520px){.two{grid-template-columns:1fr}}
     .hr{height:1px;background:rgba(255,255,255,.08);margin:8px 0}
-
-    .adminList{display:grid;gap:10px}
-    .adminItem{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.04);
-      border-radius:16px;padding:10px;display:flex;gap:10px;align-items:center
-    }
-    .adminItem img{width:54px;height:54px;border-radius:14px;object-fit:cover;background:#222}
-    .adminItem .meta{flex:1}
-    .adminItem .meta b{display:block;font-size:13px;margin-bottom:3px}
-    .adminItem .meta span{color:var(--muted);font-size:12px}
-    .adminItem .actions{display:flex;gap:8px;flex-wrap:wrap}
   </style>
 </head>
 
@@ -150,7 +137,6 @@
   <div class="headRow">
     <div class="brand">MertaX Butik</div>
     <div class="headBtns">
-      <button class="btn btn-ghost" id="adminBtn">Admin</button>
       <button class="btn" id="openCartBtn">Кошничка</button>
       <button class="btn btn-danger" id="clearCartBtn">Испразни</button>
     </div>
@@ -188,6 +174,7 @@
   <div class="cartlist" id="cartList"></div>
   <div class="foot">
     <div class="line"><span>Производи</span> <b id="sumItems">0</b></div>
+    <div class="line"><span>Достава</span> <b id="shipLine">150 ден.</b></div>
     <div class="line"><span>Вкупно</span> <b><span id="sumTotal">0</span> ден.</b></div>
     <button class="btn btn-accent" id="goCheckoutBtn" style="width:100%;">Продолжи на нарачка</button>
   </div>
@@ -202,81 +189,54 @@
   <div class="modalBody">
     <div class="small">Број на нарачка: <b id="orderIdText">-</b></div>
     <div class="hr"></div>
+
     <div class="form">
       <input class="inp" id="custName" placeholder="Име и презиме" />
       <input class="inp" id="custPhone" placeholder="Телефон (пример: 07X XXX XXX)" />
+
+      <div class="two">
+        <select class="sel" id="paymentSel">
+          <option value="Готово при прием">Готово при прием</option>
+        </select>
+        <select class="sel" id="exchangeSel">
+          <option value="Да">Можност за замена: Да</option>
+          <option value="Не">Можност за замена: Не</option>
+        </select>
+      </div>
+
+      <div class="two">
+        <select class="sel" id="deliverySel">
+          <option value="Да">Достава: Да (+150 ден)</option>
+          <option value="Не">Достава: Не (0 ден)</option>
+        </select>
+        <input class="inp" id="deliveryAddress" placeholder="Адреса за достава (ако е Да)" />
+      </div>
+
       <textarea class="ta" id="custNote" placeholder="Напомена (опционално)"></textarea>
-      <div class="small">Локација за подигање: <b>ТЦ Мавровка</b>. Ќе се отвори WhatsApp со готова порака.</div>
+
+      <div class="small">Ако е без достава, подигање: <b>ТЦ Мавровка</b>. Ќе се отвори WhatsApp со готова порака.</div>
       <button class="btn btn-accent" id="sendWhatsappBtn">Испрати на WhatsApp</button>
     </div>
   </div>
 </div>
 
-<!-- Admin modal -->
-<div class="modal" id="adminModal">
-  <div class="modalHead">
-    <h3>Admin панел</h3>
-    <button class="xbtn" id="closeAdminBtn">✕</button>
-  </div>
-  <div class="modalBody">
-    <div id="adminLocked">
-      <input class="inp" id="adminPin" placeholder="Внеси PIN" type="password" />
-      <button class="btn btn-accent" id="unlockAdminBtn" style="width:100%;">Отклучи</button>
-      <div class="small">Ова е “лесен” admin (без сервер) – работи преку browser storage.</div>
-    </div>
-
-    <div id="adminUnlocked" style="display:none;">
-      <div class="small">Додај/измени производи. Се зачувуваат локално (localStorage).</div>
-      <div class="hr"></div>
-
-      <div class="form">
-        <div class="two">
-          <input class="inp" id="pName" placeholder="Име (пример: MertaX Маичка)" />
-          <input class="inp" id="pImg" placeholder="Слика URL (https://...)" />
-        </div>
-        <div class="two">
-          <input class="inp" id="pPrice" placeholder="Нова цена (ден.)" inputmode="numeric" />
-          <input class="inp" id="pOldPrice" placeholder="Стара цена (ден.) - опционално" inputmode="numeric" />
-        </div>
-        <div class="two">
-          <select class="sel" id="pBadge">
-            <option value="">Без ознака</option>
-            <option value="НОВО">НОВО</option>
-            <option value="АКЦИЈА">АКЦИЈА</option>
-          </select>
-          <select class="sel" id="pCat">
-            <option value="Аксесоари">Аксесоари</option>
-            <option value="Облека">Облека</option>
-            <option value="Патики">Патики</option>
-          </select>
-        </div>
-        <div class="two">
-          <input class="inp" id="pId" placeholder="ID (остави празно за автоматски)" />
-          <button class="btn btn-accent" id="saveProductBtn">Зачувај (додај/измени)</button>
-        </div>
-        <button class="btn btn-ghost" id="resetDefaultsBtn">Врати default производи</button>
-      </div>
-
-      <div class="hr"></div>
-      <div class="adminList" id="adminList"></div>
-    </div>
-  </div>
-</div>
-
 <script>
-  // ✅ Наместено
   const WHATSAPP_NUMBER = "38972912601";
   const STORE_LOCATION = "ТЦ Мавровка";
-  const ADMIN_PIN = "1234"; // смени ако сакаш
+  const SHIPPING_FEE = 150;
 
-  const CART_KEY = "mertax_cart_pro";
-  const PRODUCTS_KEY = "mertax_products_pro";
+  const CART_KEY = "mertax_cart_variants_v1";
+  const PRODUCTS_KEY = "mertax_products_variants_v1";
 
+  // Variants (sizes)
+  const SIZES = ["S","M","L","XL","2XL","3XL"];
+
+  // Default products (можеш да менуваш)
   const defaultProducts = [
-    { id:"p1", name:"MertaX Паричник", price:790, oldPrice:990, badge:"АКЦИЈА", cat:"Аксесоари", img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=60" },
-    { id:"p2", name:"MertaX Маичка",  price:990, oldPrice:null, badge:"НОВО",   cat:"Облека",   img:"https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=900&q=60" },
-    { id:"p3", name:"MertaX Капче",   price:590, oldPrice:790, badge:"АКЦИЈА", cat:"Аксесоари", img:"https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=60" },
-    { id:"p4", name:"MertaX Патики",  price:2990, oldPrice:null, badge:"",     cat:"Патики",   img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=60" },
+    { id:"p1", name:"MertaX Маичка",  price:990, oldPrice:1290, badge:"АКЦИЈА", cat:"Облека", sizes:SIZES, img:"https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=900&q=60" },
+    { id:"p2", name:"MertaX Дуќсер",  price:1790, oldPrice:null, badge:"НОВО",   cat:"Облека", sizes:SIZES, img:"https://images.unsplash.com/photo-1520975958225-6a97d5a0f98f?auto=format&fit=crop&w=900&q=60" },
+    { id:"p3", name:"MertaX Патики",  price:2990, oldPrice:null, badge:"",       cat:"Патики", sizes:["40","41","42","43","44","45"], img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=60" },
+    { id:"p4", name:"MertaX Капче",   price:590,  oldPrice:790,  badge:"АКЦИЈА", cat:"Аксесоари", sizes:["UNI"], img:"https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=60" },
   ];
 
   const loadProducts = () => {
@@ -296,32 +256,44 @@
 
   const findProduct = (id) => products.find(p => p.id === id);
 
-  function cartTotals(cart){
-    let items = 0, total = 0;
+  // Cart item is: { id, qty, size }
+  function cartTotals(cart, shippingOn){
+    let items = 0, subtotal = 0;
     for(const c of cart){
       items += c.qty;
       const p = findProduct(c.id);
-      if(p) total += p.price * c.qty;
+      if(p) subtotal += p.price * c.qty;
     }
-    return { items, total };
+    const ship = shippingOn ? SHIPPING_FEE : 0;
+    const total = subtotal + ship;
+    return { items, subtotal, ship, total };
   }
 
-  function addToCart(id){
+  function addToCart(id, size){
+    const p = findProduct(id);
+    const chosenSize = size || (p && p.sizes && p.sizes[0]) || "UNI";
+    const key = id + "|" + chosenSize;
+
     const cart = loadCart();
-    const item = cart.find(x => x.id === id);
+    const item = cart.find(x => (x.id + "|" + (x.size||"")) === key);
     if(item) item.qty += 1;
-    else cart.push({ id, qty:1 });
+    else cart.push({ id, size: chosenSize, qty:1 });
     saveCart(cart);
     renderCartUI();
   }
 
-  function setQty(id, qty){
-    const cart = loadCart().map(x => x.id === id ? ({...x, qty}) : x).filter(x => x.qty > 0);
+  function setQty(id, size, qty){
+    const cart = loadCart()
+      .map(x => (x.id===id && (x.size||"")===size) ? ({...x, qty}) : x)
+      .filter(x => x.qty > 0);
     saveCart(cart);
     renderCartUI();
   }
 
-  function clearCart(){ saveCart([]); renderCartUI(); }
+  function clearCart(){
+    saveCart([]);
+    renderCartUI();
+  }
 
   // ---- Search + Category filter
   const searchInp = document.getElementById("searchInp");
@@ -346,7 +318,7 @@
     });
   }
 
-  // ---- Render products
+  // ---- Render products (with size selector)
   const grid = document.getElementById("productGrid");
   function renderProducts(){
     const list = filteredProducts();
@@ -354,6 +326,9 @@
       const old = (p.oldPrice !== null && p.oldPrice !== "" && !isNaN(Number(p.oldPrice))) ? Number(p.oldPrice) : null;
       const badge = (p.badge || "").trim();
       const pct = (old && old > p.price) ? Math.round(((old - p.price)/old)*100) : null;
+
+      const sizes = Array.isArray(p.sizes) && p.sizes.length ? p.sizes : ["UNI"];
+      const sizeSelId = `size_${p.id}`;
 
       return `
         <div class="card">
@@ -371,10 +346,15 @@
               <span class="priceNow">${p.price} ден.</span>
               ${old && old > p.price ? `<span class="priceOld">${old} ден.</span>` : ""}
             </div>
-            <div class="row">
-              <button class="btn btn-accent" onclick="addToCart('${p.id}')">Додај</button>
-              <span class="small">ID: ${p.id}</span>
+
+            <div class="miniRow">
+              <select class="sel miniSel" id="${sizeSelId}">
+                ${sizes.map(s => `<option value="${s}">${s}</option>`).join("")}
+              </select>
+              <button class="btn btn-accent" onclick="addToCart('${p.id}', document.getElementById('${sizeSelId}').value)">Додај</button>
             </div>
+
+            <div class="small" style="margin-top:8px;">ID: ${p.id}</div>
           </div>
         </div>
       `;
@@ -387,21 +367,29 @@
   const cartList = document.getElementById("cartList");
   const sumItems = document.getElementById("sumItems");
   const sumTotal = document.getElementById("sumTotal");
+  const shipLine = document.getElementById("shipLine");
 
   const overlay = document.getElementById("overlay");
   const drawer = document.getElementById("drawer");
 
   function openCart(){ overlay.classList.add("show"); drawer.classList.add("open"); }
-  function closeCart(){ drawer.classList.remove("open"); if(!checkoutModal.classList.contains("show") && !adminModal.classList.contains("show")) overlay.classList.remove("show"); }
+  function closeCart(){ drawer.classList.remove("open"); if(!checkoutModal.classList.contains("show")) overlay.classList.remove("show"); }
+
+  // Checkout fields affecting totals
+  const deliverySel = document.getElementById("deliverySel");
+  function shippingOn(){
+    return (deliverySel.value || "Да") === "Да";
+  }
 
   function renderCartUI(){
     const cart = loadCart();
-    const { items, total } = cartTotals(cart);
+    const { items, subtotal, ship, total } = cartTotals(cart, shippingOn());
 
     cartCount.textContent = items;
     cartTotal.textContent = total;
     sumItems.textContent = items;
     sumTotal.textContent = total;
+    shipLine.textContent = ship + " ден.";
 
     if(cart.length === 0){
       cartList.innerHTML = `<p class="small">Кошничката е празна.</p>`;
@@ -411,17 +399,18 @@
     cartList.innerHTML = cart.map(c => {
       const p = findProduct(c.id);
       if(!p) return "";
+      const size = c.size || "UNI";
       return `
         <div class="item">
           <img class="thumb" src="${p.img}" alt="${p.name}">
           <div class="itxt">
-            <b>${p.name}</b>
+            <b>${p.name} <span class="small">(${size})</span></b>
             <div class="small">${p.price} ден. × ${c.qty} = <b>${p.price*c.qty}</b> ден.</div>
             <div class="qty" style="margin-top:8px;">
-              <button onclick="setQty('${c.id}', ${c.qty-1})">−</button>
+              <button onclick="setQty('${c.id}','${size}', ${c.qty-1})">−</button>
               <span style="min-width:22px; text-align:center;">${c.qty}</span>
-              <button onclick="setQty('${c.id}', ${c.qty+1})">+</button>
-              <button class="btn btn-danger" style="margin-left:auto; padding:8px 10px; border-radius:12px;" onclick="setQty('${c.id}', 0)">Отстрани</button>
+              <button onclick="setQty('${c.id}','${size}', ${c.qty+1})">+</button>
+              <button class="btn btn-danger" style="margin-left:auto; padding:8px 10px; border-radius:12px;" onclick="setQty('${c.id}','${size}', 0)">Отстрани</button>
             </div>
           </div>
         </div>
@@ -448,10 +437,12 @@
     orderIdText.textContent = currentOrderId;
     checkoutModal.classList.add("show");
     overlay.classList.add("show");
+    // sync totals when opening
+    renderCartUI();
   }
   function closeCheckout(){
     checkoutModal.classList.remove("show");
-    if(!drawer.classList.contains("open") && !adminModal.classList.contains("show")) overlay.classList.remove("show");
+    if(!drawer.classList.contains("open")) overlay.classList.remove("show");
   }
 
   function buildOrderText(){
@@ -459,24 +450,48 @@
     const phone = (document.getElementById("custPhone").value || "").trim();
     const note = (document.getElementById("custNote").value || "").trim();
 
+    const payment = (document.getElementById("paymentSel").value || "Готово при прием").trim();
+    const exchange = (document.getElementById("exchangeSel").value || "Да").trim();
+
+    const deliveryYes = shippingOn();
+    const deliveryAddress = (document.getElementById("deliveryAddress").value || "").trim();
+
     const cart = loadCart();
-    const { items, total } = cartTotals(cart);
+    const { items, subtotal, ship, total } = cartTotals(cart, deliveryYes);
 
     let lines = [];
     lines.push("🛍️ Нарачка - MertaX");
     lines.push("🧾 Број: " + (currentOrderId || "-"));
-    lines.push("📍 Локација: " + STORE_LOCATION);
     lines.push("");
     lines.push("👤 Име: " + (name || "-"));
     lines.push("📞 Телефон: " + (phone || "-"));
-    if(note) lines.push("📝 Напомена: " + note);
+    lines.push("💳 Плаќање: " + payment);
+    lines.push("🔁 Замена: " + exchange);
+
+    lines.push("");
+    if(deliveryYes){
+      lines.push("🚚 Достава: Да (+150 ден)");
+      lines.push("🏠 Адреса: " + (deliveryAddress || "-"));
+    } else {
+      lines.push("🚚 Достава: Не");
+      lines.push("📍 Подигање: " + STORE_LOCATION);
+    }
+
+    if(note) { lines.push(""); lines.push("📝 Напомена: " + note); }
+
     lines.push("");
     lines.push("📦 Производи:");
     cart.forEach(c=>{
       const p = findProduct(c.id);
-      if(p) lines.push(`- ${p.name} x${c.qty} = ${p.price*c.qty} ден.`);
+      if(p){
+        const size = c.size || "UNI";
+        lines.push(`- ${p.name} (${size}) x${c.qty} = ${p.price*c.qty} ден.`);
+      }
     });
+
     lines.push("");
+    lines.push(`🧺 Подсума: ${subtotal} ден.`);
+    lines.push(`🚚 Достава: ${ship} ден.`);
     lines.push(`✅ Вкупно производи: ${items}`);
     lines.push(`💰 Вкупно: ${total} ден.`);
     return lines.join("\n");
@@ -485,102 +500,6 @@
   function sendToWhatsApp(){
     const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(buildOrderText());
     window.open(url, "_blank");
-  }
-
-  // ---- Admin
-  const adminModal = document.getElementById("adminModal");
-  const adminLocked = document.getElementById("adminLocked");
-  const adminUnlocked = document.getElementById("adminUnlocked");
-  const adminPin = document.getElementById("adminPin");
-  const adminList = document.getElementById("adminList");
-
-  const pName = document.getElementById("pName");
-  const pImg = document.getElementById("pImg");
-  const pPrice = document.getElementById("pPrice");
-  const pOldPrice = document.getElementById("pOldPrice");
-  const pBadge = document.getElementById("pBadge");
-  const pCat = document.getElementById("pCat");
-  const pId = document.getElementById("pId");
-
-  function openAdmin(){ adminModal.classList.add("show"); overlay.classList.add("show"); }
-  function closeAdmin(){ adminModal.classList.remove("show"); if(!drawer.classList.contains("open") && !checkoutModal.classList.contains("show")) overlay.classList.remove("show"); }
-  function setAdminUnlocked(ok){
-    adminLocked.style.display = ok ? "none" : "block";
-    adminUnlocked.style.display = ok ? "block" : "none";
-  }
-
-  function adminRenderList(){
-    adminList.innerHTML = products.map(p => `
-      <div class="adminItem">
-        <img src="${p.img}" alt="">
-        <div class="meta">
-          <b>${p.name}</b>
-          <span>ID: ${p.id} • ${p.price} ден.${p.oldPrice ? ` • старо: ${p.oldPrice}` : ""} ${p.badge ? ` • ${p.badge}` : ""} ${p.cat ? ` • ${p.cat}` : ""}</span>
-        </div>
-        <div class="actions">
-          <button class="btn" onclick="adminEdit('${p.id}')">Измени</button>
-          <button class="btn btn-danger" onclick="adminDelete('${p.id}')">Избриши</button>
-        </div>
-      </div>
-    `).join("");
-  }
-
-  window.adminEdit = (id) => {
-    const p = findProduct(id); if(!p) return;
-    pName.value = p.name || "";
-    pImg.value = p.img || "";
-    pPrice.value = String(p.price ?? "");
-    pOldPrice.value = p.oldPrice ? String(p.oldPrice) : "";
-    pBadge.value = p.badge || "";
-    pCat.value = p.cat || "Аксесоари";
-    pId.value = p.id || "";
-  };
-
-  window.adminDelete = (id) => {
-    if(!confirm("Да избришам производ?")) return;
-    products = products.filter(x => x.id !== id);
-    saveProducts(products);
-    renderCats();
-    renderProducts();
-    renderCartUI();
-    adminRenderList();
-  };
-
-  function upsertProduct(){
-    const name = (pName.value||"").trim();
-    const img = (pImg.value||"").trim();
-    const price = Number((pPrice.value||"").trim());
-    const oldRaw = (pOldPrice.value||"").trim();
-    const oldPrice = oldRaw ? Number(oldRaw) : null;
-    const badge = (pBadge.value||"").trim();
-    const cat = (pCat.value||"").trim();
-    let id = (pId.value||"").trim();
-
-    if(!name || !img || !Number.isFinite(price)){ alert("Внеси: име, слика URL и нова цена."); return; }
-    if(!id) id = "p" + Math.random().toString(16).slice(2,6);
-
-    const next = { id, name, img, price, oldPrice: (Number.isFinite(oldPrice) ? oldPrice : null), badge, cat };
-    const idx = products.findIndex(x => x.id === id);
-    if(idx >= 0) products[idx] = next; else products.unshift(next);
-
-    saveProducts(products);
-    renderCats();
-    renderProducts();
-    renderCartUI();
-    adminRenderList();
-
-    pName.value=""; pImg.value=""; pPrice.value=""; pOldPrice.value=""; pBadge.value=""; pCat.value="Аксесоари"; pId.value="";
-    alert("Зачувано ✅");
-  }
-
-  function resetDefaults(){
-    if(!confirm("Да ги вратам default производите?")) return;
-    products = defaultProducts.slice();
-    saveProducts(products);
-    renderCats();
-    renderProducts();
-    renderCartUI();
-    adminRenderList();
   }
 
   // --- Events
@@ -592,24 +511,13 @@
   document.getElementById("closeCheckoutBtn").addEventListener("click", closeCheckout);
   document.getElementById("sendWhatsappBtn").addEventListener("click", sendToWhatsApp);
 
-  document.getElementById("adminBtn").addEventListener("click", openAdmin);
-  document.getElementById("closeAdminBtn").addEventListener("click", closeAdmin);
-
-  document.getElementById("unlockAdminBtn").addEventListener("click", () => {
-    if((adminPin.value||"").trim() === ADMIN_PIN){
-      setAdminUnlocked(true);
-      adminPin.value="";
-      adminRenderList();
-    } else alert("Погрешен PIN");
-  });
-
-  document.getElementById("saveProductBtn").addEventListener("click", upsertProduct);
-  document.getElementById("resetDefaultsBtn").addEventListener("click", resetDefaults);
-
-  overlay.addEventListener("click", () => { closeCheckout(); closeAdmin(); closeCart(); });
+  overlay.addEventListener("click", () => { closeCheckout(); closeCart(); });
 
   searchInp.addEventListener("input", renderProducts);
   catSel.addEventListener("change", renderProducts);
+
+  // Recalculate totals if delivery changes
+  deliverySel.addEventListener("change", renderCartUI);
 
   // expose for inline
   window.addToCart = addToCart;
@@ -620,7 +528,6 @@
     renderCats();
     renderProducts();
     renderCartUI();
-    setAdminUnlocked(false);
   }
   init();
 </script>
