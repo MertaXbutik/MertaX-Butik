@@ -82,9 +82,9 @@
     .miniSel{min-width:150px}
     .center{display:flex;justify-content:center;margin:14px 0}
 
-    /* Overlay / drawer / modal */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.60);display:none;z-index:90}
     .overlay.show{display:block}
+
     .drawer{
       position:fixed;right:0;top:0;height:100%;width:min(420px,92vw);
       background:rgba(14,14,18,.92);backdrop-filter:blur(10px);
@@ -112,7 +112,7 @@
 
     .modal{
       position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
-      width:min(760px,92vw);
+      width:min(820px,92vw);
       background:rgba(16,16,20,.95);
       border:1px solid rgba(255,255,255,.10);
       border-radius:var(--radius);
@@ -133,7 +133,6 @@
     @media(max-width:520px){.two{grid-template-columns:1fr}}
     .hr{height:1px;background:rgba(255,255,255,.08);margin:8px 0}
 
-    /* Admin list */
     .listRow{
       display:flex; gap:10px; align-items:center; justify-content:space-between;
       padding:10px 0; border-bottom:1px solid rgba(255,255,255,.06);
@@ -240,7 +239,7 @@
   </div>
 </div>
 
-<!-- Admin modal -->
+<!-- ✅✅✅ ADMIN START -->
 <div class="modal" id="adminModal">
   <div class="modalHead">
     <h3>Admin панел</h3>
@@ -283,10 +282,23 @@
             <option value="НОВО">НОВО</option>
             <option value="АКЦИЈА">АКЦИЈА</option>
           </select>
-          <input class="inp" id="pImg" placeholder="Слика URL (пример: https://...jpg)" />
+
+          <input class="inp" id="pImg" placeholder="Слика URL (опц.) или ќе се пополни од Upload" />
           <input class="inp" id="pSizes" placeholder="Големини (запирка) пример: S,M,L,XL,2XL,3XL" />
         </div>
 
+        <!-- ✅✅✅ CAMERA UPLOAD START (ОВА Е “КАЧИ СЛИКА ОД КАМЕРА”) -->
+        <div class="three">
+          <input class="inp" id="pImgFile" type="file" accept="image/*" />
+          <input class="inp" id="pImgCam" type="file" accept="image/*" capture="environment" />
+          <div class="small" style="align-self:center;">
+            1) Upload од Gallery<br>
+            2) <b>Качи слика од камера</b>
+          </div>
+        </div>
+
+        <img id="imgPreview" style="width:100%; max-width:240px; margin-top:8px; border-radius:14px; display:none; border:1px solid rgba(255,255,255,.12);" />
+        <!-- ✅✅✅ CAMERA UPLOAD END -->
         <div class="two">
           <button class="btn btn-accent" id="saveProductBtn">Сними (Add/Update)</button>
           <button class="btn btn-danger" id="clearFormBtn">Исчисти форма</button>
@@ -306,19 +318,20 @@
 
       <div class="hr"></div>
 
-      <div class="small"><b>Export / Import (опционално)</b></div>
+      <div class="small"><b>Export / Import</b></div>
       <div class="two" style="margin-top:10px;">
         <button class="btn btn-ghost" id="exportBtn">Копирај JSON (Export)</button>
         <button class="btn btn-ghost" id="importBtn">Внеси JSON (Import)</button>
       </div>
       <textarea class="ta" id="jsonBox" placeholder="Тука ќе се појави JSON (Export) или залепи JSON за Import..."></textarea>
-      <div class="small">Совет: ако имаш проблем, направи Export па зачувај го некаде.</div>
+      <div class="small">Совет: направи Export и зачувај го JSON.</div>
     </div>
   </div>
 </div>
+<!-- ✅✅✅ ADMIN END -->
 
 <script>
-  // ====== SETTINGS ======
+  // ✅✅✅ IMPORTANT KEYS (ОВДЕ МЕНУВАШ WhatsApp/локација/достава)
   const WHATSAPP_NUMBER = "38972912601";
   const STORE_LOCATION = "ТЦ Мавровка";
   const SHIPPING_FEE = 150;
@@ -327,22 +340,16 @@
   const MAX_PER_CATEGORY = 100;
 
   const DEFAULT_SIZES = ["S","M","L","XL","2XL","3XL"];
+  const CATEGORIES = ["Џемпери","Блузони","Маици","Кошули","Фармерки/Панталони","Тренерки","Јакни","Одела"];
 
-  const CATEGORIES = [
-    "Џемпери","Блузони","Маици","Кошули",
-    "Фармерки/Панталони","Тренерки","Јакни","Одела"
-  ];
-
-  const CART_KEY = "mertax_cart_v2";
-  const PRODUCTS_KEY = "mertax_products_v2";
+  const CART_KEY = "mertax_cart_v4";
+  const PRODUCTS_KEY = "mertax_products_v4";
   const ADMIN_PIN_KEY = "mertax_admin_pin_v1";
 
-  // ====== HELPERS ======
   const round10 = (n)=> Math.round(n/10)*10;
 
-  function demoImg(seed){
-    return `https://picsum.photos/seed/${encodeURIComponent(seed)}/900/900`;
-  }
+  function demoImg(seed){ return `https://picsum.photos/seed/${encodeURIComponent(seed)}/900/900`; }
+
   function catKey(cat){
     return cat.toLowerCase().replaceAll(" ","-").replaceAll("/","-")
       .replaceAll("ќ","k").replaceAll("џ","dz").replaceAll("ж","zh")
@@ -356,6 +363,7 @@
       .replaceAll("с","s").replaceAll("т","t").replaceAll("у","u").replaceAll("ф","f")
       .replaceAll("х","h").replaceAll("ц","c");
   }
+
   function priceByCategory(cat){
     switch(cat){
       case "Маици": return 990;
@@ -376,7 +384,36 @@
     return `mx_${t}_${rnd}`;
   }
 
-  // ====== PRODUCTS STORAGE ======
+  // ✅✅✅ CAMERA UPLOAD START (компресија + dataURL)
+  async function fileToCompressedDataURL(file, maxSize=900, quality=0.82){
+    const dataURL = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+
+    const img = await new Promise((resolve, reject) => {
+      const im = new Image();
+      im.onload = () => resolve(im);
+      im.onerror = reject;
+      im.src = dataURL;
+    });
+
+    let w = img.width, h = img.height;
+    const scale = Math.min(1, maxSize / Math.max(w, h));
+    w = Math.round(w * scale);
+    h = Math.round(h * scale);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, w, h);
+
+    return canvas.toDataURL("image/jpeg", quality);
+  }
+  // ✅✅✅ CAMERA UPLOAD END
+
   function seedBaseProducts(){
     return [
       { id:"m1", name:"MertaX Маичка Basic", price:990, oldPrice:1290, badge:"АКЦИЈА", cat:"Маици", sizes:DEFAULT_SIZES, img:demoImg("maici-1") },
@@ -394,13 +431,13 @@
     const out = [...base];
     const byCat = new Map();
     for(const c of CATEGORIES) byCat.set(c, []);
-    for(const p of out){
-      if(byCat.has(p.cat)) byCat.get(p.cat).push(p);
-    }
+    for(const p of out){ if(byCat.has(p.cat)) byCat.get(p.cat).push(p); }
     let globalIdx = 1;
+
     for(const cat of CATEGORIES){
       const arr = byCat.get(cat);
       const need = Math.max(0, MAX_PER_CATEGORY - arr.length);
+
       for(let i=0;i<need;i++){
         const idx = arr.length + i + 1;
         const basePrice = priceByCategory(cat);
@@ -409,6 +446,7 @@
         const isNew  = (!isSale && idx % 7 === 0);
         const oldPrice = isSale ? round10(price + 300 + (idx%5)*50) : null;
         const badge = isSale ? "АКЦИЈА" : (isNew ? "НОВО" : "");
+
         out.push({
           id: `auto_${catKey(cat)}_${idx}_${globalIdx++}`,
           name: `MertaX ${cat} #${idx}`,
@@ -433,29 +471,24 @@
     localStorage.setItem(PRODUCTS_KEY, JSON.stringify(demo));
     return demo;
   }
-  function saveProducts(arr){
-    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(arr));
-  }
+  function saveProducts(arr){ localStorage.setItem(PRODUCTS_KEY, JSON.stringify(arr)); }
 
   let products = loadProducts();
 
-  // ====== CART ======
+  // Cart
   const loadCart = () => JSON.parse(localStorage.getItem(CART_KEY) || "[]");
   const saveCart = (cart) => localStorage.setItem(CART_KEY, JSON.stringify(cart));
   const findProduct = (id) => products.find(p => p.id === id);
 
-  // ====== UI REFS ======
+  // UI
   const grid = document.getElementById("productGrid");
   const searchInp = document.getElementById("searchInp");
   const catSel = document.getElementById("catSel");
   const loadMoreBtn = document.getElementById("loadMoreBtn");
   const infoLine = document.getElementById("infoLine");
-
   let visibleCount = PAGE_SIZE;
 
-  function renderCats(){
-    catSel.innerHTML = CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join("");
-  }
+  function renderCats(){ catSel.innerHTML = CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join(""); }
   function currentCategory(){ return catSel.value || CATEGORIES[0]; }
 
   function filteredAll(){
@@ -502,7 +535,6 @@
               <button class="btn btn-accent"
                 onclick="addToCart('${p.id}', document.getElementById('${sizeSelId}').value)">Додај</button>
             </div>
-
             <div class="small" style="margin-top:8px;">ID: ${p.id}</div>
           </div>
         </div>
@@ -518,7 +550,6 @@
     }
   }
 
-  // ====== CART TOTALS ======
   function cartTotals(cart, shippingOn){
     let items = 0, subtotal = 0;
     for(const c of cart){
@@ -526,7 +557,6 @@
       const p = findProduct(c.id);
       if(p) subtotal += p.price * c.qty;
     }
-    // важна поправка: достава само ако има барем 1 производ
     const ship = (shippingOn && items > 0) ? SHIPPING_FEE : 0;
     return { items, subtotal, ship, total: subtotal + ship };
   }
@@ -551,10 +581,9 @@
     saveCart(cart);
     renderCartUI();
   }
-
   function clearCart(){ saveCart([]); renderCartUI(); }
 
-  // Drawer UI
+  // Drawer
   const cartCount = document.getElementById("cartCount");
   const cartTotal = document.getElementById("cartTotal");
   const cartList = document.getElementById("cartList");
@@ -608,7 +637,7 @@
     }).join("");
   }
 
-  // ====== CHECKOUT ======
+  // Checkout
   const checkoutModal = document.getElementById("checkoutModal");
   const orderIdText = document.getElementById("orderIdText");
   let currentOrderId = null;
@@ -630,6 +659,7 @@
     overlay.classList.add("show");
     renderCartUI();
   }
+
   function closeCheckout(){
     checkoutModal.classList.remove("show");
     if(!drawer.classList.contains("open") && !adminModal.classList.contains("show")) overlay.classList.remove("show");
@@ -692,7 +722,7 @@
     window.open(url, "_blank");
   }
 
-  // ====== ADMIN ======
+  // ✅✅✅ ADMIN START (JS логика)
   const adminModal = document.getElementById("adminModal");
   const adminLoginBox = document.getElementById("adminLoginBox");
   const adminPanelBox = document.getElementById("adminPanelBox");
@@ -707,16 +737,22 @@
   const pImg = document.getElementById("pImg");
   const pSizes = document.getElementById("pSizes");
 
+  // ✅✅✅ CAMERA refs
+  const pImgFile = document.getElementById("pImgFile");
+  const pImgCam = document.getElementById("pImgCam");
+  const imgPreview = document.getElementById("imgPreview");
+
   const adminFilterCat = document.getElementById("adminFilterCat");
   const adminSearch = document.getElementById("adminSearch");
   const adminList = document.getElementById("adminList");
   const jsonBox = document.getElementById("jsonBox");
 
-  function getPin(){
-    return localStorage.getItem(ADMIN_PIN_KEY) || "1234";
-  }
-  function setPin(pin){
-    localStorage.setItem(ADMIN_PIN_KEY, pin);
+  function getPin(){ return localStorage.getItem(ADMIN_PIN_KEY) || "1234"; }
+  function setPin(pin){ localStorage.setItem(ADMIN_PIN_KEY, pin); }
+
+  function toast(msg){
+    adminMsg.textContent = msg;
+    setTimeout(()=>{ if(adminMsg.textContent===msg) adminMsg.textContent=""; }, 2500);
   }
 
   function openAdmin(){
@@ -727,6 +763,7 @@
     adminMsg.textContent = "";
     document.getElementById("adminPinInp").value = "";
   }
+
   function closeAdmin(){
     adminModal.classList.remove("show");
     if(!drawer.classList.contains("open") && !checkoutModal.classList.contains("show")) overlay.classList.remove("show");
@@ -761,6 +798,20 @@
     return raw.split(",").map(x=>x.trim()).filter(Boolean);
   }
 
+  function clearForm(){
+    pId.value = "";
+    pName.value = "";
+    pCat.value = CATEGORIES[0];
+    pPrice.value = "";
+    pOldPrice.value = "";
+    pBadge.value = "";
+    pImg.value = "";
+    pSizes.value = DEFAULT_SIZES.join(",");
+    imgPreview.style.display = "none";
+    pImgFile.value = "";
+    pImgCam.value = "";
+  }
+
   function saveProduct(){
     const id = (pId.value || "").trim() || makeId();
     const name = (pName.value || "").trim();
@@ -786,7 +837,9 @@
     renderAdminList();
     toast(idx>=0 ? "Производот е ажуриран." : "Производот е додаден.");
 
-    pId.value = id; // да остане ако сака edit
+    pId.value = id;
+    imgPreview.src = img;
+    imgPreview.style.display = "block";
   }
 
   function loadToForm(id){
@@ -800,6 +853,13 @@
     pBadge.value = p.badge || "";
     pImg.value = p.img || "";
     pSizes.value = (p.sizes && p.sizes.length) ? p.sizes.join(",") : DEFAULT_SIZES.join(",");
+
+    if(p.img){
+      imgPreview.src = p.img;
+      imgPreview.style.display = "block";
+    }else{
+      imgPreview.style.display = "none";
+    }
     toast("Се вчита производ за измена.");
   }
 
@@ -812,17 +872,6 @@
     toast("Избришано.");
   }
 
-  function clearForm(){
-    pId.value = "";
-    pName.value = "";
-    pCat.value = CATEGORIES[0];
-    pPrice.value = "";
-    pOldPrice.value = "";
-    pBadge.value = "";
-    pImg.value = "";
-    pSizes.value = DEFAULT_SIZES.join(",");
-  }
-
   function renderAdminList(){
     const q = (adminSearch.value || "").trim().toLowerCase();
     const f = adminFilterCat.value || "ALL";
@@ -831,7 +880,7 @@
     if(f!=="ALL") list = list.filter(p=>p.cat===f);
     if(q) list = list.filter(p => (p.name||"").toLowerCase().includes(q) || (p.id||"").toLowerCase().includes(q));
 
-    adminList.innerHTML = list.slice(0, 200).map(p=>{
+    adminList.innerHTML = list.slice(0, 250).map(p=>{
       return `
         <div class="listRow">
           <div style="min-width:220px;">
@@ -852,20 +901,11 @@
     }).join("") || `<div class="small">Нема резултати.</div>`;
   }
 
-  function toast(msg){
-    adminMsg.textContent = msg;
-    setTimeout(()=>{ if(adminMsg.textContent===msg) adminMsg.textContent=""; }, 2500);
-  }
-
   async function exportJson(){
     const txt = JSON.stringify(products, null, 2);
     jsonBox.value = txt;
-    try{
-      await navigator.clipboard.writeText(txt);
-      toast("JSON копиран во clipboard.");
-    }catch(e){
-      toast("Export спремен (копирај рачно од полето).");
-    }
+    try{ await navigator.clipboard.writeText(txt); toast("JSON копиран ✅"); }
+    catch(e){ toast("Export спремен (копирај рачно)."); }
   }
 
   function importJson(){
@@ -873,8 +913,8 @@
       const txt = (jsonBox.value || "").trim();
       if(!txt) { toast("Залепи JSON во полето."); return; }
       const arr = JSON.parse(txt);
-      if(!Array.isArray(arr)) { toast("JSON мора да е низа (array)."); return; }
-      // basic sanitize
+      if(!Array.isArray(arr)) { toast("JSON мора да е array."); return; }
+
       products = arr.map(p=>({
         id: String(p.id || makeId()),
         name: String(p.name || "Без име"),
@@ -889,17 +929,44 @@
       saveProducts(products);
       resetPaging(); renderProducts(); renderCartUI();
       renderAdminList();
-      toast("Import успешен.");
+      toast("Import успешен ✅");
     }catch(e){
       toast("Грешка во JSON.");
     }
   }
 
-  // expose admin actions for inline buttons
+  // ✅✅✅ CAMERA UPLOAD START (handlers за Gallery + Camera)
+  async function handleFilePick(file){
+    if(!file) return;
+    try{
+      const compressed = await fileToCompressedDataURL(file, 900, 0.82);
+      pImg.value = compressed;               // ✅ се снима во производот
+      imgPreview.src = compressed;           // ✅ preview
+      imgPreview.style.display = "block";
+      toast("Сликата е додадена ✅");
+    }catch(e){
+      alert("Не успеа upload. Пробај друга слика.");
+    }
+  }
+
+  // Gallery
+  pImgFile.addEventListener("change", () => {
+    const file = pImgFile.files && pImgFile.files[0];
+    handleFilePick(file);
+  });
+
+  // Camera
+  pImgCam.addEventListener("change", () => {
+    const file = pImgCam.files && pImgCam.files[0];
+    handleFilePick(file);
+  });
+  // ✅✅✅ CAMERA UPLOAD END
+
   window.adminEdit = loadToForm;
   window.adminDel = deleteProduct;
+  // ✅✅✅ ADMIN END
 
-  // ====== EVENTS ======
+  // Events (site)
   document.getElementById("openCartBtn").addEventListener("click", openCart);
   document.getElementById("closeCartBtn").addEventListener("click", closeCart);
   document.getElementById("clearCartBtn").addEventListener("click", clearCart);
@@ -913,20 +980,15 @@
 
   overlay.addEventListener("click", () => { closeCheckout(); closeCart(); closeAdmin(); });
 
-  // Pagination
-  loadMoreBtn.addEventListener("click", () => {
-    visibleCount += PAGE_SIZE;
-    renderProducts();
-  });
+  loadMoreBtn.addEventListener("click", () => { visibleCount += PAGE_SIZE; renderProducts(); });
 
   function resetPaging(){ visibleCount = PAGE_SIZE; }
   catSel.addEventListener("change", () => { resetPaging(); renderProducts(); });
   searchInp.addEventListener("input", () => { resetPaging(); renderProducts(); });
 
-  // Recalc totals if delivery changes
   deliverySel.addEventListener("change", renderCartUI);
 
-  // Admin login
+  // Admin events
   document.getElementById("adminLoginBtn").addEventListener("click", () => {
     const pin = (document.getElementById("adminPinInp").value || "").trim();
     if(pin === getPin()){
@@ -935,7 +997,7 @@
       fillCatSelects();
       clearForm();
       renderAdminList();
-      toast("Добредојде во Admin.");
+      toast("Добредојде во Admin ✅");
     }else{
       alert("Погрешен PIN.");
     }
@@ -959,14 +1021,14 @@
     if(next === null) return;
     if(next.trim().length < 4){ alert("PIN мора да има барем 4 знаци."); return; }
     setPin(next.trim());
-    alert("PIN е сменет.");
+    alert("PIN е сменет ✅");
   });
 
   // expose cart functions
   window.addToCart = addToCart;
   window.setQty = setQty;
 
-  // ====== INIT ======
+  // INIT
   renderCats();
   catSel.value = CATEGORIES[0];
   renderProducts();
