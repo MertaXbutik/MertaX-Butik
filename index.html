@@ -302,8 +302,12 @@
 
         <div class="brand" id="brandClick">
           <div class="logo">
-            <!-- СТАВИ ГО ТВОЕТО ИМЕ НА ЛОГО ФАЈЛОТ ТУКА -->
-            <img src="IMG_9833.jpeg" alt="MertaX Butik" />
+            <!-- Лого: ако IMG_9833.jpeg не постои во repo, ќе се прикаже fallback -->
+            <img
+              src="IMG_9833.jpeg"
+              alt="MertaX Butik"
+              onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1520975682041-3b3e4a8b1e6a?auto=format&fit=crop&w=600&q=60';"
+            />
           </div>
           <div class="btxt">
             <div class="title">MertaX Butik</div>
@@ -551,7 +555,6 @@ function load(){
     }
   }catch(e){}
   if(!state.products.length){
-    // стартни демо продукти (можеш да ги избришеш кога сакаш)
     state.products = demoProducts();
     save();
   }
@@ -566,9 +569,7 @@ function save(){
 const UI = {
   open(id){ document.getElementById(id).classList.add("show"); },
   close(id){ document.getElementById(id).classList.remove("show"); },
-  toast(msg){
-    alert(msg);
-  }
+  toast(msg){ alert(msg); }
 };
 
 function money(n){
@@ -576,10 +577,22 @@ function money(n){
   return x.toLocaleString("mk-MK") + " ден";
 }
 function catById(id){ return CATS.find(c=>c.id===id); }
+
+/* ✅ ЕДНА fallback слика за цел сајт */
+const FALLBACK_IMG = "https://images.unsplash.com/photo-1520975682041-3b3e4a8b1e6a?auto=format&fit=crop&w=1200&q=60";
+
+/* ✅ Безбеден src: дозволи само data:image или http(s). Се друго -> FALLBACK */
+function safeImg(src){
+  src = (src || "").trim();
+  if(!src) return FALLBACK_IMG;
+  if(src.startsWith("data:image/")) return src;
+  if(src.startsWith("http://") || src.startsWith("https://")) return src;
+  return FALLBACK_IMG; // "IMG_9833.jpeg", "/path", "file://", празно итн.
+}
+
 function pickCover(imgs){
-  if(imgs && imgs.length) return imgs[0];
-  // fallback demo cover
-  return "https://images.unsplash.com/photo-1520975682041-3b3e4a8b1e6a?auto=format&fit=crop&w=1200&q=60";
+  const first = (imgs && imgs.length) ? imgs[0] : "";
+  return safeImg(first);
 }
 
 function escapeHtml(s){
@@ -622,7 +635,6 @@ function buildSizeFilterOptions(){
   const prev = sel.value;
   sel.innerHTML = `<option value="">Филтер по величина (само достапни)</option>`;
 
-  // Collect all sizes that exist and are available in current view
   const sizes = new Set();
   const list = filteredProducts(false);
   list.forEach(p=>{
@@ -635,7 +647,6 @@ function buildSizeFilterOptions(){
   });
 
   [...sizes].sort((a,b)=>{
-    // keep clothes order first, jeans by numeric
     const aN = Number(a), bN = Number(b);
     if(!isNaN(aN) && !isNaN(bN)) return aN-bN;
     const ca = SIZES_CLOTHES.indexOf(a), cb = SIZES_CLOTHES.indexOf(b);
@@ -669,7 +680,6 @@ function filteredProducts(applySize=true){
     });
   }
 
-  // newest first
   list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
   return list;
 }
@@ -732,13 +742,17 @@ function renderGrid(){
     const mode = c?.sizeMode || "clothes";
     const stock = normalizeStock(mode, p.stock||{});
     const tot = totalStock(stock);
-    const cover = pickCover(p.imgs||[]);
+    const cover = safeImg(pickCover(p.imgs||[]));
 
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
       <div class="imgwrap">
-        <img src="${escapeHtml(cover)}" alt="">
+        <img
+          src="${escapeHtml(cover)}"
+          alt=""
+          onerror="this.onerror=null;this.src='${escapeHtml(FALLBACK_IMG)}';"
+        >
         <div class="tag">${escapeHtml(c?.name || "")}</div>
       </div>
 
@@ -800,7 +814,6 @@ function renderAll(){
 ========================= */
 function loginAdmin(){
   const pass = document.getElementById("adminPass").value || "";
-  // ТУКА СИ СТАВАШ ЛОЗИНКА (само ти ја знаеш)
   const REAL_PASS = "1234"; // смени во своја лозинка
 
   if(pass === REAL_PASS){
@@ -828,7 +841,12 @@ function openDetails(id){
   state.selectedId = id;
 
   const c = catById(p.cat);
-  document.getElementById("dImg").src = pickCover(p.imgs||[]);
+  const img = safeImg(pickCover(p.imgs||[]));
+
+  const dImg = document.getElementById("dImg");
+  dImg.src = img;
+  dImg.onerror = ()=>{ dImg.onerror=null; dImg.src = FALLBACK_IMG; };
+
   document.getElementById("dTitle").textContent = p.name || "";
   document.getElementById("dCat").textContent = c?.name || "";
   document.getElementById("dPrice").textContent = money(p.price);
@@ -861,7 +879,11 @@ function openOrder(id){
   const mode = c?.sizeMode || "clothes";
   const stock = normalizeStock(mode, p.stock||{});
 
-  document.getElementById("oImg").src = pickCover(p.imgs||[]);
+  const img = safeImg(pickCover(p.imgs||[]));
+  const oImg = document.getElementById("oImg");
+  oImg.src = img;
+  oImg.onerror = ()=>{ oImg.onerror=null; oImg.src = FALLBACK_IMG; };
+
   document.getElementById("oTitle").textContent = p.name || "";
   document.getElementById("oCat").textContent = c?.name || "";
   document.getElementById("oPrice").textContent = money(p.price);
@@ -876,7 +898,6 @@ function openOrder(id){
     sel.appendChild(opt);
   });
 
-  // select first available
   const firstOk = Object.entries(stock).find(([s,v])=>v>0);
   if(firstOk) sel.value = firstOk[0];
 
@@ -895,7 +916,6 @@ function openOrder(id){
       q.appendChild(opt);
     }
     if(avail<=0){
-      // nothing
       q.innerHTML = `<option value="0">0</option>`;
     }
   }
@@ -938,7 +958,6 @@ function confirmOrder(){
     return;
   }
 
-  // reduce stock
   stock[size] = avail - qty;
   p.stock = stock;
 
@@ -946,7 +965,6 @@ function confirmOrder(){
   renderAll();
   UI.close("modalOrder");
 
-  // WhatsApp redirect (работи на iPhone Safari)
   const text = buildWhatsAppText(p, size, qty);
   const url  = `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`;
   window.location.href = url;
@@ -973,7 +991,6 @@ function openAddModal(){
     return;
   }
 
-  // fill cats dropdown
   const aCat = document.getElementById("aCat");
   aCat.innerHTML = "";
   CATS.forEach(c=>{
@@ -983,7 +1000,6 @@ function openAddModal(){
     aCat.appendChild(opt);
   });
 
-  // reset form
   document.getElementById("aName").value = "";
   document.getElementById("aPrice").value = "";
   document.getElementById("aDesc").value = "";
@@ -1017,12 +1033,13 @@ async function saveNewProduct(){
   if(files.length){
     try{
       imgs = await Promise.all(files.map(readFileAsDataURL));
+      imgs = imgs.map(safeImg); // ✅ само data:image ќе помине, друго -> fallback
     }catch(e){
       UI.toast("Проблем со читање на сликите. Пробај повторно.");
       return;
     }
   }else{
-    imgs = [pickCover([])]; // demo
+    imgs = [FALLBACK_IMG];
   }
 
   const stockC = parseStock(document.getElementById("aStockClothes").value);
@@ -1048,9 +1065,7 @@ async function saveNewProduct(){
   renderAll();
   UI.close("modalAdd");
 
-  // clear input
   if(fileInput) fileInput.value = "";
-
   UI.toast("Продуктот е зачуван ✅");
 }
 
@@ -1061,7 +1076,6 @@ function demoProducts(){
   const out = [];
   const now = Date.now();
 
-  // basic helper
   function mkStock(mode){
     if(mode==="jeans"){
       return normalizeStock("jeans", {30:2,31:1,32:0,33:3,34:2,36:1,38:0,40:0,42:0});
@@ -1069,7 +1083,6 @@ function demoProducts(){
     return normalizeStock("clothes", {S:0,M:1,L:6,XL:0,"2XL":1,"3XL":3});
   }
 
-  // create some demo (you can delete later)
   CATS.forEach((c,idx)=>{
     for(let i=1;i<=6;i++){
       out.push({
@@ -1078,7 +1091,7 @@ function demoProducts(){
         name: `${c.name} #${i}`,
         price: 1200 + (idx*400) + i*15,
         desc: "Демо опис. (Ова можеш да го смениш/избришеш.)",
-        imgs: ["https://images.unsplash.com/photo-1520975682041-3b3e4a8b1e6a?auto=format&fit=crop&w=1200&q=60"],
+        imgs: [FALLBACK_IMG],
         stock: mkStock(c.sizeMode),
         createdAt: now - (idx*100000 + i*1000)
       });
@@ -1094,7 +1107,6 @@ function demoProducts(){
 function init(){
   load();
 
-  // Hook buttons
   document.getElementById("btnCats").onclick = ()=> UI.open("modalCats");
   document.getElementById("brandClick").onclick = ()=> { state.cat=""; renderAll(); };
 
@@ -1110,7 +1122,6 @@ function init(){
     renderAll();
   };
 
-  // Close modal on background click
   ["modalCats","modalAdmin","modalAdd","modalDetails","modalOrder"].forEach(id=>{
     const m = document.getElementById(id);
     m.addEventListener("click", (e)=>{ if(e.target===m) UI.close(id); });
