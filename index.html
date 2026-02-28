@@ -4,211 +4,226 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MertaX Butik</title>
+
   <style>
     :root{
       --bg:#0b0b0b;
-      --bg2:#0f2a22;
-      --card:rgba(18,18,18,.65);
+      --card:#121212;
+      --card2:#161616;
       --line:rgba(255,255,255,.10);
       --txt:#fff;
-      --muted:rgba(255,255,255,.72);
+      --muted:rgba(255,255,255,.70);
       --muted2:rgba(255,255,255,.55);
       --accent:#22c55e;
       --accent2:#16a34a;
       --danger:#ef4444;
-      --shadow:0 18px 40px rgba(0,0,0,.55);
-      --r:18px;
+      --shadow:0 14px 40px rgba(0,0,0,.55);
+      --radius:18px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: radial-gradient(1200px 900px at 60% 20%, rgba(34,197,94,.25), transparent 55%),
+                  radial-gradient(1200px 900px at 20% 80%, rgba(34,197,94,.12), transparent 55%),
+                  #070707;
       color:var(--txt);
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(1200px 700px at 15% 25%, rgba(34,197,94,.22), transparent 55%),
-        radial-gradient(900px 650px at 85% 35%, rgba(6,182,212,.14), transparent 55%),
-        linear-gradient(180deg, var(--bg) 0%, #060606 55%, var(--bg2) 100%);
-      min-height:100vh;
+      overflow-x:hidden;
     }
+    a{color:inherit}
+    .wrap{max-width:1180px;margin:0 auto;padding:18px 14px 64px}
 
-    /* HEADER like Metro */
-    .top{
+    /* ======= TOP HEADER (Metro-like) ======= */
+    .topbar{
       position:sticky; top:0; z-index:50;
-      background:rgba(10,10,10,.82);
       backdrop-filter: blur(10px);
+      background: rgba(0,0,0,.55);
       border-bottom:1px solid var(--line);
     }
-    .top-inner{
-      max-width:1200px;
+    .topbar-inner{
+      max-width:1180px;
       margin:0 auto;
-      padding:10px 14px;
-      display:flex;
+      padding:14px 14px;
+      display:grid;
+      grid-template-columns: 52px 1fr 52px;
       align-items:center;
-      gap:10px;
-      justify-content:space-between;
+      gap:12px;
     }
-    .left{
-      display:flex; align-items:center; gap:10px; min-width:0;
-    }
-    .hamb{
-      width:42px; height:42px;
-      border-radius:12px;
+
+    .iconBtn{
+      width:46px;height:46px;
+      border-radius:14px;
       border:1px solid var(--line);
       background:rgba(255,255,255,.06);
-      color:var(--txt);
       display:grid; place-items:center;
-      cursor:pointer;
-    }
-    .hamb svg{opacity:.9}
-    .brand{
-      display:flex; align-items:center; gap:10px; min-width:0;
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
       cursor:pointer;
       user-select:none;
     }
-    .logo{
-      width:44px; height:44px;
-      border-radius:14px;
-      overflow:hidden;
+    .iconBtn:active{transform:scale(.98)}
+    .brandCenter{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      min-width:0;
+    }
+    .logoBox{
+      width:44px;height:44px;border-radius:14px; overflow:hidden;
       background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
+      border:1px solid var(--line);
       flex:0 0 44px;
-      display:flex; align-items:center; justify-content:center;
     }
-    .logo img{
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      background:#fff;
-      padding:4px;
-      display:block;
+    .logoBox img{width:100%;height:100%;object-fit:cover;display:block}
+    .brandText{
+      display:flex; flex-direction:column; min-width:0;
+      line-height:1.05;
+      text-align:left;
     }
-    .btxt{line-height:1.05}
-    .btxt .title{font-weight:900; font-size:20px; letter-spacing:.2px}
-    .btxt .sub{font-size:12.5px; color:var(--muted2)}
-    .search{
-      flex:1;
-      max-width:520px;
-      display:flex; gap:10px; align-items:center;
-      margin-left:10px;
-    }
-    .search input{
-      width:100%;
-      height:42px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.06);
-      color:var(--txt);
-      padding:0 14px;
-      outline:none;
-    }
-    .actions{
-      display:flex; align-items:center; gap:8px;
-    }
-    .chip{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12.5px;
-      color:var(--muted);
-      max-width:48vw;
+    .brandText .t{
+      font-weight:900;
+      letter-spacing:.2px;
+      font-size:22px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
-    .btn{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.07);
-      color:var(--txt);
-      border-radius:12px;
-      height:42px;
-      padding:0 12px;
-      cursor:pointer;
-      font-weight:700;
-    }
-    .btn.primary{background:rgba(34,197,94,.14); border-color:rgba(34,197,94,.35)}
-    .btn.danger{background:rgba(239,68,68,.14); border-color:rgba(239,68,68,.35)}
-    .btn:active{transform: translateY(1px)}
-
-    /* layout */
-    .wrap{
-      max-width:1200px;
-      margin:16px auto 40px;
-      padding:0 14px;
-      display:grid;
-      grid-template-columns: 1.05fr 1.75fr;
-      gap:16px;
-      align-items:start;
-    }
-    @media (max-width: 980px){
-      .wrap{grid-template-columns:1fr}
-      .search{display:none}
-    }
-
-    .panel{
-      border:1px solid var(--line);
-      border-radius:var(--r);
-      background:var(--card);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .panel-h{
-      padding:14px 14px 10px;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .panel-h h2{
-      margin:0;
-      font-size:22px;
-      letter-spacing:.2px;
-    }
-    .muted{color:var(--muted2); font-size:12.5px; margin-top:4px}
-    .panel-b{padding:14px}
-    .howto{
-      font-size:13px;
+    .brandText .s{
+      font-size:12.5px;
       color:var(--muted);
-      line-height:1.35;
-      margin:8px 0 10px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
-    .filters{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:10px;
+    /* ======= SIDE MENU ======= */
+    .drawerBg{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.55);
+      backdrop-filter: blur(6px);
+      opacity:0; pointer-events:none;
+      transition:.18s ease;
+      z-index:60;
     }
-    select, input[type="number"], input[type="text"], textarea{
+    .drawer{
+      position:fixed; top:0; left:0; height:100%; width:min(340px, 86vw);
+      background: linear-gradient(180deg, rgba(18,18,18,.98), rgba(10,10,10,.98));
+      border-right:1px solid var(--line);
+      transform: translateX(-102%);
+      transition:.22s ease;
+      z-index:61;
+      box-shadow: var(--shadow);
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .drawer.open{transform:translateX(0)}
+    .drawerBg.open{opacity:1; pointer-events:auto}
+    .drawerHead{
+      display:flex; align-items:center; gap:10px;
+      padding-bottom:10px;
+      border-bottom:1px solid var(--line);
+    }
+    .drawerTitle{
+      font-weight:900;
+      font-size:18px;
+    }
+    .drawerSmall{color:var(--muted);font-size:12.5px}
+
+    .menuGroup{display:flex;flex-direction:column; gap:8px}
+    .menuBtn{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      border-radius:14px;
+      padding:12px 12px;
+      display:flex; align-items:center; justify-content:space-between;
+      cursor:pointer;
+    }
+    .menuBtn:active{transform:scale(.99)}
+    .menuBtn .left{
+      display:flex; align-items:center; gap:10px; min-width:0;
+    }
+    .pill{
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:var(--muted);
+      background:rgba(0,0,0,.25);
+    }
+    .menuFooter{
+      margin-top:auto;
+      border-top:1px solid var(--line);
+      padding-top:12px;
+      color:var(--muted2);
+      font-size:12.5px;
+    }
+    .dangerBtn{border-color:rgba(239,68,68,.35); color:#fff}
+    .dangerBtn .pill{border-color:rgba(239,68,68,.35); color:#ffd1d1}
+
+    /* ======= CONTENT ======= */
+    .controls{
+      display:flex; flex-wrap:wrap; gap:10px;
+      align-items:center;
+      margin:16px 0 14px;
+    }
+    .input, select{
+      height:44px;
+      border-radius:999px;
       border:1px solid var(--line);
       background:rgba(255,255,255,.06);
       color:var(--txt);
-      border-radius:12px;
-      padding:10px 12px;
+      padding:0 14px;
       outline:none;
-      font-size:14px;
     }
-    textarea{width:100%}
-    .small{font-size:12px; color:var(--muted2)}
-    .row{display:flex; gap:10px; flex-wrap:wrap}
-    .field{flex:1; min-width:220px}
-    label{display:block; font-size:12px; color:var(--muted2); margin-bottom:6px}
+    .input{min-width:240px; flex:1}
+    select{min-width:220px}
+    .btn{
+      height:44px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--txt);
+      padding:0 14px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .btn.primary{
+      background:rgba(34,197,94,.12);
+      border-color:rgba(34,197,94,.35);
+      box-shadow:0 10px 24px rgba(34,197,94,.14);
+    }
+    .btn:active{transform:scale(.99)}
+    .muted{color:var(--muted)}
+    .h1{
+      margin:12px 0 6px;
+      font-weight:950;
+      font-size:30px;
+      letter-spacing:.2px;
+    }
+    .subh{color:var(--muted); margin:0 0 10px}
 
-    /* product cards */
     .grid{
       display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
+      grid-template-columns:repeat(3, 1fr);
       gap:12px;
     }
-    @media (max-width: 560px){
-      .grid{grid-template-columns:1fr}
+    @media (max-width:980px){
+      .grid{grid-template-columns:repeat(2, 1fr)}
     }
+    @media (max-width:560px){
+      .topbar-inner{grid-template-columns:46px 1fr 46px}
+      .brandText .t{font-size:18px}
+      .grid{grid-template-columns:1fr}
+      .input{min-width:100%}
+      select{min-width:100%}
+    }
+
     .card{
       border:1px solid var(--line);
       background:rgba(255,255,255,.04);
-      border-radius:18px;
+      border-radius:var(--radius);
       overflow:hidden;
       box-shadow: 0 10px 24px rgba(0,0,0,.35);
       display:flex;
@@ -221,205 +236,202 @@
       background:rgba(255,255,255,.03);
       overflow:hidden;
     }
-    .imgwrap img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
+    .imgwrap img{width:100%;height:100%;object-fit:cover;display:block}
     .badge{
-      position:absolute;
-      top:10px; left:10px;
+      position:absolute; top:10px; left:10px;
       padding:7px 10px;
       border-radius:999px;
-      font-weight:800;
       font-size:12px;
-      border:1px solid var(--line);
+      font-weight:900;
       background:rgba(0,0,0,.45);
+      border:1px solid var(--line);
       backdrop-filter: blur(6px);
     }
-    .cardbody{padding:12px}
-    .pname{font-size:18px; font-weight:900; margin:0 0 6px}
-    .price{font-size:18px; font-weight:900; color:rgba(34,197,94,.95)}
-    .meta{display:flex; justify-content:space-between; gap:10px; color:var(--muted2); font-size:12.5px; margin-top:6px}
+    .cardbody{padding:12px 12px 14px}
+    .pname{font-size:18px;font-weight:950;margin:0 0 4px}
+    .price{font-size:22px; font-weight:950; color:var(--accent); margin:0 0 8px}
+    .meta{display:flex;justify-content:space-between; gap:10px; color:var(--muted); font-size:12.5px}
     .sizes{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-top:10px;
+      display:flex; flex-wrap:wrap; gap:8px;
+      margin:10px 0 12px;
     }
     .sz{
+      display:inline-flex; align-items:center; gap:8px;
       border:1px solid var(--line);
       background:rgba(255,255,255,.05);
       border-radius:999px;
-      padding:6px 8px;
-      font-size:12px;
-      color:var(--muted);
-      display:inline-flex;
-      gap:6px;
-      align-items:center;
+      padding:6px 10px;
+      font-size:12.5px;
+      cursor:pointer;
+      user-select:none;
     }
-    .dot{
-      width:8px; height:8px; border-radius:99px;
-      background:rgba(34,197,94,.9);
+    .dot{width:10px;height:10px;border-radius:99px;background:var(--danger)}
+    .sz.ok .dot{background:var(--accent)}
+    .sz.active{
+      border-color:rgba(34,197,94,.45);
+      box-shadow:0 8px 18px rgba(34,197,94,.12);
     }
-    .dot.out{background:rgba(239,68,68,.9)}
-    .cardfoot{
-      margin-top:auto;
-      padding:12px;
-      border-top:1px solid var(--line);
+    .actionsRow{
       display:flex; gap:10px;
+      margin-top:10px;
     }
-    .cardfoot .btn{flex:1}
+    .actionsRow .btn{flex:1}
+    .btn.order{
+      background:rgba(34,197,94,.14);
+      border-color:rgba(34,197,94,.40);
+    }
 
-    /* MODALS */
+    /* ======= MODALS ======= */
     .modal{
       position:fixed; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      padding:18px;
       background:rgba(0,0,0,.62);
       backdrop-filter: blur(8px);
-      display:none;
-      z-index:999;
-      padding:14px;
-      overflow:auto;
+      z-index:80;
     }
-    .modal.open{display:block}
+    .modal.open{display:flex}
     .modal-card{
-      max-width:720px;
-      margin:24px auto;
-      background:rgba(18,18,18,.86);
-      border:1px solid rgba(255,255,255,.12);
+      width:min(720px, 96vw);
+      background:rgba(16,16,16,.98);
+      border:1px solid var(--line);
       border-radius:22px;
-      box-shadow: var(--shadow);
       overflow:hidden;
+      box-shadow: var(--shadow);
     }
     .modal-head{
       padding:14px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
+      display:flex;justify-content:space-between;align-items:center;
+      border-bottom:1px solid var(--line);
     }
-    .modal-head h3{margin:0; font-size:18px}
+    .modal-head h3{margin:0;font-size:18px}
     .modal-body{padding:14px}
-    .divider{height:1px; background:rgba(255,255,255,.10); margin:12px 0}
-    .help{font-size:12px; color:var(--muted2); line-height:1.35}
+    .divider{height:1px;background:var(--line);margin:14px 0}
+    .row{
+      display:flex; gap:12px; flex-wrap:wrap;
+    }
+    .field{flex:1; min-width:220px}
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+    textarea{
+      width:100%;
+      min-height:96px;
+      resize:vertical;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--txt);
+      padding:12px;
+      outline:none;
+    }
+    .help{font-size:12px;color:var(--muted2);margin-top:6px}
 
-    .mini{font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--muted)}
- @media (max-width: 560px){
-  .top-inner{ flex-wrap:wrap; gap:10px; }
-  .left{ flex:1 1 100%; }
-  .search{ display:none !important; }
-
-  .btxt .sub{ display:none; }
-  .chip{ display:none; }
-
-  .actions{
-    width:100%;
-    justify-content:flex-end;
-    gap:10px;
-  }
-}
+    .mini{
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+    }
   </style>
 </head>
+
 <body>
 
-  <!-- HEADER -->
-  <div class="top">
-    <div class="top-inner">
-      <div class="left">
-        <button class="hamb" id="btnCats" title="Категории">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M4 7h16M4 12h16M4 17h16" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </button>
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="iconBtn" id="btnMenu" title="Категории">
+        <!-- hamburger -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
 
-        <div class="brand" id="brandClick" title="Категории">
-          <div class="logo">
-            <img src="IMG_9833.jpeg" alt="MertaX Butik лого" />
-          </div>
-          <div class="btxt">
-            <div class="title">MertaX Butik</div>
-            <div class="sub">Онлајн нарачки преку WhatsApp • Величини • Залиха</div>
-          </div>
+      <div class="brandCenter" id="brandClick">
+        <div class="logoBox">
+          <!-- IMPORTANT: logo file name must exist in repo -->
+          <img src="IMG_9833.jpeg" alt="MertaX Butik logo">
+        </div>
+        <div class="brandText">
+          <div class="t">MertaX Butik</div>
+          <div class="s">Онлајн нарачки преку WhatsApp • Величини • Залиха</div>
         </div>
       </div>
 
-      <div class="search">
-        <input id="qTop" type="text" placeholder="Пребарај продукт..." />
-      </div>
-
-      <div class="actions">
-        <span class="chip" id="chipCat">Категорија: (сите)</span>
-        <button class="btn primary" id="btnAdd">+ Продукт</button>
-        <button class="btn" id="btnAdmin">Admin</button>
-      </div>
+      <!-- right placeholder (for symmetry) -->
+      <div></div>
     </div>
   </div>
 
+  <!-- DRAWER -->
+  <div class="drawerBg" id="drawerBg"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawerHead">
+      <div class="iconBtn" id="btnCloseMenu" title="Затвори">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M6 6l12 12M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="drawerTitle">Категории</div>
+        <div class="drawerSmall" id="drawerSub">Избери категорија</div>
+      </div>
+    </div>
+
+    <div class="menuGroup" id="catsMenu"></div>
+
+    <div class="menuGroup" id="adminMenu" style="display:none">
+      <div class="menuBtn" id="btnAddProduct">
+        <div class="left">
+          <b>➕ Додај продукт</b>
+          <span class="pill">Admin</span>
+        </div>
+        <span class="pill">+</span>
+      </div>
+      <div class="menuBtn dangerBtn" id="btnResetAll">
+        <div class="left">
+          <b>🗑️ Ресетирај сè</b>
+          <span class="pill">опасно</span>
+        </div>
+        <span class="pill">!</span>
+      </div>
+    </div>
+
+    <div class="menuGroup">
+      <div class="menuBtn" id="btnAdminLogin">
+        <div class="left">
+          <b>🔐 Admin</b>
+          <span class="pill" id="adminPill">заклучено</span>
+        </div>
+        <span class="pill">›</span>
+      </div>
+    </div>
+
+    <div class="menuFooter">
+      📌 Податоците се чуваат локално (на истиот телефон/PC).<br/>
+      Нарачка = WhatsApp порака (продукт + цена + величина + количина).
+    </div>
+  </div>
+
+  <!-- MAIN -->
   <div class="wrap">
-    <!-- LEFT PANEL -->
-    <div class="panel">
-      <div class="panel-h">
-        <div>
-          <h2>Продукти</h2>
-          <div class="muted" id="prodInfo">0 продукти</div>
-          <div class="howto">
-            <b>Како да нарачаш?</b><br/>
-            1) Избери продукт → 2) Притисни „Нарачај“ → 3) Избери величина и количина →
-            4) Потврди → WhatsApp ќе се отвори со готова порака.
-          </div>
-        </div>
-      </div>
+    <div class="h1" id="pageTitle">Сите продукти</div>
+    <div class="subh" id="pageSub">Избери категорија од ☰ или пребарај.</div>
 
-      <div class="panel-b">
-        <div class="filters">
-          <input id="q" type="text" placeholder="Пребарај продукт..." style="flex:1; min-width:220px" />
-          <select id="sizeFilter">
-            <option value="">Филтер по величина (само достапни)</option>
-          </select>
-          <button class="btn" id="btnResetFilters">Reset</button>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="small">📱 Нарачка = WhatsApp порака (продукт + цена + величина + количина)</div>
-        <div class="small" style="margin-top:6px;">🧠 Податоци локално (localStorage) — остануваат на истиот телефон/PC.</div>
-      </div>
+    <div class="controls">
+      <input class="input" id="q" placeholder="Пребарај продукт..." />
+      <select id="catFilter"></select>
+      <select id="sizeFilter"></select>
+      <button class="btn" id="btnClear">Reset</button>
+      <span class="mini" id="countMini">0 продукти</span>
     </div>
 
-    <!-- RIGHT PANEL -->
-    <div class="panel">
-      <div class="panel-h">
-        <div>
-          <h2 id="listTitle">Листа</h2>
-          <div class="muted" id="listSub">Избери категорија од ☰ или пребарај.</div>
-        </div>
-        <div class="row" style="gap:8px; align-items:center">
-          <span class="mini" id="demoTag">DEMO</span>
-        </div>
-      </div>
-      <div class="panel-b">
-        <div class="grid" id="grid"></div>
-        <div class="muted" id="empty" style="display:none; padding:18px 6px;">Нема резултати за избраниот филтер.</div>
-      </div>
-    </div>
+    <div class="grid" id="grid"></div>
   </div>
 
-  <!-- MODAL: Categories -->
-  <div class="modal" id="modalCats">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3>Категории</h3>
-        <button class="btn" onclick="UI.close('modalCats')">Затвори</button>
-      </div>
-<div class="modal-body" id="catsList"></div>
-
-<div class="divider"></div>
-
-<div style="display:flex; flex-direction:column; gap:10px; padding:14px;">
-  <button class="btn" onclick="UI.open('modalAdmin')">🔐 Admin</button>
-</div>
-
-  <!-- MODAL: Order -->
+  <!-- MODAL: ORDER -->
   <div class="modal" id="modalOrder">
     <div class="modal-card">
       <div class="modal-head">
@@ -427,12 +439,12 @@
         <button class="btn" onclick="UI.close('modalOrder')">Затвори</button>
       </div>
       <div class="modal-body">
-        <div class="row" style="gap:12px; align-items:flex-start">
-          <img id="oImg" alt="" style="width:120px; height:90px; object-fit:cover; border-radius:14px; border:1px solid rgba(255,255,255,.12)" />
+        <div class="row" style="align-items:center">
+          <img id="oImg" alt="" style="width:120px;height:90px;object-fit:cover;border-radius:14px;border:1px solid var(--line);background:#111">
           <div style="flex:1; min-width:220px">
-            <div id="oTitle" style="font-weight:900; font-size:18px"></div>
+            <div id="oTitle" style="font-weight:950;font-size:18px"></div>
             <div class="muted" id="oCat"></div>
-            <div style="margin-top:6px; font-weight:900; color:rgba(34,197,94,.95)" id="oPrice"></div>
+            <div style="margin-top:6px; font-weight:950; color:var(--accent)" id="oPrice"></div>
           </div>
         </div>
 
@@ -440,48 +452,55 @@
 
         <div class="row">
           <div class="field">
-            <label>Величина (само достапни)</label>
+            <label>Величина</label>
             <select id="oSize"></select>
+            <div class="help" id="oAvail"></div>
           </div>
           <div class="field">
             <label>Количина</label>
-            <input id="oQty" type="number" min="1" value="1" />
-            <div class="help" id="oHint" style="margin-top:6px;"></div>
+            <select id="oQty"></select>
+            <div class="help">Ќе се дозволи само количина што е на залиха.</div>
           </div>
         </div>
 
         <div class="divider"></div>
 
-        <div class="row">
-          <div class="field">
-            <label>Име и презиме</label>
-            <input id="cName" type="text" placeholder="Пример: Ерен Туна" />
-          </div>
-          <div class="field">
-            <label>Град / Адреса</label>
-            <input id="cAddr" type="text" placeholder="Пример: Скопје, Аеродром..." />
-          </div>
-        </div>
-        <div class="row">
-          <div class="field">
-            <label>Забелешка (опционално)</label>
-            <textarea id="cNote" placeholder="Боја, дополнителни барања..."></textarea>
-          </div>
-        </div>
-
-        <div class="row" style="gap:10px; margin-top:10px">
-          <button class="btn primary" id="btnSendWA">Потврди & отвори WhatsApp</button>
-          <button class="btn danger" onclick="UI.close('modalOrder')">Откажи</button>
-        </div>
+        <button class="btn primary" style="width:100%;height:48px" id="btnConfirmOrder">
+          ✅ Потврди и отвори WhatsApp
+        </button>
 
         <div class="help" style="margin-top:10px">
-          * По потврда, залихата автоматски се намалува за избраната величина.
+          Ако WhatsApp не се отвори веднаш на iPhone: пробај повторно (Safari понекогаш блокира popup, затоа користиме директен redirect).
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: Add product -->
+  <!-- MODAL: ADMIN -->
+  <div class="modal" id="modalAdmin">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Admin</h3>
+        <button class="btn" onclick="UI.close('modalAdmin')">Затвори</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="field">
+            <label>Лозинка</label>
+            <input class="input" id="adminPass" placeholder="внеси лозинка..." style="width:100%">
+            <div class="help">Лозинката е само за да се сокрие/покаже Admin делот.</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <button class="btn primary" onclick="Admin.login()">Најави</button>
+          <button class="btn" onclick="Admin.logout()">Одјави</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD PRODUCT -->
   <div class="modal" id="modalAdd">
     <div class="modal-card">
       <div class="modal-head">
@@ -492,725 +511,630 @@
         <div class="row">
           <div class="field">
             <label>Категорија</label>
-            <select id="aCat"></select>
+            <select id="aCat" style="width:100%"></select>
           </div>
           <div class="field">
             <label>Име на продукт</label>
-            <input id="aName" type="text" placeholder="Пример: Nike тренерка" />
+            <input class="input" id="aName" placeholder="пр. Патики Air..." style="width:100%">
           </div>
         </div>
 
-        <div class="row">
+        <div class="row" style="margin-top:10px">
           <div class="field">
             <label>Цена (ден)</label>
-            <input id="aPrice" type="number" min="0" value="1990" />
+            <input class="input" id="aPrice" type="number" inputmode="numeric" placeholder="пример 1990" style="width:100%">
           </div>
           <div class="field">
-            <label>Слики (3–5 URL или празно = авто)</label>
-            <input id="aImgs" type="text" placeholder="URL1, URL2, URL3 ..." />
-            <div class="help">Можеш и подоцна да менуваш во код/админ.</div>
+            <label>Слики (1–5 URL, одделени со запирка)</label>
+            <input class="input" id="aImgs" placeholder="https://... , https://..." style="width:100%">
+            <div class="help">Можеш подоцна да смениш. Ако празно – ќе стави placeholder.</div>
           </div>
         </div>
 
         <div class="divider"></div>
 
-        <div class="row">
-          <div class="field">
-            <label>Тип на величини</label>
-            <select id="aSizeMode">
-              <option value="clothes">S–3XL</option>
-              <option value="jeans">Фармерки 30–42</option>
-            </select>
-            <div class="help">* За „Фармерки/Панталони“ избери jeans.</div>
-          </div>
-        </div>
+        <div class="row" id="stockFields"></div>
+        <div class="help">Залиха по величини (стави бројки). 0 = нема.</div>
 
         <div class="divider"></div>
-
-        <div class="row" id="stockGrid" style="gap:10px"></div>
-
-        <div class="row" style="gap:10px; margin-top:12px">
-          <button class="btn primary" id="btnSaveProduct">Зачувај</button>
-          <button class="btn" onclick="UI.close('modalAdd')">Откажи</button>
-        </div>
+        <button class="btn primary" style="width:100%;height:48px" onclick="Admin.addProduct()">✅ Сними продукт</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: Admin -->
-  <div class="modal" id="modalAdmin">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3>Admin</h3>
-        <button class="btn" onclick="UI.close('modalAdmin')">Затвори</button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="field">
-            <label>Admin PIN (пример 1234)</label>
-            <input id="pin" type="number" placeholder="PIN" />
-            <div class="help">PIN е локален, само на твојот уред.</div>
+  <script>
+    /* =========================
+       CONFIG
+    ========================== */
+    const WA_PHONE = "38972912601";       // ✅ твој WhatsApp број (без +)
+    const LS_KEY   = "mertax_butik_v4";   // key for localStorage
+    const ADMIN_PASSWORD = "1234";        // ⛔ смени си ја лозинката
+
+    /* =========================
+       DATA
+    ========================== */
+    const SIZES_CLOTHES = ["S","M","L","XL","2XL","3XL"];
+    const SIZES_JEANS   = ["30","31","32","33","34","36","38","40","42"];
+
+    const CATS = [
+      { id:"cemperi", name:"Џемпери",            sizeMode:"clothes", demoCount:150 },
+      { id:"maicki",  name:"Маички",             sizeMode:"clothes", demoCount:150 },
+      { id:"trenerki",name:"Тренерки",           sizeMode:"clothes", demoCount:70  },
+      { id:"jakni",   name:"Јакни",              sizeMode:"clothes", demoCount:70  },
+      { id:"odela",   name:"Одела",              sizeMode:"clothes", demoCount:70  },
+      { id:"bluzoni", name:"Блузони",            sizeMode:"clothes", demoCount:150 },
+      { id:"farmerki",name:"Фармерки/Панталони", sizeMode:"jeans",   demoCount:150 },
+      { id:"patiki",  name:"Патики",             sizeMode:"clothes", demoCount:150 }
+    ];
+
+    const demoImage = (seed) => `https://picsum.photos/seed/mertax_${seed}/900/560`;
+
+    function uid(){ return Math.random().toString(16).slice(2) + Date.now().toString(16); }
+    function money(n){ return (Number(n)||0).toLocaleString("mk-MK"); }
+
+    /* =========================
+       STATE
+    ========================== */
+    let state = {
+      admin:false,
+      cat:"all",
+      q:"",
+      size:"all",
+      products:[]
+    };
+
+    function load(){
+      const raw = localStorage.getItem(LS_KEY);
+      if(raw){
+        try{
+          const s = JSON.parse(raw);
+          if(s && Array.isArray(s.products)){
+            state = { ...state, ...s };
+            // security: don't persist admin true across devices by accident
+            state.admin = false;
+            return;
+          }
+        }catch(e){}
+      }
+      // create demo
+      state.products = makeDemoProducts();
+      save();
+    }
+    function save(){
+      localStorage.setItem(LS_KEY, JSON.stringify({
+        cat: state.cat,
+        q: state.q,
+        size: state.size,
+        products: state.products
+      }));
+    }
+
+    function makeDemoProducts(){
+      const out = [];
+      let counter = 1;
+      for(const c of CATS){
+        for(let i=1;i<=c.demoCount;i++){
+          const sizes = (c.sizeMode==="jeans") ? SIZES_JEANS : SIZES_CLOTHES;
+          const stock = {};
+          // random stock
+          sizes.forEach(sz=>{
+            const v = Math.random() < 0.55 ? Math.floor(Math.random()*7) : 0;
+            stock[sz] = v;
+          });
+          // ensure at least 1 size in stock
+          if(Object.values(stock).every(v=>v===0)){
+            stock[sizes[Math.floor(Math.random()*sizes.length)]] = 3;
+          }
+
+          out.push({
+            id: uid(),
+            catId: c.id,
+            name: `${c.name} #${i}`,
+            price: 999 + (counter*37 % 5000),
+            imgs: [ demoImage(counter), demoImage(counter+999) ],
+            sizeMode: c.sizeMode,
+            stock
+          });
+          counter++;
+        }
+      }
+      return out;
+    }
+
+    /* =========================
+       UI HELPERS
+    ========================== */
+    const UI = {
+      open(id){ document.getElementById(id).classList.add("open"); },
+      close(id){ document.getElementById(id).classList.remove("open"); },
+      toast(msg){
+        alert(msg);
+      }
+    };
+
+    function catName(catId){
+      if(catId==="all") return "Сите";
+      const c = CATS.find(x=>x.id===catId);
+      return c ? c.name : catId;
+    }
+
+    function sizesForProduct(p){
+      return p.sizeMode==="jeans" ? SIZES_JEANS : SIZES_CLOTHES;
+    }
+
+    function availableTotal(p){
+      return Object.values(p.stock||{}).reduce((a,b)=>a+(Number(b)||0),0);
+    }
+
+    /* =========================
+       DRAWER
+    ========================== */
+    function openDrawer(){
+      document.getElementById("drawer").classList.add("open");
+      document.getElementById("drawerBg").classList.add("open");
+    }
+    function closeDrawer(){
+      document.getElementById("drawer").classList.remove("open");
+      document.getElementById("drawerBg").classList.remove("open");
+    }
+
+    /* =========================
+       FILTERS
+    ========================== */
+    function setCat(catId){
+      state.cat = catId;
+      save();
+      closeDrawer();
+      renderAll();
+    }
+
+    function setSize(sz){
+      state.size = sz;
+      save();
+      renderAll();
+    }
+
+    function setQuery(q){
+      state.q = q;
+      save();
+      renderAll();
+    }
+
+    function resetFilters(){
+      state.cat = "all";
+      state.size = "all";
+      state.q = "";
+      save();
+      document.getElementById("q").value = "";
+      document.getElementById("catFilter").value = "all";
+      document.getElementById("sizeFilter").value = "all";
+      renderAll();
+    }
+
+    function filteredProducts(){
+      const q = (state.q||"").trim().toLowerCase();
+      let arr = [...state.products];
+
+      if(state.cat !== "all"){
+        arr = arr.filter(p=>p.catId===state.cat);
+      }
+
+      if(q){
+        arr = arr.filter(p =>
+          (p.name||"").toLowerCase().includes(q) ||
+          catName(p.catId).toLowerCase().includes(q)
+        );
+      }
+
+      // size filter: "available only for that size"
+      if(state.size !== "all"){
+        arr = arr.filter(p => Number((p.stock||{})[state.size]||0) > 0);
+      }
+
+      return arr;
+    }
+
+    /* =========================
+       RENDER
+    ========================== */
+    function renderMenu(){
+      const box = document.getElementById("catsMenu");
+      box.innerHTML = "";
+
+      // ALL
+      const allBtn = document.createElement("div");
+      allBtn.className = "menuBtn";
+      allBtn.innerHTML = `<div class="left"><b>Сите продукти</b><span class="pill">${state.products.length}</span></div><span class="pill">›</span>`;
+      allBtn.onclick = ()=>setCat("all");
+      box.appendChild(allBtn);
+
+      // categories
+      for(const c of CATS){
+        const count = state.products.filter(p=>p.catId===c.id).length;
+        const b = document.createElement("div");
+        b.className = "menuBtn";
+        b.innerHTML = `<div class="left"><b>${c.name}</b><span class="pill">${count}</span></div><span class="pill">›</span>`;
+        b.onclick = ()=>setCat(c.id);
+        box.appendChild(b);
+      }
+
+      // admin section visibility
+      document.getElementById("adminMenu").style.display = state.admin ? "flex" : "none";
+      document.getElementById("adminPill").textContent = state.admin ? "вклучено" : "заклучено";
+      document.getElementById("drawerSub").textContent = state.admin
+        ? "Категории + Admin опции"
+        : "Избери категорија";
+    }
+
+    function renderFilters(){
+      // cat dropdown
+      const catSel = document.getElementById("catFilter");
+      catSel.innerHTML = "";
+      catSel.appendChild(new Option("Категорија: Сите", "all"));
+      CATS.forEach(c => catSel.appendChild(new Option(`Категорија: ${c.name}`, c.id)));
+      catSel.value = state.cat;
+
+      // size dropdown
+      const sizeSel = document.getElementById("sizeFilter");
+      sizeSel.innerHTML = "";
+      sizeSel.appendChild(new Option("Филтер по величина (само достапни)", "all"));
+      // union of sizes
+      const allSizes = [...new Set([...SIZES_CLOTHES, ...SIZES_JEANS])];
+      allSizes.forEach(s => sizeSel.appendChild(new Option(s, s)));
+      sizeSel.value = state.size;
+
+      // titles
+      document.getElementById("pageTitle").textContent =
+        (state.cat==="all") ? "Сите продукти" : catName(state.cat);
+      document.getElementById("pageSub").textContent =
+        "Избери категорија од ☰ или пребарај. Нарачка оди преку WhatsApp.";
+    }
+
+    function renderGrid(){
+      const grid = document.getElementById("grid");
+      const arr = filteredProducts();
+      grid.innerHTML = "";
+
+      document.getElementById("countMini").textContent = `${arr.length} продукти`;
+
+      for(const p of arr){
+        const sizes = sizesForProduct(p);
+        const total = availableTotal(p);
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const img = (p.imgs && p.imgs[0]) ? p.imgs[0] : demoImage(p.id);
+        card.innerHTML = `
+          <div class="imgwrap">
+            <img src="${escapeHtml(img)}" alt="">
+            <div class="badge">${escapeHtml(catName(p.catId))}</div>
           </div>
-          <div class="field">
-            <label>Копче</label>
-            <button class="btn primary" id="btnSetPin">Сними PIN</button>
+          <div class="cardbody">
+            <div class="pname">${escapeHtml(p.name)}</div>
+            <div class="price">${money(p.price)} ден</div>
+            <div class="meta">
+              <div>Достапно: <b>${total}</b></div>
+              <div>${p.sizeMode==="jeans" ? "30–42" : "S–3XL"}</div>
+            </div>
+
+            <div class="sizes" id="sizes_${p.id}"></div>
+
+            <div class="actionsRow">
+              <button class="btn order" id="order_${p.id}">Нарачај</button>
+              <button class="btn" id="details_${p.id}">Детали</button>
+            </div>
           </div>
-        </div>
+        `;
 
-        <div class="divider"></div>
+        grid.appendChild(card);
 
-        <div class="row">
-          <div class="field">
-            <label>Демо продукти</label>
-            <button class="btn danger" id="btnResetDemo">Reset demo (ги брише сите продукти)</button>
-            <div class="help">⚠️ Ова ќе избрише сè од localStorage на тој уред.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+        // render size chips
+        const sizesBox = card.querySelector(`#sizes_${CSS.escape(p.id)}`);
+        let active = null;
 
-<script>
-/* ===========================
-   CONFIG
-=========================== */
-const WA_PHONE = "38972912601"; // твој WhatsApp број
-const LS_KEY = "mertax_butik_v3";
+        sizes.forEach(sz=>{
+          const qty = Number((p.stock||{})[sz]||0);
+          const chip = document.createElement("div");
+          chip.className = "sz" + (qty>0 ? " ok" : "");
+          chip.innerHTML = `<span class="dot"></span><b>${sz}</b> <span class="muted">(${qty})</span>`;
+          chip.onclick = ()=>{
+            // toggle active
+            sizesBox.querySelectorAll(".sz").forEach(x=>x.classList.remove("active"));
+            chip.classList.add("active");
+            active = sz;
+          };
+          sizesBox.appendChild(chip);
+        });
 
-/* ===========================
-   DATA / HELPERS
-=========================== */
-const SIZES_CLOTHES = ["S","M","L","XL","2XL","3XL"];
-const SIZES_JEANS   = ["30","31","32","33","34","36","38","40","42"];
+        // order click
+        card.querySelector(`#order_${CSS.escape(p.id)}`).onclick = ()=>{
+          if(total<=0){
+            UI.toast("Нема залиха за овој продукт.");
+            return;
+          }
+          openOrderModal(p, active);
+        };
 
-const CATS = [
-  { id:"cemperi", name:"Чемпери", sizeMode:"clothes", demoCount:150 },
-  { id:"maicki", name:"Маички", sizeMode:"clothes", demoCount:150 },
-  { id:"trenerki", name:"Тренерки", sizeMode:"clothes", demoCount:70  },
-  { id:"jakni", name:"Јакни", sizeMode:"clothes", demoCount:70  },
-  { id:"odela", name:"Одела", sizeMode:"clothes", demoCount:70  },
-  { id:"bluzoni", name:"Блузони", sizeMode:"clothes", demoCount:150 },
-  { id:"farmerki", name:"Фармерки/Панталони", sizeMode:"jeans", demoCount:150 },
-  { id:"patiki", name:"Патики", sizeMode:"clothes", demoCount:150 }
-];
+        // details click
+        card.querySelector(`#details_${CSS.escape(p.id)}`).onclick = ()=>{
+          const msg =
+            `${p.name}\nКатегорија: ${catName(p.catId)}\nЦена: ${money(p.price)} ден\n` +
+            `Залиха: ${sizes.map(s=>`${s}:${(p.stock||{})[s]||0}`).join("  ")}`;
+          UI.toast(msg);
+        };
+      }
+    }
 
-function uid(){ return Math.random().toString(16).slice(2)+Date.now().toString(16); }
-function money(n){
-  const x = Number(n||0);
-  return x.toLocaleString("mk-MK") + " ден";
-}
-function now(){ return Date.now(); }
+    function renderAll(){
+      renderMenu();
+      renderFilters();
+      renderGrid();
+    }
 
-function rint(min,max){
-  return Math.floor(Math.random()*(max-min+1))+min;
-}
+    /* =========================
+       ORDER (WhatsApp) — FIXED
+    ========================== */
+    let currentOrderProduct = null;
 
-function makePics(seed, count){
-  // бесплатни placeholder (без да мораш да качуваш слики)
-  // можеш подоцна да смениш со твои URL
-  const arr=[];
-  for(let i=0;i<count;i++){
-    arr.push(`https://picsum.photos/seed/${seed}_${i}/900/600`);
-  }
-  return arr;
-}
-function defaultStock(mode){
-  const sizes = mode==="jeans" ? SIZES_JEANS : SIZES_CLOTHES;
-  const stock = {};
-  sizes.forEach(s=>{
-    // демо залиха (0-6)
-    stock[s] = rint(0,6);
-  });
-  // да има барем нешто
-  if(Object.values(stock).every(v=>v===0)){
-    stock[sizes[rint(0,sizes.length-1)]] = rint(1,4);
-  }
-  return stock;
-}
+    function buildWhatsAppText(p, size, qty){
+      const lines = [
+        "Нарачка — MertaX Butik",
+        `Продукт: ${p.name}`,
+        `Категорија: ${catName(p.catId)}`,
+        `Цена: ${money(p.price)} ден`,
+        `Величина: ${size}`,
+        `Количина: ${qty}`,
+        "",
+        "Ве молам потврдете ја нарачката. 😊"
+      ];
+      return lines.join("\n");
+    }
 
-function load(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) return null;
-    return JSON.parse(raw);
-  }catch(e){
-    return null;
-  }
-}
-function save(){
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
-}
+    function openWhatsApp(text){
+      const encoded = encodeURIComponent(text);
+      // Two options, some devices open one better than the other
+      const url1 = `https://wa.me/${WA_PHONE}?text=${encoded}`;
+      const url2 = `https://api.whatsapp.com/send?phone=${WA_PHONE}&text=${encoded}`;
 
-function catById(id){ return CATS.find(c=>c.id===id) || null; }
+      // iPhone Safari најсигурно: direct redirect (не popup)
+      window.location.assign(url1);
 
-function totalAvailable(p){
-  return Object.values(p.stock||{}).reduce((a,b)=>a+Number(b||0),0);
-}
+      // fallback if wa.me is blocked
+      setTimeout(()=> {
+        try { window.location.assign(url2); } catch(e) {}
+      }, 700);
+    }
 
-function sizesFor(p){
-  return p.sizeMode==="jeans" ? SIZES_JEANS : SIZES_CLOTHES;
-}
+    function openOrderModal(p, preselectedSize){
+      currentOrderProduct = p;
 
-/* ===========================
-   STATE
-=========================== */
-let state = load() || {
-  adminPin: "",          // локално
-  selectedCat: "",       // catId
-  q: "",
-  sizeFilter: "",
-  products: [],
-  demoSeeded: false
-};
+      // fill header
+      document.getElementById("oImg").src = (p.imgs && p.imgs[0]) ? p.imgs[0] : demoImage(p.id);
+      document.getElementById("oTitle").textContent = p.name;
+      document.getElementById("oCat").textContent = catName(p.catId);
+      document.getElementById("oPrice").textContent = `${money(p.price)} ден`;
 
-/* ===========================
-   DEMO SEED
-=========================== */
-function seedDemoProducts(){
-  const products=[];
-  const baseNames = {
-    "Чемпери":"Чемпер",
-    "Маички":"Маичка",
-    "Тренерки":"Тренерка",
-    "Јакни":"Јакна",
-    "Одела":"Одело",
-    "Блузони":"Блузон",
-    "Фармерки/Панталони":"Фармерки",
-    "Патики":"Патики"
-  };
+      // size select
+      const sizes = sizesForProduct(p);
+      const sizeSel = document.getElementById("oSize");
+      sizeSel.innerHTML = "";
+      sizes.forEach(sz=>{
+        const qty = Number((p.stock||{})[sz]||0);
+        const opt = new Option(`${sz} (${qty})`, sz);
+        opt.disabled = qty<=0;
+        sizeSel.appendChild(opt);
+      });
 
-  CATS.forEach((cat, ci)=>{
-    const count = cat.demoCount;
-    for(let i=1;i<=count;i++){
-      const base = baseNames[cat.name] || "Продукт";
-      const nm = `${base} #${i}`;
-      let price;
-      if(cat.id==="patiki") price = rint(1990, 6990);
-      else if(cat.id==="farmerki") price = rint(1790, 4490);
-      else if(cat.id==="jakni") price = rint(2990, 8990);
-      else if(cat.id==="odela") price = rint(3990, 12990);
-      else price = rint(1190, 4990);
+      // choose size
+      let chosen = preselectedSize;
+      if(!chosen || Number((p.stock||{})[chosen]||0) <= 0){
+        // pick first available
+        chosen = sizes.find(sz => Number((p.stock||{})[sz]||0) > 0);
+      }
+      sizeSel.value = chosen;
 
-      const imgCount = rint(3,5);
-      const pSeed = `${cat.id}_${i}_${now()}`;
+      function updateQty(){
+        const sz = sizeSel.value;
+        const avail = Number((p.stock||{})[sz]||0);
+        document.getElementById("oAvail").textContent = `Достапно за ${sz}: ${avail}`;
 
-      products.push({
-        id: uid(),
-        name: nm,
-        catId: cat.id,
-        price,
-        images: makePics(pSeed, imgCount),
-        sizeMode: cat.sizeMode,
-        stock: defaultStock(cat.sizeMode),
-        createdAt: now() + (ci*100000) + i
+        const qtySel = document.getElementById("oQty");
+        qtySel.innerHTML = "";
+        for(let i=1;i<=Math.max(1, avail);i++){
+          qtySel.appendChild(new Option(String(i), String(i)));
+        }
+      }
+
+      sizeSel.onchange = updateQty;
+      updateQty();
+
+      document.getElementById("btnConfirmOrder").onclick = ()=>{
+        const sz = document.getElementById("oSize").value;
+        const qty = Number(document.getElementById("oQty").value || 1);
+
+        const avail = Number((p.stock||{})[sz]||0);
+        if(avail <= 0){
+          UI.toast("Избраната величина нема залиха.");
+          return;
+        }
+        if(qty > avail){
+          UI.toast("Количината е поголема од залихата.");
+          return;
+        }
+
+        // reduce stock locally
+        p.stock[sz] = avail - qty;
+        save();
+        renderAll();
+
+        UI.close("modalOrder");
+
+        const text = buildWhatsAppText(p, sz, qty);
+        openWhatsApp(text);
+      };
+
+      UI.open("modalOrder");
+    }
+
+    /* =========================
+       ADMIN
+    ========================== */
+    const Admin = {
+      login(){
+        const pass = document.getElementById("adminPass").value || "";
+        if(pass !== ADMIN_PASSWORD){
+          UI.toast("Погрешна лозинка.");
+          return;
+        }
+        state.admin = true;
+        document.getElementById("adminPass").value = "";
+        UI.close("modalAdmin");
+        renderMenu();
+        UI.toast("Admin вклучен ✅");
+      },
+      logout(){
+        state.admin = false;
+        UI.toast("Admin исклучен.");
+        renderMenu();
+      },
+      addProduct(){
+        if(!state.admin){
+          UI.toast("Само Admin може да додава продукти.");
+          return;
+        }
+        const catId = document.getElementById("aCat").value;
+        const name  = (document.getElementById("aName").value||"").trim();
+        const price = Number(document.getElementById("aPrice").value||0);
+
+        if(!name || price<=0){
+          UI.toast("Внеси име и цена.");
+          return;
+        }
+
+        const c = CATS.find(x=>x.id===catId);
+        const sizeMode = c ? c.sizeMode : "clothes";
+        const sizes = (sizeMode==="jeans") ? SIZES_JEANS : SIZES_CLOTHES;
+
+        const stock = {};
+        sizes.forEach(sz=>{
+          const el = document.getElementById("st_"+sz);
+          stock[sz] = Number(el ? el.value : 0) || 0;
+        });
+
+        const imgsRaw = (document.getElementById("aImgs").value||"").trim();
+        const imgs = imgsRaw
+          ? imgsRaw.split(",").map(s=>s.trim()).filter(Boolean).slice(0,5)
+          : [ demoImage(uid()) ];
+
+        state.products.unshift({
+          id: uid(),
+          catId,
+          name,
+          price,
+          imgs,
+          sizeMode,
+          stock
+        });
+
+        save();
+        UI.close("modalAdd");
+        resetAddForm();
+        renderAll();
+        UI.toast("Продуктот е додаден ✅");
+      }
+    };
+
+    function resetAddForm(){
+      document.getElementById("aName").value = "";
+      document.getElementById("aPrice").value = "";
+      document.getElementById("aImgs").value = "";
+      buildStockFields();
+    }
+
+    function buildStockFields(){
+      const catId = document.getElementById("aCat").value;
+      const c = CATS.find(x=>x.id===catId);
+      const sizeMode = c ? c.sizeMode : "clothes";
+      const sizes = (sizeMode==="jeans") ? SIZES_JEANS : SIZES_CLOTHES;
+
+      const box = document.getElementById("stockFields");
+      box.innerHTML = "";
+      sizes.forEach(sz=>{
+        const f = document.createElement("div");
+        f.className = "field";
+        f.innerHTML = `
+          <label>Залиха ${sz}</label>
+          <input class="input" id="st_${sz}" type="number" inputmode="numeric" value="0" style="width:100%">
+        `;
+        box.appendChild(f);
       });
     }
-  });
 
-  state.products = products;
-  state.demoSeeded = true;
-  save();
-}
-
-/* seed ако нема продукти */
-if(!state.products || state.products.length===0){
-  seedDemoProducts();
-}
-
-/* ===========================
-   UI
-=========================== */
-const UI = {
-  open(id){ document.getElementById(id).classList.add("open"); },
-  close(id){ document.getElementById(id).classList.remove("open"); },
-  toast(msg){
-    alert(msg);
-  }
-};
-
-function renderCats(){
-  const el = document.getElementById("catsList");
-  el.innerHTML = "";
-  CATS.forEach(c=>{
-    const count = state.products.filter(p=>p.catId===c.id).length;
-    const btn = document.createElement("button");
-    btn.className = "btn";
-    btn.style.width = "100%";
-    btn.style.height = "56px";
-    btn.style.display = "flex";
-    btn.style.justifyContent = "space-between";
-    btn.style.alignItems = "center";
-    btn.style.borderRadius = "16px";
-    btn.style.marginBottom = "10px";
-    btn.innerHTML = `<span style="font-weight:900">${c.name}</span><span class="chip" style="max-width:none">${count}</span>`;
-    btn.onclick = ()=>{
-      state.selectedCat = c.id;
-      save();
-      UI.close("modalCats");
-      renderAll();
-    };
-    el.appendChild(btn);
-  });
-
-  const btnAll = document.createElement("button");
-  btnAll.className = "btn";
-  btnAll.style.width="100%";
-  btnAll.style.height="56px";
-  btnAll.style.borderRadius="16px";
-  btnAll.innerHTML = `<span style="font-weight:900">Сите категории</span>`;
-  btnAll.onclick = ()=>{
-    state.selectedCat = "";
-    save();
-    UI.close("modalCats");
-    renderAll();
-  };
-  el.appendChild(btnAll);
-}
-
-function buildSizeFilterOptions(){
-  const sel = document.getElementById("sizeFilter");
-  const cur = state.sizeFilter || "";
-  sel.innerHTML = `<option value="">Филтер по величина (само достапни)</option>`;
-
-  // дозволи величини што постојат во моментната категорија
-  let possible = new Set();
-  filteredProductsBase().forEach(p=>{
-    Object.entries(p.stock||{}).forEach(([k,v])=>{
-      if(Number(v)>0) possible.add(k);
-    });
-  });
-
-  Array.from(possible).sort((a,b)=>{
-    // clothes order first if matches
-    const A = SIZES_CLOTHES.indexOf(a); const B = SIZES_CLOTHES.indexOf(b);
-    const AJ = SIZES_JEANS.indexOf(a);  const BJ = SIZES_JEANS.indexOf(b);
-    if(A!==-1 && B!==-1) return A-B;
-    if(AJ!==-1 && BJ!==-1) return AJ-BJ;
-    return (""+a).localeCompare(""+b);
-  }).forEach(s=>{
-    const op = document.createElement("option");
-    op.value = s;
-    op.textContent = s;
-    sel.appendChild(op);
-  });
-
-  sel.value = cur;
-}
-
-function filteredProductsBase(){
-  let arr = [...state.products];
-
-  if(state.selectedCat){
-    arr = arr.filter(p=>p.catId===state.selectedCat);
-  }
-
-  const q = (state.q||"").trim().toLowerCase();
-  if(q){
-    arr = arr.filter(p => (p.name||"").toLowerCase().includes(q));
-  }
-
-  return arr;
-}
-
-function filteredProducts(){
-  let arr = filteredProductsBase();
-
-  const sf = state.sizeFilter || "";
-  if(sf){
-    arr = arr.filter(p => Number((p.stock||{})[sf]||0) > 0);
-  }
-
-  // ако category set, покажи најнови прво
-  arr.sort((a,b)=> (b.createdAt||0)-(a.createdAt||0));
-  return arr;
-}
-
-function renderGrid(){
-  const grid = document.getElementById("grid");
-  const empty = document.getElementById("empty");
-  const arr = filteredProducts();
-  grid.innerHTML = "";
-
-  if(arr.length===0){
-    empty.style.display="block";
-    return;
-  }
-  empty.style.display="none";
-
-  arr.slice(0, 120).forEach(p=>{
-    const card = document.createElement("div");
-    card.className = "card";
-
-    const img = (p.images && p.images[0]) ? p.images[0] : "https://picsum.photos/seed/x/900/600";
-    const cat = catById(p.catId)?.name || "";
-    const avail = totalAvailable(p);
-
-    const sizesHtml = sizesFor(p).map(s=>{
-      const v = Number((p.stock||{})[s]||0);
-      const dotClass = v>0 ? "dot" : "dot out";
-      return `<span class="sz"><span class="${dotClass}"></span>${s} <span style="opacity:.8">(${v})</span></span>`;
-    }).join("");
-
-    card.innerHTML = `
-      <div class="imgwrap">
-        <img src="${img}" alt="">
-        <div class="badge">${cat}</div>
-      </div>
-      <div class="cardbody">
-        <div class="pname">${escapeHtml(p.name||"")}</div>
-        <div class="price">${money(p.price)}</div>
-        <div class="meta">
-          <div>Достапно: <b>${avail}</b></div>
-          <div>${p.sizeMode==="jeans" ? "Jeans" : "S–3XL"}</div>
-        </div>
-        <div class="sizes">${sizesHtml}</div>
-      </div>
-      <div class="cardfoot">
-        <button class="btn primary" ${avail<=0 ? "disabled" : ""}>Нарачај</button>
-        <button class="btn">Детали</button>
-      </div>
-    `;
-
-    const [btnOrder, btnDetails] = card.querySelectorAll("button");
-    btnOrder.onclick = ()=> openOrderModal(p);
-    btnDetails.onclick = ()=> openOrderModal(p);
-
-    if(avail<=0){
-      btnOrder.classList.remove("primary");
-      btnOrder.textContent = "Нема залиха";
-      btnOrder.disabled = true;
+    /* =========================
+       SAFE HTML
+    ========================== */
+    function escapeHtml(s){
+      return String(s||"")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
 
-    grid.appendChild(card);
-  });
-}
+    /* =========================
+       EVENTS + INIT
+    ========================== */
+    // drawer events
+    document.getElementById("btnMenu").onclick = openDrawer;
+    document.getElementById("drawerBg").onclick = closeDrawer;
+    document.getElementById("btnCloseMenu").onclick = closeDrawer;
+    document.getElementById("brandClick").onclick = ()=>{ setCat("all"); };
 
-function renderTopInfo(){
-  const prodInfo = document.getElementById("prodInfo");
-  const listTitle = document.getElementById("listTitle");
-  const listSub = document.getElementById("listSub");
-  const chipCat = document.getElementById("chipCat");
+    // admin/menu actions
+    document.getElementById("btnAdminLogin").onclick = ()=>{ UI.open("modalAdmin"); };
+    document.getElementById("btnAddProduct").onclick = ()=>{
+      if(!state.admin) return UI.toast("Прво Admin login.");
+      UI.open("modalAdd");
+    };
+    document.getElementById("btnResetAll").onclick = ()=>{
+      if(!state.admin) return UI.toast("Прво Admin login.");
+      const ok = confirm("Сигурно сакаш да ресетираш СÈ? Ќе се избришат сите продукти/залихи.");
+      if(!ok) return;
+      localStorage.removeItem(LS_KEY);
+      UI.toast("Ресетирано. Освежи ја страната.");
+      location.reload();
+    };
 
-  const total = state.products.length;
-  prodInfo.textContent = `${total} продукти`;
+    // filters
+    document.getElementById("q").addEventListener("input", (e)=> setQuery(e.target.value));
+    document.getElementById("catFilter").addEventListener("change", (e)=> setCat(e.target.value));
+    document.getElementById("sizeFilter").addEventListener("change", (e)=> setSize(e.target.value));
+    document.getElementById("btnClear").onclick = resetFilters;
 
-  const cat = state.selectedCat ? (catById(state.selectedCat)?.name || "") : "(сите)";
-  chipCat.textContent = `Категорија: ${cat}`;
+    // fill add form
+    function fillAddCats(){
+      const aCat = document.getElementById("aCat");
+      aCat.innerHTML = "";
+      CATS.forEach(c => aCat.appendChild(new Option(c.name, c.id)));
+      aCat.onchange = buildStockFields;
+      buildStockFields();
+    }
 
-  if(state.selectedCat){
-    listTitle.textContent = cat;
-    listSub.textContent = `Пребарај или филтрирај по величина (само достапни).`;
-  }else{
-    listTitle.textContent = "Сите продукти";
-    listSub.textContent = "Избери категорија од ☰ или пребарај.";
-  }
-}
-
-function renderAll(){
-  renderCats();
-  buildSizeFilterOptions();
-  renderTopInfo();
-  renderGrid();
-}
-
-/* ===========================
-   ORDER FLOW (WhatsApp + stock decrement)
-=========================== */
-let orderState = { prodId:null };
-
-function openOrderModal(p){
-  orderState.prodId = p.id;
-
-  document.getElementById("oImg").src = (p.images && p.images[0]) ? p.images[0] : "https://picsum.photos/seed/x/900/600";
-  document.getElementById("oTitle").textContent = p.name || "";
-  document.getElementById("oCat").textContent = catById(p.catId)?.name || "";
-  document.getElementById("oPrice").textContent = money(p.price);
-
-  const sel = document.getElementById("oSize");
-  sel.innerHTML = "";
-  const sizes = sizesFor(p);
-
-  // само достапни величини
-  const avail = sizes.filter(s=>Number((p.stock||{})[s]||0)>0);
-  avail.forEach(s=>{
-    const v = Number((p.stock||{})[s]||0);
-    const op = document.createElement("option");
-    op.value = s;
-    op.textContent = `${s} (${v} на залиха)`;
-    sel.appendChild(op);
-  });
-
-  // ако нема ништо
-  if(avail.length===0){
-    const op = document.createElement("option");
-    op.value = "";
-    op.textContent = "Нема достапни величини";
-    sel.appendChild(op);
-  }
-
-  document.getElementById("oQty").value = 1;
-  document.getElementById("oHint").textContent = avail.length
-    ? "Избери величина и количина. Ќе се намали залихата по потврда."
-    : "Нема залиха за овој продукт.";
-
-  UI.open("modalOrder");
-}
-
-function buildWhatsAppText(p, size, qty){
-  const name = (document.getElementById("cName").value||"").trim();
-  const addr = (document.getElementById("cAddr").value||"").trim();
-  const note = (document.getElementById("cNote").value||"").trim();
-  const cat = catById(p.catId)?.name || "";
-
-  let msg = `Здраво 👋\n\nСакам да нарачам:\n\n🛍 Производ: ${p.name}\n📁 Категорија: ${cat}\n📏 Величина: ${size}\n🔢 Количина: ${qty}\n💰 Цена: ${money(p.price)}\n`;
-
-  if(name) msg += `\n👤 Име: ${name}`;
-  if(addr) msg += `\n📍 Адреса/Град: ${addr}`;
-  if(note) msg += `\n📝 Забелешка: ${note}`;
-
-  msg += `\n\nВе молам потврдете достапност.`;
-  return msg;
-}
-
-function decrementStock(p, size, qty){
-  const cur = Number((p.stock||{})[size]||0);
-  if(cur < qty) return false;
-  p.stock[size] = cur - qty;
-  return true;
-}
-
-/* ===========================
-   ADD PRODUCT
-=========================== */
-function openAddModal(){
-  const aCat = document.getElementById("aCat");
-  aCat.innerHTML = "";
-  CATS.forEach(c=>{
-    const op=document.createElement("option");
-    op.value=c.id;
-    op.textContent=c.name;
-    aCat.appendChild(op);
-  });
-
-  // default
-  aCat.value = state.selectedCat || CATS[0].id;
-
-  document.getElementById("aName").value = "";
-  document.getElementById("aPrice").value = 1990;
-  document.getElementById("aImgs").value = "";
-  const sizeModeSel = document.getElementById("aSizeMode");
-  sizeModeSel.value = (catById(aCat.value)?.sizeMode || "clothes");
-
-  function rebuildStock(){
-    const mode = sizeModeSel.value;
-    const sizes = mode==="jeans" ? SIZES_JEANS : SIZES_CLOTHES;
-    const grid = document.getElementById("stockGrid");
-    grid.innerHTML = "";
-    sizes.forEach(s=>{
-      const d = document.createElement("div");
-      d.className="field";
-      d.style.minWidth="140px";
-      d.innerHTML = `
-        <label>Залиха ${s}</label>
-        <input type="number" min="0" value="0" data-size="${s}">
-      `;
-      grid.appendChild(d);
+    // close modal on background click
+    ["modalOrder","modalAdmin","modalAdd"].forEach(id=>{
+      const m = document.getElementById(id);
+      m.addEventListener("click",(e)=>{
+        if(e.target===m) UI.close(id);
+      });
     });
-  }
 
-  rebuildStock();
-  aCat.onchange = ()=>{
-    const cm = catById(aCat.value)?.sizeMode || "clothes";
-    sizeModeSel.value = cm;
-    rebuildStock();
-  };
-  sizeModeSel.onchange = rebuildStock;
-
-  UI.open("modalAdd");
-}
-
-function saveNewProduct(){
-  const catId = document.getElementById("aCat").value;
-  const name = (document.getElementById("aName").value||"").trim();
-  const price = Number(document.getElementById("aPrice").value||0);
-  const imgsRaw = (document.getElementById("aImgs").value||"").trim();
-  const sizeMode = document.getElementById("aSizeMode").value;
-
-  if(!name){
-    UI.toast("Внеси име на продукт.");
-    return;
-  }
-
-  let images = [];
-  if(imgsRaw){
-    images = imgsRaw.split(",").map(x=>x.trim()).filter(Boolean).slice(0,5);
-  }else{
-    images = makePics("custom_"+uid(), rint(3,5));
-  }
-
-  const stock = {};
-  document.querySelectorAll("#stockGrid input[data-size]").forEach(inp=>{
-    const s = inp.getAttribute("data-size");
-    stock[s] = Math.max(0, Number(inp.value||0));
-  });
-
-  // ако сите 0, стави 1 на првата
-  if(Object.values(stock).every(v=>Number(v)===0)){
-    const first = (sizeMode==="jeans" ? SIZES_JEANS[0] : SIZES_CLOTHES[0]);
-    stock[first] = 1;
-  }
-
-  state.products.unshift({
-    id: uid(),
-    name,
-    catId,
-    price,
-    images,
-    sizeMode,
-    stock,
-    createdAt: now()
-  });
-
-  save();
-  UI.close("modalAdd");
-  renderAll();
-  UI.toast("Продуктот е додаден ✅");
-}
-
-/* ===========================
-   ADMIN
-=========================== */
-function isAdminOk(){
-  const pin = (document.getElementById("pin").value||"").trim();
-  return pin && state.adminPin && pin === state.adminPin;
-}
-
-function resetDemo(){
-  if(!isAdminOk()){
-    UI.toast("Погрешен PIN.");
-    return;
-  }
-  if(!confirm("Ова ќе избрише СИТЕ продукти на овој уред. Сигурно?")) return;
-  localStorage.removeItem(LS_KEY);
-  state = {
-    adminPin: state.adminPin,
-    selectedCat: "",
-    q: "",
-    sizeFilter: "",
-    products: [],
-    demoSeeded: false
-  };
-  seedDemoProducts();
-  renderAll();
-  UI.close("modalAdmin");
-  UI.toast("Reset направен ✅");
-}
-
-/* ===========================
-   EVENTS
-=========================== */
-document.getElementById("btnCats").onclick = ()=> UI.open("modalCats");
-document.getElementById("brandClick").onclick = ()=> UI.open("modalCats");
-
-document.getElementById("q").addEventListener("input", (e)=>{
-  state.q = e.target.value || "";
-  document.getElementById("qTop").value = state.q;
-  save();
-  buildSizeFilterOptions();
-  renderGrid();
-});
-document.getElementById("qTop").addEventListener("input", (e)=>{
-  state.q = e.target.value || "";
-  document.getElementById("q").value = state.q;
-  save();
-  buildSizeFilterOptions();
-  renderGrid();
-});
-
-document.getElementById("sizeFilter").addEventListener("change", (e)=>{
-  state.sizeFilter = e.target.value || "";
-  save();
-  renderGrid();
-});
-
-document.getElementById("btnResetFilters").onclick = ()=>{
-  state.q = "";
-  state.sizeFilter = "";
-  document.getElementById("q").value = "";
-  document.getElementById("qTop").value = "";
-  save();
-  buildSizeFilterOptions();
-  renderGrid();
-};
-
-document.getElementById("btnAdd").onclick = ()=> openAddModal();
-document.getElementById("btnSaveProduct").onclick = ()=> saveNewProduct();
-
-document.getElementById("btnAdmin").onclick = ()=> UI.open("modalAdmin");
-document.getElementById("btnSetPin").onclick = ()=>{
-  const pin = (document.getElementById("pin").value||"").trim();
-  if(!pin || pin.length<3){
-    UI.toast("Стави PIN (на пример 1234).");
-    return;
-  }
-  state.adminPin = pin;
-  save();
-  UI.toast("PIN зачуван ✅");
-};
-
-document.getElementById("btnResetDemo").onclick = ()=> resetDemo();
-
-document.getElementById("btnSendWA").onclick = ()=>{
-  const p = state.products.find(x=>x.id===orderState.prodId);
-  if(!p){ UI.toast("Грешка: продукт не е најден."); return; }
-
-  const size = document.getElementById("oSize").value;
-  const qty  = Math.max(1, Number(document.getElementById("oQty").value||1));
-
-  if(!size){
-    UI.toast("Нема достапна величина.");
-    return;
-  }
-
-  const ok = decrementStock(p, size, qty);
-  if(!ok){
-    UI.toast("Нема доволна залиха за таа количина.");
-    return;
-  }
-
-  save();
-  renderAll();
-  UI.close("modalOrder");
-
-  const text = buildWhatsAppText(p, size, qty);
-  const url = `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`;
-  window.location.href = url;
-};
-
-/* close modal on background click */
-["modalCats","modalOrder","modalAdd","modalAdmin"].forEach(id=>{
-  const m = document.getElementById(id);
-  m.addEventListener("click",(e)=>{
-    if(e.target===m) UI.close(id);
-  });
-});
-
-/* ===========================
-   SAFE HTML
-=========================== */
-function escapeHtml(s){
-  return String(s||"")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-/* init */
-document.getElementById("q").value = state.q || "";
-document.getElementById("qTop").value = state.q || "";
-renderAll();
-</script>
+    // init
+    load();
+    fillAddCats();
+    document.getElementById("q").value = state.q || "";
+    renderAll();
+  </script>
 </body>
 </html>
