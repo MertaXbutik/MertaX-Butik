@@ -1184,7 +1184,7 @@ document.getElementById("btnSendWA").onclick = ()=>{
 
   const text = buildWhatsAppText(p, size, qty);
   const url = `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`;
-  window.open(url, "_blank");
+  window.location.href = url;
 };
 
 /* close modal on background click */
