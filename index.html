@@ -1069,9 +1069,51 @@
       const cat = document.getElementById("aCat").value;
       const name = document.getElementById("aName").value.trim();
       const price = Number(document.getElementById("aPrice").value||0);
-      const imgsRaw = document.getElementById("aImgs").value.trim();
-      const desc = document.getElementById("aDesc").value.trim();
+      const c = catById(cat);
+const fileInput = document.getElementById("aImgsUpload");
+const files = Array.from(fileInput.files).slice(0,5);
 
+if(files.length === 0){
+  UI.toast("Избери барем една слика.");
+  return;
+}
+
+const readFile = (file) => {
+  return new Promise((resolve)=>{
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.readAsDataURL(file);
+  });
+};
+
+Promise.all(files.map(f => readFile(f))).then(results => {
+
+  const imgs = results;
+
+  const stockC = parseStock(document.getElementById("aStockClothes").value);
+  const stockJ = parseStock(document.getElementById("aStockJeans").value);
+
+  const stock = c.sizeMode==="jeans"
+    ? normalizeStock("jeans", stockJ)
+    : normalizeStock("clothes", stockC);
+
+  const p = {
+    id: uid(),
+    cat,
+    name,
+    price,
+    imgs,
+    desc,
+    stock
+  };
+
+  state.products.unshift(p);
+  saveProducts();
+  UI.close("modalAdd");
+  renderAll();
+});
+
+return;
       if(!cat || !name || price<=0){
         UI.toast("Внеси категорија, име и цена.");
         return;
